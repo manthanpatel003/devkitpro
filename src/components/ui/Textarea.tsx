@@ -1,45 +1,90 @@
+import React from 'react'
 import { cn } from '@/lib/utils'
-import * as React from 'react'
+import { AlertCircle, CheckCircle2 } from 'lucide-react'
 
-export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  error?: string
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
+  error?: string
+  success?: string
+  helper?: string
+  fullWidth?: boolean
+  resize?: 'none' | 'vertical' | 'horizontal' | 'both'
+  rows?: number
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, error, label, ...props }, ref) => {
-    const [isFocused, setIsFocused] = React.useState(false)
-
+  ({
+    className,
+    label,
+    error,
+    success,
+    helper,
+    fullWidth = false,
+    resize = 'vertical',
+    rows = 4,
+    ...props
+  }, ref) => {
+    const textareaClasses = cn(
+      'block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors',
+      {
+        'border-red-300 focus:ring-red-500 focus:border-red-500': error,
+        'border-green-300 focus:ring-green-500 focus:border-green-500': success && !error,
+        'border-gray-300 focus:ring-primary-500 focus:border-primary-500': !error && !success,
+        'w-full': fullWidth,
+        'resize-none': resize === 'none',
+        'resize-y': resize === 'vertical',
+        'resize-x': resize === 'horizontal',
+        'resize': resize === 'both'
+      },
+      className
+    )
+    
     return (
-      <div className="space-y-2">
+      <div className={cn('space-y-1', { 'w-full': fullWidth })}>
         {label && (
-          <label
-            className={cn(
-              'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
-              isFocused && 'text-primary',
-              error && 'text-destructive'
-            )}
-          >
+          <label className="block text-sm font-medium text-gray-700">
             {label}
+            {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
-        <textarea
-          className={cn(
-            'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 resize-none',
-            isFocused && 'border-primary shadow-md scale-[1.01]',
-            error && 'border-destructive focus-visible:ring-destructive animate-shake',
-            className
+        <div className="relative">
+          <textarea
+            className={textareaClasses}
+            ref={ref}
+            rows={rows}
+            {...props}
+          />
+          {error && (
+            <div className="absolute top-2 right-2 flex items-center pointer-events-none">
+              <AlertCircle className="h-4 w-4 text-red-500" />
+            </div>
           )}
-          ref={ref}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          {...props}
-        />
-        {error && <p className="text-sm text-destructive animate-fade-in">{error}</p>}
+          {success && !error && (
+            <div className="absolute top-2 right-2 flex items-center pointer-events-none">
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+            </div>
+          )}
+        </div>
+        {error && (
+          <p className="text-sm text-red-600 flex items-center">
+            <AlertCircle className="h-4 w-4 mr-1" />
+            {error}
+          </p>
+        )}
+        {success && !error && (
+          <p className="text-sm text-green-600 flex items-center">
+            <CheckCircle2 className="h-4 w-4 mr-1" />
+            {success}
+          </p>
+        )}
+        {helper && !error && !success && (
+          <p className="text-sm text-gray-500">{helper}</p>
+        )}
       </div>
     )
   }
 )
+
 Textarea.displayName = 'Textarea'
 
 export { Textarea }
