@@ -1,5 +1,6 @@
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Navigation } from '@/components/Navigation'
+import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { ToastProvider } from '@/components/ui/Toast'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -146,8 +147,39 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`h-full ${inter.variable}`}>
+    <html lang="en" className={`h-full ${inter.variable}`} suppressHydrationWarning>
       <head>
+        {/* Inline theme script to prevent FOUC */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('ultimate-tools-theme') || 'system';
+                  var root = document.documentElement;
+                  
+                  if (theme === 'system') {
+                    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    root.classList.add(prefersDark ? 'dark' : 'light');
+                  } else {
+                    root.classList.add(theme);
+                  }
+                  
+                  // Add theme transition class for smooth transitions
+                  root.classList.add('theme-transition');
+                  
+                  // Remove transition class after theme is applied
+                  setTimeout(function() {
+                    root.classList.remove('theme-transition');
+                  }, 10);
+                } catch (e) {
+                  // Fallback to light theme if localStorage fails
+                  document.documentElement.classList.add('light');
+                }
+              })();
+            `,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.allorigins.win" />
@@ -155,110 +187,144 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="#3B82F6" />
         <meta name="color-scheme" content="light dark" />
       </head>
-      <body className={`${inter.className} h-full bg-gray-50 antialiased`}>
+      <body className={`${inter.className} h-full bg-background text-foreground antialiased`}>
         <ErrorBoundary>
-          <ToastProvider>
-            <div className="min-h-full">
-              <Navigation />
-              <main className="flex-1">{children}</main>
-              <footer className="bg-gray-900 text-white py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div className="col-span-1 md:col-span-2">
-                      <h3 className="text-lg font-semibold mb-4">Ultimate Tools Suite</h3>
-                      <p className="text-gray-300 mb-4">
-                        Professional-grade online tools for developers, designers, and businesses.
-                        All tools are completely free and work entirely in your browser.
-                      </p>
-                      <div className="flex space-x-4">
-                        <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                          GitHub
-                        </a>
-                        <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                          Twitter
-                        </a>
-                        <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                          LinkedIn
-                        </a>
+          <ThemeProvider
+            defaultTheme="system"
+            storageKey="ultimate-tools-theme"
+            enableSystem={true}
+            disableTransitionOnChange={true}
+          >
+            <ToastProvider>
+              <div className="min-h-full flex flex-col">
+                <Navigation />
+                <main className="flex-1">{children}</main>
+                <footer className="bg-card border-t">
+                  <div className="container py-12">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                      <div className="col-span-1 md:col-span-2">
+                        <h3 className="text-lg font-semibold mb-4">Ultimate Tools Suite</h3>
+                        <p className="text-muted-foreground mb-4">
+                          Professional-grade online tools for developers, designers, and businesses.
+                          All tools are completely free and work entirely in your browser.
+                        </p>
+                        <div className="flex space-x-4">
+                          <a
+                            href="https://github.com/ultimate-tools-suite"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            GitHub
+                          </a>
+                          <a
+                            href="https://twitter.com/ultimate_tools"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Twitter
+                          </a>
+                          <a
+                            href="https://linkedin.com/company/ultimate-tools-suite"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            LinkedIn
+                          </a>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                          Popular Tools
+                        </h4>
+                        <ul className="space-y-2">
+                          <li>
+                            <a
+                              href="/whats-my-ip"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              IP Checker
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="/ssl-checker"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              SSL Checker
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="/seo-analyzer"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              SEO Analyzer
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="/json-formatter"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              JSON Formatter
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                          Resources
+                        </h4>
+                        <ul className="space-y-2">
+                          <li>
+                            <a
+                              href="/tools"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              All Tools
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="/api-tester"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              API Tester
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              Privacy Policy
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="#"
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              Terms of Service
+                            </a>
+                          </li>
+                        </ul>
                       </div>
                     </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">
-                        Tools
-                      </h4>
-                      <ul className="space-y-2">
-                        <li>
-                          <a
-                            href="/whats-my-ip"
-                            className="text-gray-300 hover:text-white transition-colors"
-                          >
-                            IP Checker
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="/ssl-checker"
-                            className="text-gray-300 hover:text-white transition-colors"
-                          >
-                            SSL Checker
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="/seo-analyzer"
-                            className="text-gray-300 hover:text-white transition-colors"
-                          >
-                            SEO Analyzer
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href="/json-formatter"
-                            className="text-gray-300 hover:text-white transition-colors"
-                          >
-                            JSON Formatter
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">
-                        Resources
-                      </h4>
-                      <ul className="space-y-2">
-                        <li>
-                          <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                            Documentation
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                            API Reference
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                            Privacy Policy
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" className="text-gray-300 hover:text-white transition-colors">
-                            Terms of Service
-                          </a>
-                        </li>
-                      </ul>
+                    <div className="mt-8 pt-8 border-t">
+                      <p className="text-muted-foreground text-sm text-center">
+                        © 2024 Ultimate Tools Suite. All rights reserved. Built with Next.js and
+                        TypeScript.
+                      </p>
                     </div>
                   </div>
-                  <div className="mt-8 pt-8 border-t border-gray-800">
-                    <p className="text-gray-400 text-sm text-center">
-                      © 2024 Ultimate Tools Suite. All rights reserved. Built with Next.js and
-                      TypeScript.
-                    </p>
-                  </div>
-                </div>
-              </footer>
-            </div>
-          </ToastProvider>
+                </footer>
+              </div>
+            </ToastProvider>
+          </ThemeProvider>
         </ErrorBoundary>
       </body>
     </html>

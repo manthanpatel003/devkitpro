@@ -1,18 +1,14 @@
 import { FadeIn } from '@/components/animations/FadeIn'
-import { Footer } from '@/components/layout/Footer'
-import { ToolsGrid } from '@/components/tools/ToolsGrid'
-import { TOOLS, TOOL_CATEGORIES } from '@/lib/constants'
-import {
-  generateOrganizationStructuredData,
-  generatePageMetadata,
-  generateWebsiteStructuredData,
-} from '@/lib/seo-utils'
+import { SEO } from '@/components/layout/SEO'
+import { ToolList } from '@/components/tools/ToolList'
+import { ADVANCED_TOOLS, TOOL_CATEGORIES } from '@/lib/tools-config'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = generatePageMetadata(
-  'All Developer Tools - 35+ Free Online Tools',
-  'Browse our complete collection of 35+ free developer tools and utilities. JSON formatter, IP checker, SSL analyzer, QR generator, code formatter, and much more. No registration required.',
-  [
+export const metadata: Metadata = {
+  title: 'All Developer Tools - 35+ Free Online Tools',
+  description:
+    'Browse our complete collection of 35+ free developer tools and utilities. JSON formatter, IP checker, SSL analyzer, QR generator, code formatter, and much more. No registration required.',
+  keywords: [
     'developer tools',
     'free tools',
     'utilities',
@@ -55,21 +51,40 @@ export const metadata: Metadata = generatePageMetadata(
     'speed test',
     'html encoder',
   ],
-  '/tools',
-  '/og-tools.png'
-)
+  openGraph: {
+    title: 'All Developer Tools - 35+ Free Online Tools',
+    description:
+      'Browse our complete collection of 35+ free developer tools and utilities. JSON formatter, IP checker, SSL analyzer, QR generator, code formatter, and much more.',
+    url: 'https://ultimate-tools-suite.vercel.app/tools',
+    type: 'website',
+    images: [
+      {
+        url: 'https://ultimate-tools-suite.vercel.app/og-tools.png',
+        width: 1200,
+        height: 630,
+        alt: 'All Developer Tools - Ultimate Tools Suite',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'All Developer Tools - 35+ Free Online Tools',
+    description: 'Browse our complete collection of 35+ free developer tools and utilities.',
+    images: ['https://ultimate-tools-suite.vercel.app/og-tools.png'],
+  },
+}
 
 export default function ToolsPage() {
-  const featuredTools = TOOLS.filter(tool => tool.featured)
-  const popularTools = TOOLS.filter(tool => tool.popular)
+  const featuredTools = ADVANCED_TOOLS.filter(tool => tool.featured)
+  const popularTools = ADVANCED_TOOLS.filter(tool => tool.popular)
 
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Developer Tools Collection',
     description: 'Complete collection of 35+ free developer tools and utilities',
-    numberOfItems: TOOLS.length,
-    itemListElement: TOOLS.map((tool, index) => ({
+    numberOfItems: ADVANCED_TOOLS.length,
+    itemListElement: ADVANCED_TOOLS.map((tool, index) => ({
       '@type': 'ListItem',
       position: index + 1,
       item: {
@@ -90,18 +105,77 @@ export default function ToolsPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      <SEO
+        title="All Developer Tools - 35+ Free Online Tools"
+        description="Browse our complete collection of 35+ free developer tools and utilities. JSON formatter, IP checker, SSL analyzer, QR generator, code formatter, and much more. No registration required."
+        canonical="/tools"
+        keywords={[
+          'developer tools',
+          'free tools',
+          'utilities',
+          'online tools',
+          'web development',
+          'code formatter',
+          'json formatter',
+          'ip checker',
+          'ssl checker',
+          'qr generator',
+          'password generator',
+          'base64 converter',
+          'hash generator',
+          'url encoder',
+          'image optimizer',
+          'markdown editor',
+          'unit converter',
+          'timestamp converter',
+          'regex tester',
+          'api client',
+          'jwt analyzer',
+          'sql formatter',
+          'diff checker',
+          'keyword research',
+          'social preview',
+          'sitemap generator',
+          'csv processor',
+          'xml formatter',
+          'yaml converter',
+          'favicon generator',
+          'uuid generator',
+          'lorem ipsum',
+          'color palette',
+          'text analyzer',
+          'cron generator',
+          'port scanner',
+          'dns lookup',
+          'website monitor',
+          'security headers',
+          'speed test',
+          'html encoder',
+        ]}
+        openGraph={{
+          title: 'All Developer Tools - 35+ Free Online Tools',
+          description:
+            'Browse our complete collection of 35+ free developer tools and utilities. JSON formatter, IP checker, SSL analyzer, QR generator, code formatter, and much more.',
+          url: 'https://ultimate-tools-suite.vercel.app/tools',
+          type: 'website',
+          images: [
+            {
+              url: 'https://ultimate-tools-suite.vercel.app/og-tools.png',
+              width: 1200,
+              height: 630,
+              alt: 'All Developer Tools - Ultimate Tools Suite',
+            },
+          ],
+        }}
+        twitter={{
+          card: 'summary_large_image',
+          title: 'All Developer Tools - 35+ Free Online Tools',
+          description: 'Browse our complete collection of 35+ free developer tools and utilities.',
+          images: ['https://ultimate-tools-suite.vercel.app/og-tools.png'],
+        }}
+        jsonLd={structuredData}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateWebsiteStructuredData()) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationStructuredData()) }}
-      />
+
       <main className="flex-1">
         {/* Hero Section */}
         <div className="border-b bg-muted/30">
@@ -115,7 +189,8 @@ export default function ToolsPage() {
                 </p>
                 <div className="flex justify-center space-x-8 text-sm text-muted-foreground">
                   <div>
-                    <span className="font-semibold text-primary">{TOOLS.length}</span> Tools
+                    <span className="font-semibold text-primary">{ADVANCED_TOOLS.length}</span>{' '}
+                    Tools
                   </div>
                   <div>
                     <span className="font-semibold text-primary">{TOOL_CATEGORIES.length}</span>{' '}
@@ -136,7 +211,7 @@ export default function ToolsPage() {
             <FadeIn delay={200}>
               <div className="mb-12">
                 <h2 className="text-2xl font-bold mb-6">Featured Tools</h2>
-                <ToolsGrid tools={featuredTools} />
+                <ToolList featuredOnly={true} showSearch={false} showCategories={false} />
               </div>
             </FadeIn>
           )}
@@ -146,43 +221,22 @@ export default function ToolsPage() {
             <FadeIn delay={400}>
               <div className="mb-12">
                 <h2 className="text-2xl font-bold mb-6">Popular Tools</h2>
-                <ToolsGrid tools={popularTools} />
+                <ToolList popularOnly={true} showSearch={false} showCategories={false} />
               </div>
             </FadeIn>
           )}
 
-          {/* All Tools by Category */}
+          {/* All Tools with Search and Categories */}
           <FadeIn delay={600}>
-            <div className="space-y-12">
-              {TOOL_CATEGORIES.map(category => {
-                const categoryTools = TOOLS.filter(tool => tool.category?.id === category.id)
-
-                if (categoryTools.length === 0) return null
-
-                return (
-                  <div key={category.id}>
-                    <div className="flex items-center space-x-3 mb-6">
-                      <div
-                        className={`w-8 h-8 rounded-lg ${category.color} flex items-center justify-center`}
-                      >
-                        <span className="text-white font-semibold text-sm">
-                          {categoryTools.length}
-                        </span>
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold">{category.name}</h2>
-                        <p className="text-muted-foreground">{category.description}</p>
-                      </div>
-                    </div>
-                    <ToolsGrid tools={categoryTools} />
-                  </div>
-                )
-              })}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-2xl font-bold mb-6">All Tools</h2>
+                <ToolList showSearch={true} showCategories={true} />
+              </div>
             </div>
           </FadeIn>
         </div>
       </main>
-      <Footer />
     </>
   )
 }
