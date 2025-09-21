@@ -3,9 +3,9 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: seoConfig.siteName,
+    name: seoConfig.name,
     short_name: 'DevTools Hub',
-    description: seoConfig.defaultDescription,
+    description: seoConfig.description,
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
@@ -45,13 +45,13 @@ export default function manifest(): MetadataRoute.Manifest {
         src: '/screenshot-wide.png',
         sizes: '1280x720',
         type: 'image/png',
-        form_factor: 'wide',
+        // form_factor: 'wide',
       },
       {
         src: '/screenshot-narrow.png',
         sizes: '720x1280',
         type: 'image/png',
-        form_factor: 'narrow',
+        // form_factor: 'narrow',
       },
     ],
   }

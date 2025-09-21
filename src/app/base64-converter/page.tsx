@@ -53,7 +53,7 @@ const Base64ConverterPage = () => {
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { copy, isCopied } = useCopyToClipboard()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const processConversion = async (input: string, isFile = false, file?: File) => {
@@ -76,7 +76,7 @@ const Base64ConverterPage = () => {
           // File to Base64
           const arrayBuffer = await file.arrayBuffer()
           const bytes = new Uint8Array(arrayBuffer)
-          output = btoa(String.fromCharCode(...bytes))
+          output = btoa(String.fromCharCode(...Array.from(bytes)))
           inputSize = file.size
           fileInfo = {
             name: file.name,
@@ -419,13 +419,13 @@ const Base64ConverterPage = () => {
               </h3>
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => copyToClipboard(outputText)}
+                  onClick={() => copy(outputText)}
                   variant="outline"
                   size="sm"
                   disabled={!outputText}
                 >
                   <Copy className="w-4 h-4 mr-2" />
-                  {copied ? 'Copied!' : 'Copy'}
+                  {isCopied ? 'Copied!' : 'Copy'}
                 </Button>
                 <Button onClick={downloadResult} variant="outline" size="sm" disabled={!outputText}>
                   <Download className="w-4 h-4 mr-2" />
@@ -452,9 +452,9 @@ const Base64ConverterPage = () => {
                   onClick={() => {
                     try {
                       // Try to display as image if it's image data
-                      const img = new Image()
+                      const img = new window.Image(undefined)
                       img.onload = () => {
-                        const newWindow = window.open()
+                        const newWindow = window.open(undefined, '_blank')
                         newWindow?.document.write(
                           `<img src="data:image/png;base64,${result?.input}" />`
                         )

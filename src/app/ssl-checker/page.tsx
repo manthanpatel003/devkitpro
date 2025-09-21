@@ -64,7 +64,7 @@ const SSLCheckerPage = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
 
   const checkSSL = async () => {
     if (!domain.trim()) {
@@ -176,7 +176,7 @@ ${result.securityInfo.recommendations.map(rec => `- ${rec}`).join('\n')}`
 }
     `.trim()
 
-    copyToClipboard(report)
+    copy(report)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -245,7 +245,7 @@ ${result.securityInfo.recommendations.map(rec => `- ${rec}`).join('\n')}`
                 {result.certificate && (
                   <Button onClick={copyReport} variant="outline" size="sm">
                     <Copy className="w-4 h-4 mr-2" />
-                    {copied ? 'Copied!' : 'Copy Report'}
+                    {isCopied ? 'Copied!' : 'Copy Report'}
                   </Button>
                 )}
               </div>

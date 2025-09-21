@@ -101,7 +101,7 @@ const DNSLookupPage = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
 
   const lookupDNS = async () => {
     if (!domain.trim()) {
@@ -273,7 +273,7 @@ const DNSLookupPage = () => {
       })
     }
 
-    copyToClipboard(report)
+    copy(report)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -384,7 +384,7 @@ const DNSLookupPage = () => {
                 <h3 className="text-lg font-semibold">DNS Summary</h3>
                 <Button onClick={copyResults} variant="outline" size="sm">
                   <Copy className="w-4 h-4 mr-2" />
-                  {copied ? 'Copied!' : 'Copy Report'}
+                  {isCopied ? 'Copied!' : 'Copy Report'}
                 </Button>
               </div>
 

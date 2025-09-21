@@ -76,7 +76,7 @@ const WhatsMyIPPage = () => {
     'location'
   )
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { copy, isCopied } = useCopyToClipboard()
 
   useEffect(() => {
     fetchIPData()
@@ -285,7 +285,7 @@ Proxy: ${ipData.proxy ? 'Yes' : 'No'}
 Hosting: ${ipData.hosting ? 'Yes' : 'No'}
     `.trim()
 
-    copyToClipboard(data)
+    copy(data)
   }
 
   if (loading) {
@@ -348,9 +348,9 @@ Hosting: ${ipData.hosting ? 'Yes' : 'No'}
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </Button>
-          <Button onClick={() => copyToClipboard(ipData?.ip || '')} variant="outline">
+          <Button onClick={() => copy(ipData?.ip || '')} variant="outline">
             <Copy className="w-4 h-4 mr-2" />
-            {copied ? 'Copied!' : 'Copy IP'}
+            {isCopied ? 'Copied!' : 'Copy IP'}
           </Button>
           <Button onClick={copyAllData} variant="outline">
             <Copy className="w-4 h-4 mr-2" />

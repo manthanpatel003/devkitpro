@@ -8,6 +8,8 @@ import { Textarea } from '@/components/ui/Textarea'
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
 import { motion } from 'framer-motion'
 import {
+  AlertTriangle,
+  CheckCircle,
   Copy,
   Download,
   Eye,
@@ -26,7 +28,7 @@ import {
   Zap,
 } from 'lucide-react'
 import QRCode from 'qrcode'
-import { useEffect, useRef, useState } from 'react'
+import { createElement, useEffect, useRef, useState } from 'react'
 
 interface QROptions {
   errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H'
@@ -237,7 +239,7 @@ const QRGeneratorPage = () => {
   const [processing, setProcessing] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const logoInputRef = useRef<HTMLInputElement>(null)
 
@@ -287,7 +289,7 @@ const QRGeneratorPage = () => {
     if (!ctx) return
 
     // Load QR code image
-    const qrImg = new Image()
+    const qrImg = new window.Image()
     qrImg.onload = () => {
       canvas.width = qrImg.width
       canvas.height = qrImg.height
@@ -296,7 +298,7 @@ const QRGeneratorPage = () => {
       ctx.drawImage(qrImg, 0, 0)
 
       // Load and draw logo
-      const logoImg = new Image()
+      const logoImg = new window.Image()
       logoImg.onload = () => {
         const logoSize = Math.min(qrImg.width, qrImg.height) * 0.2
         const x = (qrImg.width - logoSize) / 2
@@ -312,7 +314,7 @@ const QRGeneratorPage = () => {
         // Update QR data URL
         setQrDataURL(canvas.toDataURL(options.type, options.quality))
       }
-      logoImg.src = options.logo
+      logoImg.src = options.logo || ''
     }
     qrImg.src = qrDataURL
   }
@@ -372,13 +374,13 @@ const QRGeneratorPage = () => {
       // Success handled by the copy hook
     } catch (error) {
       // Fallback to copying the data URL
-      copyToClipboard(qrDataURL)
+      copy(qrDataURL)
     }
   }
 
   const shareQR = async () => {
     if (!qrDataURL || !navigator.share) {
-      copyToClipboard(window.location.href)
+      copy(window.location.href)
       return
     }
 
@@ -393,7 +395,7 @@ const QRGeneratorPage = () => {
         files: [file],
       })
     } catch (error) {
-      copyToClipboard(window.location.href)
+      copy(window.location.href)
     }
   }
 
@@ -491,7 +493,7 @@ const QRGeneratorPage = () => {
           {/* Input Form */}
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              {React.createElement(selectedTemplate.icon, { className: 'w-5 h-5' })}
+              {createElement(selectedTemplate.icon, { className: 'w-5 h-5' })}
               {selectedTemplate.name} Details
             </h3>
 
@@ -545,7 +547,7 @@ const QRGeneratorPage = () => {
                 <div className="flex items-center gap-2">
                   <Button onClick={copyQRImage} variant="outline" size="sm">
                     <Copy className="w-4 h-4 mr-2" />
-                    {copied ? 'Copied!' : 'Copy Image'}
+                    {isCopied ? 'Copied!' : 'Copy Image'}
                   </Button>
                   <Button onClick={downloadQR} variant="outline" size="sm">
                     <Download className="w-4 h-4 mr-2" />
@@ -568,7 +570,7 @@ const QRGeneratorPage = () => {
                 >
                   <div className="inline-block p-4 bg-white rounded-lg shadow-lg">
                     <img
-                      src={qrDataURL}
+                      src={qrDataURL || ''}
                       alt="Generated QR Code"
                       className="max-w-full h-auto"
                       style={{ maxWidth: '300px' }}
@@ -731,7 +733,11 @@ const QRGeneratorPage = () => {
                       </Button>
                       {options.logo && (
                         <div className="flex items-center gap-2">
-                          <img src={options.logo} alt="Logo preview" className="w-8 h-8 rounded" />
+                          <img
+                            src={options.logo || ''}
+                            alt="Logo preview"
+                            className="w-8 h-8 rounded"
+                          />
                           <span className="text-sm text-gray-600">Logo uploaded</span>
                           <Button
                             onClick={() => updateOption('logo', undefined)}

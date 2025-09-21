@@ -118,7 +118,7 @@ export function ToolLayout({
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-muted/30">
-        <div className="container px-4 py-8">
+        <div className="container mx-auto px-4 py-8">
           <FadeIn>
             <div className="flex items-center space-x-4 mb-6">
               <Link href="/tools">
@@ -157,7 +157,9 @@ export function ToolLayout({
                 {tool && (
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2 text-sm">
-                      <div className={`w-2 h-2 rounded-full ${tool.category?.color || 'bg-blue-500'}`} />
+                      <div
+                        className={`w-2 h-2 rounded-full ${tool.category?.color || 'bg-blue-500'}`}
+                      />
                       <span className="text-muted-foreground">{tool.category?.name || 'Tool'}</span>
                     </div>
 
@@ -198,7 +200,7 @@ export function ToolLayout({
         </div>
       </div>
 
-      <div className="container px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Tool */}
           <div className="lg:col-span-2 space-y-6">

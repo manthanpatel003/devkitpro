@@ -21,7 +21,7 @@ export default function ToolsPage() {
       <main className="flex-1">
         {/* Hero Section */}
         <div className="border-b bg-muted/30">
-          <div className="container px-4 py-12">
+          <div className="container mx-auto px-4 py-12">
             <FadeIn>
               <div className="text-center space-y-4">
                 <h1 className="text-4xl font-bold tracking-tight">All Developer Tools</h1>
@@ -46,7 +46,7 @@ export default function ToolsPage() {
           </div>
         </div>
 
-        <div className="container px-4 py-12">
+        <div className="container mx-auto px-4 py-12">
           {/* Featured Tools */}
           {featuredTools.length > 0 && (
             <FadeIn delay={200}>
@@ -69,7 +69,7 @@ export default function ToolsPage() {
 
           {/* All Tools by Category */}
           <FadeIn delay={600}>
-            <div className="space-y-12">
+            <div className="space-y-12 mx-auto">
               {TOOL_CATEGORIES.map(category => {
                 const categoryTools = TOOLS.filter(tool => tool.category.id === category.id)
 

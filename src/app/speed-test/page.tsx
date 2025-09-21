@@ -57,7 +57,7 @@ const SpeedTestPage = () => {
   const [history, setHistory] = useState<SpeedTestResult[]>([])
   const [error, setError] = useState<string | null>(null)
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
   const abortControllerRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
@@ -338,7 +338,7 @@ Upload: ${result.upload} Mbps
 Ping: ${result.ping} ms
 Tested at DevTools Hub`
 
-    copyToClipboard(text)
+    copy(text)
   }
 
   const formatSpeed = (speed: number) => {
@@ -533,7 +533,7 @@ Tested at DevTools Hub`
                   </Button>
                   <Button onClick={shareResults} variant="outline">
                     <Share className="w-4 h-4 mr-2" />
-                    {copied ? 'Copied!' : 'Share Results'}
+                    {isCopied ? 'Copied!' : 'Share Results'}
                   </Button>
                 </div>
               </motion.div>

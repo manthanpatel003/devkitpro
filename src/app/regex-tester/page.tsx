@@ -122,7 +122,7 @@ Expiry: 12/25, 06/28
 Colors: #ff0000, #00FF00, #0000ff, #123abc
 Dates: 12/25/2023, 01/01/2024, 06/15/2023
 
-HTML: <div class="container"><p>Hello World</p></div>
+HTML: <div class="container mx-auto"><p>Hello World</p></div>
 Code: function test() { return true; }
 `
 
@@ -135,7 +135,7 @@ const RegexTesterPage = () => {
   const [replaceText, setReplaceText] = useState('')
   const [replacedText, setReplacedText] = useState('')
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
 
   useEffect(() => {
     if (pattern && testText) {
@@ -431,9 +431,9 @@ const RegexTesterPage = () => {
                     <Download className="w-4 h-4 mr-2" />
                     Export
                   </Button>
-                  <Button onClick={() => copyToClipboard(pattern)} variant="outline" size="sm">
+                  <Button onClick={() => copy(pattern)} variant="outline" size="sm">
                     <Copy className="w-4 h-4 mr-2" />
-                    {copied ? 'Copied!' : 'Copy Pattern'}
+                    {isCopied ? 'Copied!' : 'Copy Pattern'}
                   </Button>
                 </div>
               </div>
@@ -597,12 +597,12 @@ const RegexTesterPage = () => {
                             <div className="flex items-center justify-between mb-2">
                               <label className="text-sm font-medium">Result:</label>
                               <Button
-                                onClick={() => copyToClipboard(replacedText)}
+                                onClick={() => copy(replacedText)}
                                 variant="outline"
                                 size="sm"
                               >
                                 <Copy className="w-4 h-4 mr-2" />
-                                Copy Result
+                                {isCopied ? 'Copied!' : 'Copy Result'}
                               </Button>
                             </div>
                             <Textarea

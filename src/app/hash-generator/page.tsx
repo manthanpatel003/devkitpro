@@ -96,7 +96,7 @@ const HashGeneratorPage = () => {
   const [compareMode, setCompareMode] = useState(false)
   const [compareHash, setCompareHash] = useState('')
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const generateHashes = async (input: string, file?: File) => {
@@ -124,7 +124,7 @@ const HashGeneratorPage = () => {
         // Handle file input
         const arrayBuffer = await file.arrayBuffer()
         const bytes = new Uint8Array(arrayBuffer)
-        inputData = String.fromCharCode(...bytes)
+        inputData = String.fromCharCode(...Array.from(bytes))
         inputSize = file.size
         fileInfo = {
           name: file.name,
@@ -586,11 +586,7 @@ const HashGeneratorPage = () => {
                           <span className="text-xs text-gray-600">
                             {result.stats.processingTime}ms
                           </span>
-                          <Button
-                            onClick={() => copyToClipboard(result.hash)}
-                            variant="outline"
-                            size="sm"
-                          >
+                          <Button onClick={() => copy(result.hash)} variant="outline" size="sm">
                             <Copy className="w-4 h-4" />
                           </Button>
                         </div>

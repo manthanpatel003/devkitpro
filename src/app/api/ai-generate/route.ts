@@ -78,9 +78,9 @@ export async function POST(req: NextRequest): Promise<NextResponse<GenerateRespo
 
     // Fallback to demo response on error
     const demoResponse = generateDemoResponse(
-      req.body?.type || 'general',
-      req.body?.input || '',
-      req.body?.options || {}
+      (await req.json()).type || 'general',
+      (await req.json()).input || '',
+      (await req.json()).options || {}
     )
 
     return NextResponse.json({

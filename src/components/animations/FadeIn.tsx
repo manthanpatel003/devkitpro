@@ -38,7 +38,7 @@ export function FadeIn({
 
   return (
     <div
-      ref={elementRef}
+      ref={elementRef as React.RefObject<HTMLDivElement>}
       className={cn(
         'transition-all ease-out',
         !isVisible && 'opacity-0',

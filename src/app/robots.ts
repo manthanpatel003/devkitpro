@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/admin/', '/_next/', '/static/'],
     },
-    sitemap: `${seoConfig.siteUrl}/sitemap.xml`,
+    sitemap: `${seoConfig.url}/sitemap.xml`,
   }
 }

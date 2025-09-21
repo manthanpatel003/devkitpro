@@ -66,7 +66,7 @@ export function HeroSection() {
         <div className="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-primary/30 rotate-45 animate-pulse-soft" />
       </div>
 
-      <div className="container relative z-10 px-4 py-20">
+      <div className="container mx-auto relative z-10 px-4 py-20">
         <div className="mx-auto max-w-4xl text-center space-y-8">
           {/* Badge */}
           <FadeIn delay={200}>
@@ -174,7 +174,6 @@ export function HeroSection() {
                 size="lg"
                 variant="gradient"
                 className="text-lg px-8 py-6 h-auto font-semibold animate-pulse-soft"
-                asChild
               >
                 <Link href="/tools">
                   <Zap className="mr-2 h-5 w-5" />
@@ -187,7 +186,6 @@ export function HeroSection() {
                 size="lg"
                 variant="outline"
                 className="text-lg px-8 py-6 h-auto font-semibold"
-                asChild
               >
                 <Link href="https://github.com/devtools-hub" target="_blank">
                   <Github className="mr-2 h-5 w-5" />

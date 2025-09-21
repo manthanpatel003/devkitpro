@@ -1,32 +1,24 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { ToolLayout } from '@/components/tools/ToolLayout'
-import { 
-  Image,
-  Upload,
-  Download,
-  Copy,
-  RotateCcw,
-  Zap,
-  Settings,
-  Eye,
-  Maximize,
-  Minimize,
-  Palette,
-  FileImage,
-  BarChart3,
-  CheckCircle,
-  AlertTriangle,
-  Crop,
-  RotateCw,
-  FlipHorizontal,
-  FlipVertical
-} from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
 import { motion } from 'framer-motion'
+import {
+  AlertTriangle,
+  BarChart3,
+  CheckCircle,
+  Copy,
+  Download,
+  Eye,
+  FileImage,
+  RotateCcw,
+  Settings,
+  Upload,
+  Zap,
+} from 'lucide-react'
+import { useRef, useState } from 'react'
 
 interface ImageInfo {
   name: string
@@ -66,13 +58,15 @@ const ImageOptimizerPage = () => {
     quality: 80,
     maintainAspectRatio: true,
     progressive: true,
-    removeMetadata: true
+    removeMetadata: true,
   })
   const [processing, setProcessing] = useState(false)
   const [dragActive, setDragActive] = useState(false)
-  const [viewMode, setViewMode] = useState<'side-by-side' | 'overlay' | 'original' | 'optimized'>('side-by-side')
-  
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const [viewMode, setViewMode] = useState<'side-by-side' | 'overlay' | 'original' | 'optimized'>(
+    'side-by-side'
+  )
+
+  const { isCopied, copy } = useCopyToClipboard()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -82,18 +76,19 @@ const ImageOptimizerPage = () => {
       return
     }
 
-    if (file.size > 50 * 1024 * 1024) { // 50MB limit
+    if (file.size > 50 * 1024 * 1024) {
+      // 50MB limit
       alert('Image file must be under 50MB')
       return
     }
 
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = e => {
       const dataURL = e.target?.result as string
       setOriginalImage(dataURL)
-      
+
       // Analyze original image
-      const img = new Image()
+      const img = new window.Image()
       img.onload = () => {
         const info: ImageInfo = {
           name: file.name,
@@ -101,10 +96,10 @@ const ImageOptimizerPage = () => {
           type: file.type,
           width: img.width,
           height: img.height,
-          aspectRatio: img.width / img.height
+          aspectRatio: img.width / img.height,
         }
         setOriginalInfo(info)
-        
+
         // Auto-optimize with current settings
         optimizeImage(dataURL, info)
       }
@@ -124,7 +119,7 @@ const ImageOptimizerPage = () => {
       const ctx = canvas.getContext('2d')
       if (!ctx) throw new Error('Canvas context not available')
 
-      const img = new Image()
+      const img = new window.Image(undefined)
       await new Promise((resolve, reject) => {
         img.onload = resolve
         img.onerror = reject
@@ -174,15 +169,18 @@ const ImageOptimizerPage = () => {
       const optimizedDataURL = canvas.toDataURL(mimeType, quality)
 
       // Calculate optimized size (approximate)
-      const optimizedSize = Math.round((optimizedDataURL.length - 'data:image/'.length - mimeType.length - ';base64,'.length) * 0.75)
-      
+      const optimizedSize = Math.round(
+        (optimizedDataURL.length - 'data:image/'.length - mimeType.length - ';base64,'.length) *
+          0.75
+      )
+
       const optimizedInfo: ImageInfo = {
         name: originalInfo.name.replace(/\.[^/.]+$/, `.${options.format}`),
         size: optimizedSize,
         type: mimeType,
         width: Math.round(width),
         height: Math.round(height),
-        aspectRatio: width / height
+        aspectRatio: width / height,
       }
 
       const endTime = performance.now()
@@ -195,7 +193,7 @@ const ImageOptimizerPage = () => {
         dataURL: optimizedDataURL,
         compressionRatio,
         sizeSaved,
-        processingTime: Math.round(endTime - startTime)
+        processingTime: Math.round(endTime - startTime),
       }
 
       setOptimizedImage(optimizedDataURL)
@@ -211,7 +209,7 @@ const ImageOptimizerPage = () => {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setDragActive(false)
-    
+
     const files = Array.from(e.dataTransfer.files)
     if (files.length > 0 && files[0].type.startsWith('image/')) {
       handleImageUpload(files[0])
@@ -245,11 +243,9 @@ const ImageOptimizerPage = () => {
     try {
       const response = await fetch(optimizedImage)
       const blob = await response.blob()
-      await navigator.clipboard.write([
-        new ClipboardItem({ [blob.type]: blob })
-      ])
+      await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
     } catch (error) {
-      copyToClipboard(optimizedImage)
+      copy(optimizedImage)
     }
   }
 
@@ -266,7 +262,10 @@ const ImageOptimizerPage = () => {
     setResult(null)
   }
 
-  const updateOption = <K extends keyof OptimizationOptions>(key: K, value: OptimizationOptions[K]) => {
+  const updateOption = <K extends keyof OptimizationOptions>(
+    key: K,
+    value: OptimizationOptions[K]
+  ) => {
     setOptions(prev => ({ ...prev, [key]: value }))
   }
 
@@ -322,17 +321,14 @@ const ImageOptimizerPage = () => {
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
+            onChange={e => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
             className="hidden"
           />
         </Card>
 
         {/* Optimization Options */}
         {originalImage && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Settings className="w-5 h-5" />
@@ -345,7 +341,7 @@ const ImageOptimizerPage = () => {
                     <label className="block text-sm font-medium mb-2">Output Format</label>
                     <select
                       value={options.format}
-                      onChange={(e) => updateOption('format', e.target.value as any)}
+                      onChange={e => updateOption('format', e.target.value as any)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     >
                       <option value="webp">WebP (Best compression)</option>
@@ -363,7 +359,7 @@ const ImageOptimizerPage = () => {
                       min="10"
                       max="100"
                       value={options.quality}
-                      onChange={(e) => updateOption('quality', parseInt(e.target.value))}
+                      onChange={e => updateOption('quality', parseInt(e.target.value))}
                       className="w-full"
                     />
                     <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -378,7 +374,12 @@ const ImageOptimizerPage = () => {
                       <input
                         type="number"
                         value={options.width || ''}
-                        onChange={(e) => updateOption('width', e.target.value ? parseInt(e.target.value) : undefined)}
+                        onChange={e =>
+                          updateOption(
+                            'width',
+                            e.target.value ? parseInt(e.target.value) : undefined
+                          )
+                        }
                         placeholder="Auto"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         min="1"
@@ -390,7 +391,12 @@ const ImageOptimizerPage = () => {
                       <input
                         type="number"
                         value={options.height || ''}
-                        onChange={(e) => updateOption('height', e.target.value ? parseInt(e.target.value) : undefined)}
+                        onChange={e =>
+                          updateOption(
+                            'height',
+                            e.target.value ? parseInt(e.target.value) : undefined
+                          )
+                        }
                         placeholder="Auto"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         min="1"
@@ -406,7 +412,7 @@ const ImageOptimizerPage = () => {
                       <input
                         type="checkbox"
                         checked={options.maintainAspectRatio}
-                        onChange={(e) => updateOption('maintainAspectRatio', e.target.checked)}
+                        onChange={e => updateOption('maintainAspectRatio', e.target.checked)}
                         className="rounded"
                       />
                       <span className="text-sm font-medium">Maintain aspect ratio</span>
@@ -416,7 +422,7 @@ const ImageOptimizerPage = () => {
                       <input
                         type="checkbox"
                         checked={options.progressive}
-                        onChange={(e) => updateOption('progressive', e.target.checked)}
+                        onChange={e => updateOption('progressive', e.target.checked)}
                         className="rounded"
                       />
                       <div>
@@ -429,7 +435,7 @@ const ImageOptimizerPage = () => {
                       <input
                         type="checkbox"
                         checked={options.removeMetadata}
-                        onChange={(e) => updateOption('removeMetadata', e.target.checked)}
+                        onChange={e => updateOption('removeMetadata', e.target.checked)}
                         className="rounded"
                       />
                       <div>
@@ -475,11 +481,15 @@ const ImageOptimizerPage = () => {
 
               <div className="grid md:grid-cols-4 gap-4 mb-6">
                 <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <div className="text-xl font-bold text-blue-600">{formatFileSize(result.originalImage.size)}</div>
+                  <div className="text-xl font-bold text-blue-600">
+                    {formatFileSize(result.originalImage.size)}
+                  </div>
                   <div className="text-sm text-gray-600">Original Size</div>
                 </div>
                 <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <div className="text-xl font-bold text-green-600">{formatFileSize(result.optimizedImage.size)}</div>
+                  <div className="text-xl font-bold text-green-600">
+                    {formatFileSize(result.optimizedImage.size)}
+                  </div>
                   <div className="text-sm text-gray-600">Optimized Size</div>
                 </div>
                 <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
@@ -500,7 +510,9 @@ const ImageOptimizerPage = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>Dimensions:</span>
-                      <span>{result.originalImage.width} × {result.originalImage.height}</span>
+                      <span>
+                        {result.originalImage.width} × {result.originalImage.height}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Format:</span>
@@ -518,7 +530,9 @@ const ImageOptimizerPage = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>Dimensions:</span>
-                      <span>{result.optimizedImage.width} × {result.optimizedImage.height}</span>
+                      <span>
+                        {result.optimizedImage.width} × {result.optimizedImage.height}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Format:</span>
@@ -537,7 +551,7 @@ const ImageOptimizerPage = () => {
               <div className="mt-4 flex justify-center gap-3">
                 <Button onClick={copyOptimizedImage} variant="outline">
                   <Copy className="w-4 h-4 mr-2" />
-                  {copied ? 'Copied!' : 'Copy Image'}
+                  {isCopied ? 'Copied!' : 'Copy Image'}
                 </Button>
                 <Button onClick={downloadOptimized}>
                   <Download className="w-4 h-4 mr-2" />
@@ -556,7 +570,7 @@ const ImageOptimizerPage = () => {
                 <div className="flex items-center gap-2">
                   <select
                     value={viewMode}
-                    onChange={(e) => setViewMode(e.target.value as any)}
+                    onChange={e => setViewMode(e.target.value as any)}
                     className="px-3 py-1 border border-gray-300 rounded-md text-sm"
                   >
                     <option value="side-by-side">Side by Side</option>
@@ -573,9 +587,9 @@ const ImageOptimizerPage = () => {
                     <div className="text-center">
                       <div className="mb-2 text-sm font-medium">Original</div>
                       <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-                        <img 
-                          src={originalImage} 
-                          alt="Original" 
+                        <img
+                          src={originalImage || ''}
+                          alt="Original"
                           className="max-w-full h-auto mx-auto"
                           style={{ maxHeight: '300px' }}
                         />
@@ -587,16 +601,16 @@ const ImageOptimizerPage = () => {
                     <div className="text-center">
                       <div className="mb-2 text-sm font-medium">Optimized</div>
                       <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-                        <img 
-                          src={optimizedImage} 
-                          alt="Optimized" 
+                        <img
+                          src={optimizedImage || ''}
+                          alt="Optimized"
                           className="max-w-full h-auto mx-auto"
                           style={{ maxHeight: '300px' }}
                         />
                       </div>
                       <div className="mt-2 text-xs text-green-600">
-                        {formatFileSize(result.optimizedImage.size)} 
-                        ({((1 - result.compressionRatio) * 100).toFixed(1)}% smaller)
+                        {formatFileSize(result.optimizedImage.size)}(
+                        {((1 - result.compressionRatio) * 100).toFixed(1)}% smaller)
                       </div>
                     </div>
                   </div>
@@ -606,9 +620,9 @@ const ImageOptimizerPage = () => {
                   <div className="text-center">
                     <div className="mb-2 text-sm font-medium">Original Image</div>
                     <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-                      <img 
-                        src={originalImage} 
-                        alt="Original" 
+                      <img
+                        src={originalImage || ''}
+                        alt="Original"
                         className="max-w-full h-auto mx-auto"
                         style={{ maxHeight: '400px' }}
                       />
@@ -620,9 +634,9 @@ const ImageOptimizerPage = () => {
                   <div className="text-center">
                     <div className="mb-2 text-sm font-medium">Optimized Image</div>
                     <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-                      <img 
-                        src={optimizedImage} 
-                        alt="Optimized" 
+                      <img
+                        src={optimizedImage || ''}
+                        alt="Optimized"
                         className="max-w-full h-auto mx-auto"
                         style={{ maxHeight: '400px' }}
                       />
@@ -643,7 +657,9 @@ const ImageOptimizerPage = () => {
               <div className="space-y-3">
                 <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                   <div className="font-medium text-green-700">WebP</div>
-                  <div className="text-sm text-gray-600">Best overall compression, modern browsers</div>
+                  <div className="text-sm text-gray-600">
+                    Best overall compression, modern browsers
+                  </div>
                   <div className="text-xs text-gray-500">25-35% smaller than JPEG</div>
                 </div>
                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -653,12 +669,14 @@ const ImageOptimizerPage = () => {
                 </div>
                 <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                   <div className="font-medium text-purple-700">PNG</div>
-                  <div className="text-sm text-gray-600">Lossless, good for graphics with transparency</div>
+                  <div className="text-sm text-gray-600">
+                    Lossless, good for graphics with transparency
+                  </div>
                   <div className="text-xs text-gray-500">Larger file sizes</div>
                 </div>
               </div>
             </div>
-            
+
             <div>
               <h4 className="font-medium mb-3">Optimization Tips</h4>
               <ul className="space-y-2 text-sm">

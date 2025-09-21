@@ -23,7 +23,7 @@ export function CTASection() {
       <div className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg rotate-45 animate-float" />
       <div className="absolute top-1/2 left-1/4 w-12 h-12 border-2 border-primary/30 rotate-45 animate-pulse-soft" />
 
-      <div className="container relative z-10 px-4">
+      <div className="container mx-auto relative z-10 px-4">
         <FadeIn>
           <div className="text-center space-y-8">
             {/* Badge */}
@@ -55,7 +55,6 @@ export function CTASection() {
                 size="xl"
                 variant="gradient"
                 className="text-lg px-10 py-6 h-auto font-semibold animate-glow"
-                asChild
               >
                 <Link href="/tools">
                   <Rocket className="mr-2 h-5 w-5" />
@@ -68,7 +67,6 @@ export function CTASection() {
                 size="xl"
                 variant="outline"
                 className="text-lg px-10 py-6 h-auto font-semibold hover:bg-background"
-                asChild
               >
                 <Link href="https://github.com/devtools-hub" target="_blank">
                   <Github className="mr-2 h-5 w-5" />

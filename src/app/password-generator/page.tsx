@@ -69,7 +69,7 @@ const PasswordGeneratorPage = () => {
   const [batchPasswords, setBatchPasswords] = useState<string[]>([])
   const [strength, setStrength] = useState<PasswordStrength | null>(null)
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
 
   useEffect(() => {
     if (currentPassword) {
@@ -290,13 +290,9 @@ const PasswordGeneratorPage = () => {
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </Button>
-                  <Button
-                    onClick={() => copyToClipboard(currentPassword)}
-                    variant="outline"
-                    size="sm"
-                  >
+                  <Button onClick={() => copy(currentPassword)} variant="outline" size="sm">
                     <Copy className="w-4 h-4 mr-2" />
-                    {copied ? 'Copied!' : 'Copy'}
+                    {isCopied ? 'Copied!' : 'Copy'}
                   </Button>
                 </div>
               </div>
@@ -569,7 +565,7 @@ const PasswordGeneratorPage = () => {
                 </h3>
                 <div className="flex items-center gap-2">
                   <Button
-                    onClick={() => copyToClipboard(batchPasswords.join('\n'))}
+                    onClick={() => copy(batchPasswords.join('\n'))}
                     variant="outline"
                     size="sm"
                   >
@@ -593,7 +589,7 @@ const PasswordGeneratorPage = () => {
                     <div className="flex-1 font-mono text-sm break-all">
                       {showPassword ? password : '•'.repeat(password.length)}
                     </div>
-                    <Button onClick={() => copyToClipboard(password)} variant="outline" size="sm">
+                    <Button onClick={() => copy(password)} variant="outline" size="sm">
                       <Copy className="w-4 h-4" />
                     </Button>
                   </div>
@@ -639,11 +635,7 @@ const PasswordGeneratorPage = () => {
                       </span>
                     </div>
                   </div>
-                  <Button
-                    onClick={() => copyToClipboard(entry.password)}
-                    variant="outline"
-                    size="sm"
-                  >
+                  <Button onClick={() => copy(entry.password)} variant="outline" size="sm">
                     <Copy className="w-4 h-4" />
                   </Button>
                 </div>

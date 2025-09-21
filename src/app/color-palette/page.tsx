@@ -1,26 +1,13 @@
 'use client'
 
-import { useState } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { ToolLayout } from '@/components/tools/ToolLayout'
-import { 
-  Palette,
-  Copy,
-  Download,
-  RefreshCw,
-  Zap,
-  Eye,
-  Shuffle,
-  Heart,
-  Share2,
-  CheckCircle,
-  AlertTriangle,
-  Lightbulb
-} from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { Input } from '@/components/ui/Input'
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
 import { motion } from 'framer-motion'
+import { AlertTriangle, CheckCircle, Copy, Download, Lightbulb, Palette } from 'lucide-react'
+import { useState } from 'react'
 
 interface Color {
   hex: string
@@ -46,31 +33,46 @@ const ColorPaletteGeneratorPage = () => {
   const [palettes, setPalettes] = useState<ColorPalette[]>([])
   const [selectedPalette, setSelectedPalette] = useState<ColorPalette | null>(null)
   const [generating, setGenerating] = useState(false)
-  const [paletteType, setPaletteType] = useState<'monochromatic' | 'analogous' | 'complementary' | 'triadic' | 'tetradic'>('complementary')
-  
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const [paletteType, setPaletteType] = useState<
+    'monochromatic' | 'analogous' | 'complementary' | 'triadic' | 'tetradic'
+  >('complementary')
+
+  const { copy, isCopied } = useCopyToClipboard()
 
   const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : { r: 0, g: 0, b: 0 }
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : { r: 0, g: 0, b: 0 }
   }
 
   const rgbToHsl = (r: number, g: number, b: number): { h: number; s: number; l: number } => {
-    r /= 255; g /= 255; b /= 255
-    const max = Math.max(r, g, b), min = Math.min(r, g, b)
-    let h = 0, s = 0, l = (max + min) / 2
+    r /= 255
+    g /= 255
+    b /= 255
+    const max = Math.max(r, g, b),
+      min = Math.min(r, g, b)
+    let h = 0,
+      s = 0,
+      l = (max + min) / 2
 
     if (max !== min) {
       const d = max - min
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
       switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break
-        case g: h = (b - r) / d + 2; break
-        case b: h = (r - g) / d + 4; break
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0)
+          break
+        case g:
+          h = (b - r) / d + 2
+          break
+        case b:
+          h = (r - g) / d + 4
+          break
       }
       h /= 6
     }
@@ -79,12 +81,16 @@ const ColorPaletteGeneratorPage = () => {
   }
 
   const hslToHex = (h: number, s: number, l: number): string => {
-    h /= 360; s /= 100; l /= 100
+    h /= 360
+    s /= 100
+    l /= 100
     const a = s * Math.min(l, 1 - l)
     const f = (n: number) => {
       const k = (n + h * 12) % 12
       const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
-      return Math.round(255 * color).toString(16).padStart(2, '0')
+      return Math.round(255 * color)
+        .toString(16)
+        .padStart(2, '0')
     }
     return `#${f(0)}${f(8)}${f(4)}`
   }
@@ -97,26 +103,26 @@ const ColorPaletteGeneratorPage = () => {
     switch (type) {
       case 'monochromatic':
         for (let i = 0; i < 5; i++) {
-          const lightness = 20 + (i * 20)
+          const lightness = 20 + i * 20
           const hex = hslToHex(hsl.h, hsl.s, lightness)
           colors.push({
             hex,
             rgb: hexToRgb(hex),
             hsl: { ...hsl, l: lightness },
-            name: `Mono ${i + 1}`
+            name: `Mono ${i + 1}`,
           })
         }
         break
 
       case 'analogous':
         for (let i = -2; i <= 2; i++) {
-          const hue = (hsl.h + (i * 30)) % 360
+          const hue = (hsl.h + i * 30) % 360
           const hex = hslToHex(hue, hsl.s, hsl.l)
           colors.push({
             hex,
             rgb: hexToRgb(hex),
             hsl: { h: hue, s: hsl.s, l: hsl.l },
-            name: `Analog ${i + 3}`
+            name: `Analog ${i + 3}`,
           })
         }
         break
@@ -125,35 +131,55 @@ const ColorPaletteGeneratorPage = () => {
         const complementHue = (hsl.h + 180) % 360
         colors.push(
           { hex: baseHex, rgb, hsl, name: 'Base' },
-          { hex: hslToHex(complementHue, hsl.s, hsl.l), rgb: hexToRgb(hslToHex(complementHue, hsl.s, hsl.l)), hsl: { h: complementHue, s: hsl.s, l: hsl.l }, name: 'Complement' },
-          { hex: hslToHex(hsl.h, hsl.s, Math.max(10, hsl.l - 30)), rgb: hexToRgb(hslToHex(hsl.h, hsl.s, Math.max(10, hsl.l - 30))), hsl: { h: hsl.h, s: hsl.s, l: Math.max(10, hsl.l - 30) }, name: 'Dark' },
-          { hex: hslToHex(hsl.h, hsl.s, Math.min(90, hsl.l + 30)), rgb: hexToRgb(hslToHex(hsl.h, hsl.s, Math.min(90, hsl.l + 30))), hsl: { h: hsl.h, s: hsl.s, l: Math.min(90, hsl.l + 30) }, name: 'Light' },
-          { hex: hslToHex(complementHue, Math.max(10, hsl.s - 20), hsl.l), rgb: hexToRgb(hslToHex(complementHue, Math.max(10, hsl.s - 20), hsl.l)), hsl: { h: complementHue, s: Math.max(10, hsl.s - 20), l: hsl.l }, name: 'Muted' }
+          {
+            hex: hslToHex(complementHue, hsl.s, hsl.l),
+            rgb: hexToRgb(hslToHex(complementHue, hsl.s, hsl.l)),
+            hsl: { h: complementHue, s: hsl.s, l: hsl.l },
+            name: 'Complement',
+          },
+          {
+            hex: hslToHex(hsl.h, hsl.s, Math.max(10, hsl.l - 30)),
+            rgb: hexToRgb(hslToHex(hsl.h, hsl.s, Math.max(10, hsl.l - 30))),
+            hsl: { h: hsl.h, s: hsl.s, l: Math.max(10, hsl.l - 30) },
+            name: 'Dark',
+          },
+          {
+            hex: hslToHex(hsl.h, hsl.s, Math.min(90, hsl.l + 30)),
+            rgb: hexToRgb(hslToHex(hsl.h, hsl.s, Math.min(90, hsl.l + 30))),
+            hsl: { h: hsl.h, s: hsl.s, l: Math.min(90, hsl.l + 30) },
+            name: 'Light',
+          },
+          {
+            hex: hslToHex(complementHue, Math.max(10, hsl.s - 20), hsl.l),
+            rgb: hexToRgb(hslToHex(complementHue, Math.max(10, hsl.s - 20), hsl.l)),
+            hsl: { h: complementHue, s: Math.max(10, hsl.s - 20), l: hsl.l },
+            name: 'Muted',
+          }
         )
         break
 
       case 'triadic':
         for (let i = 0; i < 3; i++) {
-          const hue = (hsl.h + (i * 120)) % 360
+          const hue = (hsl.h + i * 120) % 360
           const hex = hslToHex(hue, hsl.s, hsl.l)
           colors.push({
             hex,
             rgb: hexToRgb(hex),
             hsl: { h: hue, s: hsl.s, l: hsl.l },
-            name: `Triadic ${i + 1}`
+            name: `Triadic ${i + 1}`,
           })
         }
         break
 
       case 'tetradic':
         for (let i = 0; i < 4; i++) {
-          const hue = (hsl.h + (i * 90)) % 360
+          const hue = (hsl.h + i * 90) % 360
           const hex = hslToHex(hue, hsl.s, hsl.l)
           colors.push({
             hex,
             rgb: hexToRgb(hex),
             hsl: { h: hue, s: hsl.s, l: hsl.l },
-            name: `Tetradic ${i + 1}`
+            name: `Tetradic ${i + 1}`,
           })
         }
         break
@@ -164,24 +190,24 @@ const ColorPaletteGeneratorPage = () => {
 
   const generatePalettes = async () => {
     setGenerating(true)
-    
+
     try {
       const newPalettes: ColorPalette[] = []
-      
+
       // Generate different palette types
-      const types: Array<'monochromatic' | 'analogous' | 'complementary' | 'triadic' | 'tetradic'> = 
+      const types: Array<'monochromatic' | 'analogous' | 'complementary' | 'triadic' | 'tetradic'> =
         ['monochromatic', 'analogous', 'complementary', 'triadic', 'tetradic']
-      
+
       types.forEach(type => {
         const colors = generatePalette(type, baseColor)
         const accessibility = analyzeAccessibility(colors)
-        
+
         newPalettes.push({
           id: `${type}-${Date.now()}`,
           name: `${type.charAt(0).toUpperCase() + type.slice(1)} Palette`,
           colors,
           type,
-          accessibility
+          accessibility,
         })
       })
 
@@ -196,21 +222,24 @@ const ColorPaletteGeneratorPage = () => {
 
   const analyzeAccessibility = (colors: Color[]) => {
     // Check contrast against white background
-    const lightestColor = colors.reduce((lightest, color) => 
+    const lightestColor = colors.reduce((lightest, color) =>
       color.hsl.l > lightest.hsl.l ? color : lightest
     )
-    
+
     // Simplified contrast calculation
     const contrastRatio = calculateContrastRatio(lightestColor.rgb, { r: 255, g: 255, b: 255 })
-    
+
     return {
       wcagAA: contrastRatio >= 4.5,
       wcagAAA: contrastRatio >= 7,
-      contrastRatio: Math.round(contrastRatio * 100) / 100
+      contrastRatio: Math.round(contrastRatio * 100) / 100,
     }
   }
 
-  const calculateContrastRatio = (color1: { r: number; g: number; b: number }, color2: { r: number; g: number; b: number }) => {
+  const calculateContrastRatio = (
+    color1: { r: number; g: number; b: number },
+    color2: { r: number; g: number; b: number }
+  ) => {
     const luminance1 = getRelativeLuminance(color1)
     const luminance2 = getRelativeLuminance(color2)
     const lighter = Math.max(luminance1, luminance2)
@@ -236,16 +265,20 @@ const ColorPaletteGeneratorPage = () => {
         output = selectedPalette.colors.map(c => c.hex).join('\n')
         break
       case 'rgb':
-        output = selectedPalette.colors.map(c => `rgb(${c.rgb.r}, ${c.rgb.g}, ${c.rgb.b})`).join('\n')
+        output = selectedPalette.colors
+          .map(c => `rgb(${c.rgb.r}, ${c.rgb.g}, ${c.rgb.b})`)
+          .join('\n')
         break
       case 'hsl':
-        output = selectedPalette.colors.map(c => `hsl(${Math.round(c.hsl.h)}, ${Math.round(c.hsl.s)}%, ${Math.round(c.hsl.l)}%)`).join('\n')
+        output = selectedPalette.colors
+          .map(c => `hsl(${Math.round(c.hsl.h)}, ${Math.round(c.hsl.s)}%, ${Math.round(c.hsl.l)}%)`)
+          .join('\n')
         break
       case 'css':
         output = selectedPalette.colors.map((c, i) => `--color-${i + 1}: ${c.hex};`).join('\n')
         break
     }
-    copyToClipboard(output)
+    copy(output)
   }
 
   const downloadPalette = () => {
@@ -256,7 +289,7 @@ const ColorPaletteGeneratorPage = () => {
       type: selectedPalette.type,
       colors: selectedPalette.colors,
       accessibility: selectedPalette.accessibility,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
 
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -292,19 +325,19 @@ const ColorPaletteGeneratorPage = () => {
                   <input
                     type="color"
                     value={baseColor}
-                    onChange={(e) => setBaseColor(e.target.value)}
+                    onChange={e => setBaseColor(e.target.value)}
                     className="w-12 h-10 rounded border"
                   />
                   <Input
                     type="text"
                     value={baseColor}
-                    onChange={(e) => setBaseColor(e.target.value)}
+                    onChange={e => setBaseColor(e.target.value)}
                     className="flex-1 font-mono"
                     placeholder="#3B82F6"
                   />
                 </div>
               </div>
-              
+
               <Button onClick={generatePalettes} disabled={generating}>
                 {generating ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -318,33 +351,45 @@ const ColorPaletteGeneratorPage = () => {
         </Card>
 
         {palettes.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
             <div className="grid gap-4">
-              {palettes.map((palette) => (
-                <Card key={palette.id} className={`p-6 cursor-pointer transition-all ${
-                  selectedPalette?.id === palette.id ? 'ring-2 ring-blue-500' : ''
-                }`} onClick={() => setSelectedPalette(palette)}>
+              {palettes.map(palette => (
+                <Card
+                  key={palette.id}
+                  className={`p-6 cursor-pointer transition-all ${
+                    selectedPalette?.id === palette.id ? 'ring-2 ring-blue-500' : ''
+                  }`}
+                  onClick={() => setSelectedPalette(palette)}
+                >
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-semibold">{palette.name}</h4>
                     <div className="flex items-center gap-2">
                       {palette.accessibility.wcagAA && (
-                        <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded">WCAG AA</span>
+                        <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded">
+                          WCAG AA
+                        </span>
                       )}
                       {palette.accessibility.wcagAAA && (
-                        <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded">WCAG AAA</span>
+                        <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded">
+                          WCAG AAA
+                        </span>
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex gap-2 mb-4">
                     {palette.colors.map((color, index) => (
                       <div key={index} className="flex-1 group">
-                        <div 
+                        <div
                           className="h-16 rounded-lg shadow-sm border cursor-pointer transition-transform hover:scale-105"
                           style={{ backgroundColor: color.hex }}
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation()
-                            copyToClipboard(color.hex)
+                            copy(color.hex)
                           }}
                         />
                         <div className="text-center mt-2">
@@ -365,7 +410,7 @@ const ColorPaletteGeneratorPage = () => {
                   <div className="flex gap-2">
                     <Button onClick={() => copyPalette('hex')} variant="outline" size="sm">
                       <Copy className="w-4 h-4 mr-2" />
-                      {copied ? 'Copied!' : 'Copy HEX'}
+                      {isCopied ? 'Copied!' : 'Copy HEX'}
                     </Button>
                     <Button onClick={() => copyPalette('css')} variant="outline" size="sm">
                       <Copy className="w-4 h-4 mr-2" />
@@ -383,23 +428,23 @@ const ColorPaletteGeneratorPage = () => {
                     <h4 className="font-medium mb-3">Color Details</h4>
                     <div className="space-y-3">
                       {selectedPalette.colors.map((color, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                          <div 
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                        >
+                          <div
                             className="w-8 h-8 rounded border shadow-sm"
                             style={{ backgroundColor: color.hex }}
                           />
                           <div className="flex-1">
                             <div className="font-mono text-sm">{color.hex}</div>
                             <div className="text-xs text-gray-600">
-                              RGB({color.rgb.r}, {color.rgb.g}, {color.rgb.b}) • 
-                              HSL({Math.round(color.hsl.h)}, {Math.round(color.hsl.s)}%, {Math.round(color.hsl.l)}%)
+                              RGB({color.rgb.r}, {color.rgb.g}, {color.rgb.b}) • HSL(
+                              {Math.round(color.hsl.h)}, {Math.round(color.hsl.s)}%,{' '}
+                              {Math.round(color.hsl.l)}%)
                             </div>
                           </div>
-                          <Button
-                            onClick={() => copyToClipboard(color.hex)}
-                            variant="outline"
-                            size="sm"
-                          >
+                          <Button onClick={() => copy(color.hex)} variant="outline" size="sm">
                             <Copy className="w-4 h-4" />
                           </Button>
                         </div>
@@ -418,7 +463,7 @@ const ColorPaletteGeneratorPage = () => {
                         )}
                         <span>WCAG AA Compliance</span>
                       </div>
-                      
+
                       <div className="flex items-center gap-3">
                         {selectedPalette.accessibility.wcagAAA ? (
                           <CheckCircle className="w-5 h-5 text-green-500" />

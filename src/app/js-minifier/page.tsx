@@ -76,17 +76,15 @@ export default function JSMinifierPage() {
       preserve_newlines: true,
       keep_array_indentation: false,
       break_chained_methods: false,
-      indent_scripts: 'normal',
+      // indent_scripts is not a valid JSBeautifyOptions property, so it is removed
       brace_style: 'collapse',
       space_before_conditional: true,
       unescape_strings: false,
       jslint_happy: false,
       end_with_newline: true,
       wrap_line_length: options.maxLineLength,
-      indent_inner_html: false,
-      comma_first: false,
-      e4x: false,
-      indent_empty_lines: false,
+      // Removed invalid JSBeautifyOptions properties:
+      // indent_inner_html, comma_first, e4x, indent_empty_lines
     })
   }
 

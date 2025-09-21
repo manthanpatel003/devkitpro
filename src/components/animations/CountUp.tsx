@@ -66,7 +66,10 @@ export function CountUp({
   }
 
   return (
-    <span ref={elementRef} className={cn('tabular-nums', className)}>
+    <span
+      ref={elementRef as React.RefObject<HTMLSpanElement>}
+      className={cn('tabular-nums', className)}
+    >
       {prefix}
       {formatNumber(count)}
       {suffix}

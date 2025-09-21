@@ -112,7 +112,7 @@ const SEOAnalyzerPage = () => {
     'overview' | 'technical' | 'content' | 'social' | 'performance'
   >('overview')
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
 
   const analyzeURL = async () => {
     if (!url.trim()) {
@@ -283,15 +283,16 @@ const SEOAnalyzerPage = () => {
     // Social Media Meta
     const ogTitle = doc.querySelector('meta[property="og:title"]')?.getAttribute('content')
     const ogDesc = doc.querySelector('meta[property="og:description"]')?.getAttribute('content')
-    const ogImage = doc.querySelector('meta[property="og:image"]')?.getAttribute('content')
+    const ogImage = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || ''
     const ogType = doc.querySelector('meta[property="og:type"]')?.getAttribute('content')
 
     const twitterCard = doc.querySelector('meta[name="twitter:card"]')?.getAttribute('content')
-    const twitterTitle = doc.querySelector('meta[name="twitter:title"]')?.getAttribute('content')
-    const twitterDesc = doc
-      .querySelector('meta[name="twitter:description"]')
-      ?.getAttribute('content')
-    const twitterImage = doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content')
+    const twitterTitle =
+      doc.querySelector('meta[name="twitter:title"]')?.getAttribute('content') || ''
+    const twitterDesc =
+      doc?.querySelector('meta[name="twitter:description"]')?.getAttribute('content') || ''
+    const twitterImage =
+      doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content') || ''
 
     if (!ogTitle || !ogDesc) {
       issues.push({
@@ -403,16 +404,16 @@ const SEOAnalyzerPage = () => {
 
       social: {
         openGraph: {
-          title: ogTitle,
-          description: ogDesc,
+          title: ogTitle || '',
+          description: ogDesc || '',
           image: ogImage,
-          type: ogType,
+          type: ogType || '',
         },
         twitterCard: {
-          card: twitterCard,
-          title: twitterTitle,
-          description: twitterDesc,
-          image: twitterImage,
+          card: twitterCard || '',
+          title: twitterTitle || '',
+          description: twitterDesc || '',
+          image: twitterImage || '',
         },
       },
 
@@ -524,7 +525,7 @@ ${analysis.aiRecommendations
 
 Analyzed with DevTools Hub`
 
-    copyToClipboard(summary)
+    copy(summary)
   }
 
   return (
@@ -610,7 +611,7 @@ Analyzed with DevTools Hub`
             <div className="flex justify-center gap-3">
               <Button onClick={shareReport} variant="outline">
                 <Share2 className="w-4 h-4 mr-2" />
-                {copied ? 'Copied!' : 'Share Report'}
+                {isCopied ? 'Copied!' : 'Share Report'}
               </Button>
               <Button onClick={exportReport} variant="outline">
                 <Download className="w-4 h-4 mr-2" />

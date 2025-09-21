@@ -63,7 +63,7 @@ const benefits = [
 export function FeaturesSection() {
   return (
     <section className="py-24 bg-muted/30">
-      <div className="container px-4">
+      <div className="container mx-auto px-4">
         <FadeIn>
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
@@ -185,13 +185,13 @@ export function FeaturesSection() {
                   ))}
                 </div>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                  <Button variant="gradient" size="lg" asChild>
+                  <Button variant="gradient" size="lg">
                     <Link href="/tools">
                       Start Using Tools
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button variant="outline" size="lg" asChild>
+                  <Button variant="outline" size="lg">
                     <Link href="https://github.com/devtools-hub" target="_blank">
                       <Star className="mr-2 h-4 w-4" />
                       Star on GitHub

@@ -46,7 +46,7 @@ const JSONFormatterPage = () => {
   const [sortKeys, setSortKeys] = useState(false)
   const [escapeUnicode, setEscapeUnicode] = useState(false)
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { isCopied, copy } = useCopyToClipboard()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const outputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -363,14 +363,9 @@ const JSONFormatterPage = () => {
               Download
             </Button>
 
-            <Button
-              onClick={() => copyToClipboard(output)}
-              variant="outline"
-              size="sm"
-              disabled={!output}
-            >
+            <Button onClick={() => copy(output)} variant="outline" size="sm" disabled={!output}>
               <Copy className="w-4 h-4 mr-2" />
-              {copied ? 'Copied!' : 'Copy'}
+              {isCopied ? 'Copied!' : 'Copy'}
             </Button>
 
             <Button onClick={clearAll} variant="outline" size="sm">

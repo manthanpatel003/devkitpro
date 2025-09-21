@@ -52,7 +52,7 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4">
+        <div className=" mx-auto container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
           <Link
             href="/"
@@ -138,7 +138,7 @@ export function Header() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="border-t bg-background md:hidden animate-fade-in-down">
-            <nav className="container py-4 space-y-2">
+            <nav className="container mx-auto py-4 space-y-2">
               {NAVIGATION_LINKS.map(link => (
                 <Link
                   key={link.href}

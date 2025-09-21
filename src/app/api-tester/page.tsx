@@ -15,6 +15,7 @@ import {
   CheckCircle,
   Copy,
   Download,
+  FileText,
   Globe,
   Key,
   Plus,

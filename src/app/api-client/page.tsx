@@ -117,7 +117,7 @@ const APIClientPage = () => {
   const [savedRequests, setSavedRequests] = useState<APIRequest[]>(SAMPLE_REQUESTS)
   const [showSaved, setShowSaved] = useState(false)
 
-  const { copyToClipboard, copied } = useCopyToClipboard()
+  const { copy, isCopied } = useCopyToClipboard()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const sendRequest = async () => {
@@ -734,13 +734,9 @@ print(response.json())`
                   Response
                 </h3>
                 <div className="flex items-center gap-2">
-                  <Button
-                    onClick={() => copyToClipboard(response.data)}
-                    variant="outline"
-                    size="sm"
-                  >
+                  <Button onClick={() => copy(response.data)} variant="outline" size="sm">
                     <Copy className="w-4 h-4 mr-2" />
-                    {copied ? 'Copied!' : 'Copy Response'}
+                    {isCopied ? 'Copied!' : 'Copy Response'}
                   </Button>
                 </div>
               </div>
@@ -839,11 +835,7 @@ print(response.json())`
                 <div key={lang}>
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-medium capitalize">{lang}</h4>
-                    <Button
-                      onClick={() => copyToClipboard(generateCode(lang))}
-                      variant="outline"
-                      size="sm"
-                    >
+                    <Button onClick={() => copy(generateCode(lang))} variant="outline" size="sm">
                       <Copy className="w-4 h-4" />
                     </Button>
                   </div>

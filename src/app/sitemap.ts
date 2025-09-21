@@ -2,7 +2,7 @@ import { TOOLS, seoConfig } from '@/lib/constants'
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = seoConfig.siteUrl
+  const baseUrl = seoConfig.url
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
