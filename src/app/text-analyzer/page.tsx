@@ -1,22 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Textarea } from '@/components/ui/Textarea'
 import { ToolLayout } from '@/components/tools/ToolLayout'
-import { 
-  BarChart3,
-  FileText,
-  Brain,
-  Hash,
-  TrendingUp,
-  Download,
-  Zap,
-  RotateCcw
-} from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { Textarea } from '@/components/ui/Textarea'
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
 import { motion } from 'framer-motion'
+import { BarChart3, Download, FileText, Hash, RotateCcw, Zap } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 interface TextAnalysis {
   words: number
@@ -45,8 +36,8 @@ const TextAnalyzerPage = () => {
   const [text, setText] = useState('')
   const [analysis, setAnalysis] = useState<TextAnalysis | null>(null)
   const [processing, setProcessing] = useState(false)
-  
-  const { copyToClipboard } = useCopyToClipboard()
+
+  const { copy: copyToClipboard } = useCopyToClipboard()
 
   useEffect(() => {
     if (text.trim()) {
@@ -59,41 +50,111 @@ const TextAnalyzerPage = () => {
 
   const analyzeText = (inputText: string) => {
     setProcessing(true)
-    
+
     try {
-      const words = inputText.trim().split(/\s+/).filter(w => w.length > 0).length
+      const words = inputText
+        .trim()
+        .split(/\s+/)
+        .filter(w => w.length > 0).length
       const characters = inputText.length
       const sentences = inputText.split(/[.!?]+/).filter(s => s.trim().length > 0).length
       const paragraphs = inputText.split(/\n\s*\n/).filter(p => p.trim().length > 0).length
-      
+
       // Reading time (200 WPM average)
       const readingMinutes = Math.ceil(words / 200)
-      const readingTime = readingMinutes < 60 
-        ? `${readingMinutes} min`
-        : `${Math.floor(readingMinutes / 60)}h ${readingMinutes % 60}m`
+      const readingTime =
+        readingMinutes < 60
+          ? `${readingMinutes} min`
+          : `${Math.floor(readingMinutes / 60)}h ${readingMinutes % 60}m`
 
       // Simple readability score
       const avgWordsPerSentence = sentences > 0 ? words / sentences : 0
       const readabilityScore = Math.max(0, Math.min(100, 100 - avgWordsPerSentence * 2))
 
       // Simple sentiment analysis
-      const positiveWords = ['good', 'great', 'excellent', 'amazing', 'love', 'best', 'perfect', 'awesome']
+      const positiveWords = [
+        'good',
+        'great',
+        'excellent',
+        'amazing',
+        'love',
+        'best',
+        'perfect',
+        'awesome',
+      ]
       const negativeWords = ['bad', 'terrible', 'hate', 'worst', 'horrible', 'awful', 'disgusting']
-      
+
       const textLower = inputText.toLowerCase()
-      const positiveCount = positiveWords.reduce((count, word) => 
-        count + (textLower.match(new RegExp(word, 'g')) || []).length, 0)
-      const negativeCount = negativeWords.reduce((count, word) => 
-        count + (textLower.match(new RegExp(word, 'g')) || []).length, 0)
-      
+      const positiveCount = positiveWords.reduce(
+        (count, word) => count + (textLower.match(new RegExp(word, 'g')) || []).length,
+        0
+      )
+      const negativeCount = negativeWords.reduce(
+        (count, word) => count + (textLower.match(new RegExp(word, 'g')) || []).length,
+        0
+      )
+
       const sentimentScore = positiveCount - negativeCount
 
       // Keyword analysis
-      const wordList = inputText.toLowerCase()
+      const wordList = inputText
+        .toLowerCase()
         .replace(/[^\w\s]/g, ' ')
         .split(/\s+/)
         .filter(word => word.length > 3)
-        .filter(word => !['this', 'that', 'with', 'have', 'will', 'from', 'they', 'been', 'were', 'said', 'each', 'which', 'their', 'time', 'more', 'very', 'what', 'know', 'just', 'first', 'into', 'over', 'think', 'also', 'your', 'work', 'life', 'only', 'can', 'still', 'should', 'after', 'being', 'now', 'made', 'before', 'here', 'through', 'when', 'where', 'much', 'some', 'these', 'many', 'then', 'them', 'well', 'were'].includes(word))
+        .filter(
+          word =>
+            ![
+              'this',
+              'that',
+              'with',
+              'have',
+              'will',
+              'from',
+              'they',
+              'been',
+              'were',
+              'said',
+              'each',
+              'which',
+              'their',
+              'time',
+              'more',
+              'very',
+              'what',
+              'know',
+              'just',
+              'first',
+              'into',
+              'over',
+              'think',
+              'also',
+              'your',
+              'work',
+              'life',
+              'only',
+              'can',
+              'still',
+              'should',
+              'after',
+              'being',
+              'now',
+              'made',
+              'before',
+              'here',
+              'through',
+              'when',
+              'where',
+              'much',
+              'some',
+              'these',
+              'many',
+              'then',
+              'them',
+              'well',
+              'were',
+            ].includes(word)
+        )
 
       const wordCount: Record<string, number> = {}
       wordList.forEach(word => {
@@ -101,12 +162,12 @@ const TextAnalyzerPage = () => {
       })
 
       const topKeywords = Object.entries(wordCount)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([, a], [, b]) => b - a)
         .slice(0, 15)
         .map(([word, count]) => ({
           word,
           count,
-          percentage: (count / wordList.length) * 100
+          percentage: (count / wordList.length) * 100,
         }))
 
       setAnalysis({
@@ -117,7 +178,7 @@ const TextAnalyzerPage = () => {
         readingTime,
         readabilityScore: Math.round(readabilityScore),
         sentimentScore,
-        topKeywords
+        topKeywords,
       })
     } catch (error) {
       console.error('Analysis failed:', error)
@@ -127,11 +188,18 @@ const TextAnalyzerPage = () => {
   }
 
   const loadSample = () => setText(SAMPLE_TEXT)
-  const clearAll = () => { setText(''); setAnalysis(null) }
+  const clearAll = () => {
+    setText('')
+    setAnalysis(null)
+  }
 
   const exportAnalysis = () => {
     if (!analysis) return
-    const data = { text: text.substring(0, 200) + '...', analysis, timestamp: new Date().toISOString() }
+    const data = {
+      text: text.substring(0, 200) + '...',
+      analysis,
+      timestamp: new Date().toISOString(),
+    }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -169,7 +237,7 @@ const TextAnalyzerPage = () => {
 
           <Textarea
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={e => setText(e.target.value)}
             placeholder="Paste your text here for comprehensive analysis..."
             className="min-h-[300px] text-sm"
           />
@@ -183,24 +251,41 @@ const TextAnalyzerPage = () => {
         </Card>
 
         {analysis && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
             <div className="grid md:grid-cols-4 gap-4">
               <Card className="p-4 text-center">
                 <div className="text-2xl font-bold text-blue-600 mb-2">{analysis.words}</div>
                 <div className="text-sm text-gray-600">Words</div>
               </Card>
               <Card className="p-4 text-center">
-                <div className="text-2xl font-bold text-green-600 mb-2">{analysis.readabilityScore}</div>
+                <div className="text-2xl font-bold text-green-600 mb-2">
+                  {analysis.readabilityScore}
+                </div>
                 <div className="text-sm text-gray-600">Readability</div>
               </Card>
               <Card className="p-4 text-center">
-                <div className={`text-2xl font-bold mb-2 ${analysis.sentimentScore > 0 ? 'text-green-600' : analysis.sentimentScore < 0 ? 'text-red-600' : 'text-gray-600'}`}>
-                  {analysis.sentimentScore > 0 ? '+' : ''}{analysis.sentimentScore}
+                <div
+                  className={`text-2xl font-bold mb-2 ${
+                    analysis.sentimentScore > 0
+                      ? 'text-green-600'
+                      : analysis.sentimentScore < 0
+                      ? 'text-red-600'
+                      : 'text-gray-600'
+                  }`}
+                >
+                  {analysis.sentimentScore > 0 ? '+' : ''}
+                  {analysis.sentimentScore}
                 </div>
                 <div className="text-sm text-gray-600">Sentiment</div>
               </Card>
               <Card className="p-4 text-center">
-                <div className="text-2xl font-bold text-purple-600 mb-2">{analysis.readingTime}</div>
+                <div className="text-2xl font-bold text-purple-600 mb-2">
+                  {analysis.readingTime}
+                </div>
                 <div className="text-sm text-gray-600">Reading Time</div>
               </Card>
             </div>
@@ -249,11 +334,16 @@ const TextAnalyzerPage = () => {
                 </h3>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {analysis.topKeywords.map((keyword, index) => (
-                    <div key={index} className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded"
+                    >
                       <span className="font-mono text-sm">{keyword.word}</span>
                       <div className="text-right">
                         <div className="text-sm font-medium">{keyword.count}</div>
-                        <div className="text-xs text-gray-600">{keyword.percentage.toFixed(2)}%</div>
+                        <div className="text-xs text-gray-600">
+                          {keyword.percentage.toFixed(2)}%
+                        </div>
                       </div>
                     </div>
                   ))}

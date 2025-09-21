@@ -1,35 +1,26 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import React, { useEffect, useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Code, 
-  Copy, 
-  Download, 
-  Upload, 
-  CheckCircle2, 
+import { copyToClipboard, downloadFile } from '@/lib/utils'
+import {
   AlertCircle,
-  RefreshCw,
+  CheckCircle2,
+  Code,
+  Copy,
+  Download,
+  FileText,
   Minus,
   Plus,
-  FileText,
-  Settings
+  Settings,
+  Upload,
 } from 'lucide-react'
-import { copyToClipboard, downloadFile } from '@/lib/utils'
 
-export const metadata: Metadata = {
-  title: 'JSON Formatter - Free JSON Beautifier and Validator',
-  description: 'Format, validate, and beautify JSON data. Free JSON formatter with syntax highlighting, validation, and minification.',
-  keywords: ['JSON formatter', 'JSON beautifier', 'JSON validator', 'JSON minifier', 'JSON prettifier', 'JSON tool'],
-  openGraph: {
-    title: 'JSON Formatter - Free JSON Beautifier and Validator',
-    description: 'Format, validate, and beautify JSON data. Free JSON formatter with syntax highlighting and validation.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface JSONResult {
   formatted: string
@@ -55,22 +46,22 @@ export default function JSONFormatterPage() {
     try {
       // Parse JSON
       const parsed = JSON.parse(jsonString)
-      
+
       // Sort keys if requested
       const sortedParsed = sortKeys ? sortObjectKeys(parsed) : parsed
-      
+
       // Format with indentation
       const formatted = JSON.stringify(sortedParsed, null, indentSize)
-      
+
       // Minify
       const minified = JSON.stringify(sortedParsed)
-      
+
       // Calculate sizes
       const originalSize = new Blob([jsonString]).size
       const formattedSize = new Blob([formatted]).size
       const minifiedSize = new Blob([minified]).size
       const compressionRatio = Math.round(((originalSize - minifiedSize) / originalSize) * 100)
-      
+
       return {
         formatted,
         minified,
@@ -78,7 +69,7 @@ export default function JSONFormatterPage() {
         size: originalSize,
         formattedSize,
         minifiedSize,
-        compressionRatio: Math.max(0, compressionRatio)
+        compressionRatio: Math.max(0, compressionRatio),
       }
     } catch (error) {
       return {
@@ -89,7 +80,7 @@ export default function JSONFormatterPage() {
         size: 0,
         formattedSize: 0,
         minifiedSize: 0,
-        compressionRatio: 0
+        compressionRatio: 0,
       }
     }
   }
@@ -116,7 +107,7 @@ export default function JSONFormatterPage() {
 
     const result = formatJSON(input)
     setResult(result)
-    
+
     if (result.valid) {
       success('JSON formatted successfully!')
     } else {
@@ -125,8 +116,8 @@ export default function JSONFormatterPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -142,7 +133,7 @@ export default function JSONFormatterPage() {
     const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = e => {
         const content = e.target?.result as string
         setInput(content)
         const result = formatJSON(content)
@@ -159,20 +150,20 @@ export default function JSONFormatterPage() {
 
   const loadExample = () => {
     const example = {
-      "name": "John Doe",
-      "age": 30,
-      "email": "john@example.com",
-      "address": {
-        "street": "123 Main St",
-        "city": "New York",
-        "state": "NY",
-        "zipCode": "10001"
+      name: 'John Doe',
+      age: 30,
+      email: 'john@example.com',
+      address: {
+        street: '123 Main St',
+        city: 'New York',
+        state: 'NY',
+        zipCode: '10001',
       },
-      "hobbies": ["reading", "swimming", "coding"],
-      "isActive": true,
-      "lastLogin": "2024-01-15T10:30:00Z"
+      hobbies: ['reading', 'swimming', 'coding'],
+      isActive: true,
+      lastLogin: '2024-01-15T10:30:00Z',
     }
-    
+
     const jsonString = JSON.stringify(example)
     setInput(jsonString)
     const result = formatJSON(jsonString)
@@ -206,9 +197,7 @@ export default function JSONFormatterPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            JSON Formatter & Validator
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">JSON Formatter & Validator</h1>
           <p className="text-xl text-gray-600">
             Format, validate, and beautify JSON data with syntax highlighting
           </p>
@@ -246,22 +235,22 @@ export default function JSONFormatterPage() {
                   </Button>
                 </div>
               </div>
-              
+
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   checked={sortKeys}
-                  onChange={(e) => setSortKeys(e.target.checked)}
+                  onChange={e => setSortKeys(e.target.checked)}
                   className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                 />
                 <span className="text-sm font-medium text-gray-700">Sort Keys</span>
               </label>
-              
+
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   checked={showWhitespace}
-                  onChange={(e) => setShowWhitespace(e.target.checked)}
+                  onChange={e => setShowWhitespace(e.target.checked)}
                   className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                 />
                 <span className="text-sm font-medium text-gray-700">Show Whitespace</span>
@@ -287,12 +276,10 @@ export default function JSONFormatterPage() {
                     className="hidden"
                     id="file-upload"
                   />
-                  <label htmlFor="file-upload">
-                    <Button variant="outline" size="sm" asChild>
-                      <span>
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload
-                      </span>
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    <Button variant="outline" size="sm" type="button">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload
                     </Button>
                   </label>
                   <Button onClick={loadExample} variant="outline" size="sm">
@@ -308,15 +295,11 @@ export default function JSONFormatterPage() {
               <Textarea
                 placeholder="Paste your JSON data here..."
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={e => setInput(e.target.value)}
                 className="min-h-[400px] font-mono text-sm"
                 rows={20}
               />
-              {input && (
-                <div className="mt-2 text-sm text-gray-500">
-                  {input.length} characters
-                </div>
-              )}
+              {input && <div className="mt-2 text-sm text-gray-500">{input.length} characters</div>}
             </CardContent>
           </Card>
 
@@ -364,19 +347,23 @@ export default function JSONFormatterPage() {
                     ) : (
                       <AlertCircle className="w-5 h-5 text-red-500" />
                     )}
-                    <span className={`text-sm font-medium ${result.valid ? 'text-green-600' : 'text-red-600'}`}>
+                    <span
+                      className={`text-sm font-medium ${
+                        result.valid ? 'text-green-600' : 'text-red-600'
+                      }`}
+                    >
                       {result.valid ? 'Valid JSON' : 'Invalid JSON'}
                     </span>
-                    {result.error && (
-                      <span className="text-sm text-red-600">- {result.error}</span>
-                    )}
+                    {result.error && <span className="text-sm text-red-600">- {result.error}</span>}
                   </div>
 
                   {/* JSON Output */}
                   <div className="relative">
-                    <pre className={`bg-gray-50 p-4 rounded-lg overflow-auto max-h-[400px] text-sm font-mono ${
-                      showWhitespace ? 'whitespace-pre' : 'whitespace-pre-wrap'
-                    }`}>
+                    <pre
+                      className={`bg-gray-50 p-4 rounded-lg overflow-auto max-h-[400px] text-sm font-mono ${
+                        showWhitespace ? 'whitespace-pre' : 'whitespace-pre-wrap'
+                      }`}
+                    >
                       {activeTab === 'formatted' ? result.formatted : result.minified}
                     </pre>
                   </div>
@@ -406,10 +393,12 @@ export default function JSONFormatterPage() {
                   {/* Actions */}
                   <div className="flex flex-wrap gap-2">
                     <Button
-                      onClick={() => handleCopy(
-                        activeTab === 'formatted' ? result.formatted : result.minified,
-                        'JSON'
-                      )}
+                      onClick={() =>
+                        handleCopy(
+                          activeTab === 'formatted' ? result.formatted : result.minified,
+                          'JSON'
+                        )
+                      }
                       variant="outline"
                       size="sm"
                     >
@@ -417,10 +406,12 @@ export default function JSONFormatterPage() {
                       Copy
                     </Button>
                     <Button
-                      onClick={() => handleDownload(
-                        activeTab === 'formatted' ? result.formatted : result.minified,
-                        `formatted-${Date.now()}.json`
-                      )}
+                      onClick={() =>
+                        handleDownload(
+                          activeTab === 'formatted' ? result.formatted : result.minified,
+                          `formatted-${Date.now()}.json`
+                        )
+                      }
                       variant="outline"
                       size="sm"
                     >

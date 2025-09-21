@@ -122,7 +122,8 @@ export function ToolLayout({
           <FadeIn>
             <div className="flex items-center space-x-4 mb-6">
               <Link href="/tools">
-                <Button variant="outline" size="sm" leftIcon={<ArrowLeft className="h-4 w-4" />}>
+                <Button variant="outline" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Tools
                 </Button>
               </Link>
@@ -144,7 +145,9 @@ export function ToolLayout({
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <div
-                    className={`w-12 h-12 rounded-lg ${tool?.category?.color || 'bg-blue-500'} flex items-center justify-center`}
+                    className={`w-12 h-12 rounded-lg ${
+                      tool?.category?.color || 'bg-blue-500'
+                    } flex items-center justify-center`}
                   >
                     <Zap className="h-6 w-6 text-white" />
                   </div>
@@ -157,7 +160,9 @@ export function ToolLayout({
                 {tool && (
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2 text-sm">
-                      <div className={`w-2 h-2 rounded-full ${tool.category?.color || 'bg-blue-500'}`} />
+                      <div
+                        className={`w-2 h-2 rounded-full ${tool.category?.color || 'bg-blue-500'}`}
+                      />
                       <span className="text-muted-foreground">{tool.category?.name || 'Tool'}</span>
                     </div>
 

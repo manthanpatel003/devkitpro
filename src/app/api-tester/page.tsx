@@ -15,7 +15,7 @@ import {
   CheckCircle,
   Copy,
   Download,
-  Globe,
+  FileText,
   Key,
   Plus,
   Send,
@@ -314,15 +314,9 @@ export default function APITesterPage() {
                     value={request.url}
                     onChange={e => setRequest(prev => ({ ...prev, url: e.target.value }))}
                     className="flex-1"
-                    leftIcon={<Globe className="h-4 w-4" />}
-                    error={error}
                   />
-                  <Button
-                    onClick={sendRequest}
-                    disabled={isLoading || !request.url.trim()}
-                    loading={isLoading}
-                    leftIcon={<Send className="h-4 w-4" />}
-                  >
+                  <Button onClick={sendRequest} disabled={isLoading || !request.url.trim()}>
+                    <Send className="h-4 w-4 mr-2" />
                     Send
                   </Button>
                 </div>
@@ -336,10 +330,9 @@ export default function APITesterPage() {
                   ].map(tab => (
                     <Button
                       key={tab.id}
-                      variant={activeTab === tab.id ? 'default' : 'ghost'}
+                      variant={activeTab === tab.id ? 'primary' : 'ghost'}
                       size="sm"
                       onClick={() => setActiveTab(tab.id as any)}
-                      leftIcon={<tab.icon className="h-4 w-4" />}
                     >
                       {tab.label}
                     </Button>
@@ -351,7 +344,8 @@ export default function APITesterPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <label className="text-sm font-medium">Request Headers</label>
-                      <Button size="sm" onClick={addHeader} leftIcon={<Plus className="h-4 w-4" />}>
+                      <Button size="sm" onClick={addHeader}>
+                        <Plus className="h-4 w-4 mr-1" />
                         Add Header
                       </Button>
                     </div>

@@ -1,30 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  FileSpreadsheet, 
-  Copy, 
-  Download,
-  Upload,
-  Table,
-  BarChart3
-} from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
+import { BarChart3, Copy, Download, FileSpreadsheet, Table } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'CSV Processor - Free CSV Data Processing Tool',
-  description: 'Process, validate, and convert CSV data. Free CSV processor with validation, formatting, and analysis features.',
-  keywords: ['csv processor', 'csv validator', 'csv converter', 'csv analysis', 'data processing'],
-  openGraph: {
-    title: 'CSV Processor - Free CSV Data Processing Tool',
-    description: 'Process, validate, and convert CSV data. Free CSV processor with validation and analysis features.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface CSVData {
   headers: string[]
@@ -45,7 +30,7 @@ export default function CSVProcessorPage() {
   const parseCSV = (csvText: string, delimiter: string, hasHeader: boolean): CSVData => {
     const lines = csvText.trim().split('\n')
     const errors: string[] = []
-    
+
     if (lines.length === 0) {
       errors.push('CSV is empty')
       return { headers: [], rows: [], totalRows: 0, totalColumns: 0, errors }
@@ -63,7 +48,9 @@ export default function CSVProcessorPage() {
         rows.push(row)
         maxColumns = Math.max(maxColumns, row.length)
       } catch (err) {
-        errors.push(`Error parsing line ${i + 1}: ${err instanceof Error ? err.message : 'Unknown error'}`)
+        errors.push(
+          `Error parsing line ${i + 1}: ${err instanceof Error ? err.message : 'Unknown error'}`
+        )
       }
     }
 
@@ -88,7 +75,7 @@ export default function CSVProcessorPage() {
       rows: dataRows,
       totalRows: dataRows.length,
       totalColumns: expectedColumns,
-      errors
+      errors,
     }
   }
 
@@ -131,15 +118,15 @@ export default function CSVProcessorPage() {
 
   const formatCSV = (data: CSVData, delimiter: string, hasHeader: boolean): string => {
     const lines: string[] = []
-    
+
     if (hasHeader && data.headers.length > 0) {
       lines.push(data.headers.map(header => `"${header}"`).join(delimiter))
     }
-    
+
     data.rows.forEach(row => {
       lines.push(row.map(field => `"${field}"`).join(delimiter))
     })
-    
+
     return lines.join('\n')
   }
 
@@ -152,13 +139,13 @@ export default function CSVProcessorPage() {
     try {
       const parsed = parseCSV(input, delimiter, hasHeader)
       setCsvData(parsed)
-      
+
       if (parsed.errors.length > 0) {
         showError(`CSV processed with ${parsed.errors.length} errors`)
       } else {
         success('CSV processed successfully!')
       }
-      
+
       // Format and set output
       const formatted = formatCSV(parsed, delimiter, hasHeader)
       setOutput(formatted)
@@ -168,8 +155,8 @@ export default function CSVProcessorPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -178,7 +165,7 @@ export default function CSVProcessorPage() {
 
   const downloadCSV = () => {
     if (!output) return
-    
+
     const blob = new Blob([output], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -219,7 +206,9 @@ Bob Johnson,35,Chicago,bob@example.com`
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">CSV Processor</h1>
-          <p className="text-xl text-gray-600">Process, validate, and convert CSV data with advanced features</p>
+          <p className="text-xl text-gray-600">
+            Process, validate, and convert CSV data with advanced features
+          </p>
         </div>
 
         {/* Settings */}
@@ -233,12 +222,10 @@ Bob Johnson,35,Chicago,bob@example.com`
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Delimiter
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Delimiter</label>
                 <select
                   value={delimiter}
-                  onChange={(e) => setDelimiter(e.target.value)}
+                  onChange={e => setDelimiter(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value=",">Comma (,)</option>
@@ -247,21 +234,19 @@ Bob Johnson,35,Chicago,bob@example.com`
                   <option value="|">Pipe (|)</option>
                 </select>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  First Row
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">First Row</label>
                 <select
                   value={hasHeader ? 'header' : 'data'}
-                  onChange={(e) => setHasHeader(e.target.value === 'header')}
+                  onChange={e => setHasHeader(e.target.value === 'header')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value="header">Header Row</option>
                   <option value="data">Data Row</option>
                 </select>
               </div>
-              
+
               <div className="flex items-end">
                 <Button onClick={loadExample} variant="outline" className="w-full">
                   Load Example
@@ -283,11 +268,11 @@ Bob Johnson,35,Chicago,bob@example.com`
                 <Textarea
                   placeholder="Name,Age,City&#10;John,30,NYC&#10;Jane,25,LA"
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={e => setInput(e.target.value)}
                   rows={12}
                   className="font-mono text-sm"
                 />
-                
+
                 <Button onClick={clearAll} variant="outline" className="w-full">
                   Clear Input
                 </Button>
@@ -310,7 +295,7 @@ Bob Johnson,35,Chicago,bob@example.com`
                   rows={12}
                   className="font-mono text-sm bg-gray-50"
                 />
-                
+
                 <div className="flex gap-2">
                   <Button
                     onClick={() => handleCopy(output, 'CSV')}
@@ -358,7 +343,7 @@ Bob Johnson,35,Chicago,bob@example.com`
                     <div className="text-sm text-green-600">Total Columns</div>
                   </div>
                 </div>
-                
+
                 {csvData.headers.length > 0 && (
                   <div className="mt-4">
                     <h4 className="font-medium text-gray-900 mb-2">Column Headers</h4>
@@ -386,7 +371,9 @@ Bob Johnson,35,Chicago,bob@example.com`
                 {csvData.errors.length === 0 ? (
                   <div className="text-center p-4 bg-green-50 rounded-lg">
                     <div className="text-green-600 font-medium">✓ No errors found</div>
-                    <div className="text-sm text-green-600 mt-1">CSV is valid and well-formatted</div>
+                    <div className="text-sm text-green-600 mt-1">
+                      CSV is valid and well-formatted
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -422,7 +409,10 @@ Bob Johnson,35,Chicago,bob@example.com`
                     <thead className="bg-gray-50">
                       <tr>
                         {csvData.headers.map((header, index) => (
-                          <th key={index} className="px-4 py-2 text-left text-sm font-medium text-gray-900 border-b">
+                          <th
+                            key={index}
+                            className="px-4 py-2 text-left text-sm font-medium text-gray-900 border-b"
+                          >
                             {header}
                           </th>
                         ))}

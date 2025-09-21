@@ -309,10 +309,9 @@ export default function CSSGeneratorPage() {
               ].map(tab => (
                 <Button
                   key={tab.id}
-                  variant={activeTab === tab.id ? 'default' : 'ghost'}
+                  variant={activeTab === tab.id ? 'primary' : 'ghost'}
                   size="sm"
                   onClick={() => setActiveTab(tab.id as any)}
-                  leftIcon={<tab.icon className="h-4 w-4" />}
                 >
                   {tab.label}
                 </Button>
@@ -336,7 +335,7 @@ export default function CSSGeneratorPage() {
                           {['linear', 'radial', 'conic'].map(type => (
                             <Button
                               key={type}
-                              variant={state.gradientType === type ? 'default' : 'outline'}
+                              variant={state.gradientType === type ? 'primary' : 'outline'}
                               size="sm"
                               onClick={() =>
                                 setState(prev => ({ ...prev, gradientType: type as any }))
@@ -728,7 +727,8 @@ export default function CSSGeneratorPage() {
 
             {/* Quick Actions */}
             <div className="flex flex-wrap gap-2">
-              <Button onClick={generateCSS} leftIcon={<RefreshCw className="h-4 w-4" />}>
+              <Button onClick={generateCSS}>
+                <RefreshCw className="h-4 w-4 mr-1" />
                 Regenerate CSS
               </Button>
               <Button variant="outline" onClick={copyCSS}>

@@ -170,31 +170,29 @@ export function HeroSection() {
           {/* CTA Buttons */}
           <FadeIn delay={1200}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
-                size="lg"
-                variant="gradient"
-                className="text-lg px-8 py-6 h-auto font-semibold animate-pulse-soft"
-                asChild
-              >
-                <Link href="/tools">
+              <Link href="/tools">
+                <Button
+                  size="lg"
+                  variant="primary"
+                  className="text-lg px-8 py-6 h-auto font-semibold animate-pulse-soft"
+                >
                   <Zap className="mr-2 h-5 w-5" />
                   Explore Tools
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6 h-auto font-semibold"
-                asChild
-              >
-                <Link href="https://github.com/devtools-hub" target="_blank">
+              <Link href="https://github.com/devtools-hub" target="_blank">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-8 py-6 h-auto font-semibold"
+                >
                   <Github className="mr-2 h-5 w-5" />
                   Star on GitHub
                   <Star className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
           </FadeIn>
 
@@ -246,9 +244,11 @@ export function HeroSection() {
                         </h3>
                         <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                           <span
-                            className={`inline-block w-2 h-2 rounded-full ${tool.category.color}`}
+                            className={`inline-block w-2 h-2 rounded-full ${
+                              tool.category?.color || 'bg-blue-500'
+                            }`}
                           />
-                          <span>{tool.category.name}</span>
+                          <span>{tool.category?.name || 'Tool'}</span>
                         </div>
                       </div>
                     </div>

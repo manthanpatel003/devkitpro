@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
+// Metadata removed - client components cannot export metadata
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Textarea } from '@/components/ui/Textarea'
@@ -17,15 +17,7 @@ import {
 } from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
 
-export const metadata: Metadata = {
-  title: 'YAML Converter - Free YAML/JSON Converter',
-  description: 'Convert between YAML and JSON formats. Free YAML converter with validation and formatting options.',
-  keywords: ['yaml converter', 'yaml to json', 'json to yaml', 'yaml validator', 'yaml formatter'],
-  openGraph: {
-    title: 'YAML Converter - Free YAML/JSON Converter',
-    description: 'Convert between YAML and JSON formats. Free YAML converter with validation.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface ConversionResult {
   success: boolean
@@ -154,8 +146,8 @@ export default function YAMLConverterPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')

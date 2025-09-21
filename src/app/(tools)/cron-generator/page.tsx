@@ -1,29 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Clock, 
-  Copy, 
-  RefreshCw,
-  CheckCircle2
-} from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
 import { CronExpression } from '@/types'
+import { CheckCircle2, Clock, Copy } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Cron Expression Generator - Free Cron Builder',
-  description: 'Generate and validate cron expressions. Free cron generator with human-readable descriptions.',
-  keywords: ['cron generator', 'cron expression', 'cron builder', 'scheduler', 'cron tool'],
-  openGraph: {
-    title: 'Cron Expression Generator - Free Cron Builder',
-    description: 'Generate and validate cron expressions. Free cron generator with human-readable descriptions.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 const presets = [
   { name: 'Every Minute', expression: '* * * * *', description: 'Run every minute' },
@@ -33,7 +20,7 @@ const presets = [
   { name: 'Monthly', expression: '0 0 1 * *', description: 'Run monthly on the 1st at midnight' },
   { name: 'Weekdays', expression: '0 9 * * 1-5', description: 'Run weekdays at 9 AM' },
   { name: 'Every 15 Minutes', expression: '*/15 * * * *', description: 'Run every 15 minutes' },
-  { name: 'Every 2 Hours', expression: '0 */2 * * *', description: 'Run every 2 hours' }
+  { name: 'Every 2 Hours', expression: '0 */2 * * *', description: 'Run every 2 hours' },
 ]
 
 export default function CronGeneratorPage() {
@@ -54,13 +41,13 @@ export default function CronGeneratorPage() {
           hour: '',
           day: '',
           month: '',
-          weekday: ''
-        }
+          weekday: '',
+        },
       }
     }
 
     const [minute, hour, day, month, weekday] = parts
-    
+
     const description = generateDescription(minute, hour, day, month, weekday)
     const nextRun = generateNextRuns(expr)
 
@@ -74,30 +61,36 @@ export default function CronGeneratorPage() {
         hour,
         day,
         month,
-        weekday
-      }
+        weekday,
+      },
     }
   }
 
-  const generateDescription = (minute: string, hour: string, day: string, month: string, weekday: string): string => {
+  const generateDescription = (
+    minute: string,
+    hour: string,
+    day: string,
+    month: string,
+    weekday: string
+  ): string => {
     let desc = 'Run '
-    
+
     if (minute === '*' && hour === '*' && day === '*' && month === '*' && weekday === '*') {
       return 'Run every minute'
     }
-    
+
     if (minute !== '*' && hour === '*' && day === '*' && month === '*' && weekday === '*') {
       return `Run every hour at minute ${minute}`
     }
-    
+
     if (minute !== '*' && hour !== '*' && day === '*' && month === '*' && weekday === '*') {
       return `Run daily at ${hour}:${minute.padStart(2, '0')}`
     }
-    
+
     if (minute !== '*' && hour !== '*' && day !== '*' && month === '*' && weekday === '*') {
       return `Run monthly on day ${day} at ${hour}:${minute.padStart(2, '0')}`
     }
-    
+
     if (minute !== '*' && hour !== '*' && day === '*' && month === '*' && weekday !== '*') {
       const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
       if (weekday.includes('-')) {
@@ -106,7 +99,7 @@ export default function CronGeneratorPage() {
       }
       return `Run on ${days[parseInt(weekday)]} at ${hour}:${minute.padStart(2, '0')}`
     }
-    
+
     return 'Custom schedule'
   }
 
@@ -114,12 +107,12 @@ export default function CronGeneratorPage() {
     // Simplified next run generation
     const now = new Date()
     const runs = []
-    
+
     for (let i = 0; i < 5; i++) {
       const next = new Date(now.getTime() + (i + 1) * 24 * 60 * 60 * 1000)
       runs.push(next.toLocaleString())
     }
-    
+
     return runs
   }
 
@@ -134,7 +127,7 @@ export default function CronGeneratorPage() {
     success('Cron expression analyzed!')
   }
 
-  const handlePreset = (preset: typeof presets[0]) => {
+  const handlePreset = (preset: (typeof presets)[0]) => {
     setExpression(preset.expression)
     const result = generateCron(preset.expression)
     setResult(result)
@@ -142,8 +135,8 @@ export default function CronGeneratorPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -172,7 +165,7 @@ export default function CronGeneratorPage() {
                   <Input
                     placeholder="* * * * *"
                     value={expression}
-                    onChange={(e) => setExpression(e.target.value)}
+                    onChange={e => setExpression(e.target.value)}
                     className="font-mono"
                   />
                   <Button onClick={handleGenerate} disabled={!expression.trim()}>
@@ -188,7 +181,7 @@ export default function CronGeneratorPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-2">
-                  {presets.map((preset) => (
+                  {presets.map(preset => (
                     <button
                       key={preset.name}
                       onClick={() => handlePreset(preset)}
@@ -221,7 +214,7 @@ export default function CronGeneratorPage() {
                         {result.expression}
                       </div>
                     </div>
-                    
+
                     <div>
                       <div className="text-sm text-gray-600 mb-1">Description:</div>
                       <div className="text-gray-900">{result.description}</div>

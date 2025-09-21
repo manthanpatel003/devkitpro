@@ -260,14 +260,14 @@ ${Object.entries(result.formats)
                   <label className="text-sm font-medium">Input Type:</label>
                   <div className="flex items-center space-x-2">
                     <Button
-                      variant={inputType === 'timestamp' ? 'default' : 'outline'}
+                      variant={inputType === 'timestamp' ? 'primary' : 'outline'}
                       size="sm"
                       onClick={() => setInputType('timestamp')}
                     >
                       Unix Timestamp
                     </Button>
                     <Button
-                      variant={inputType === 'date' ? 'default' : 'outline'}
+                      variant={inputType === 'date' ? 'primary' : 'outline'}
                       size="sm"
                       onClick={() => setInputType('date')}
                     >
@@ -291,7 +291,7 @@ ${Object.entries(result.formats)
                       value={input}
                       onChange={e => setInput(e.target.value)}
                       className="flex-1 font-mono"
-                      leftIcon={
+                      icon={
                         inputType === 'timestamp' ? (
                           <Clock className="h-4 w-4" />
                         ) : (
@@ -299,11 +299,8 @@ ${Object.entries(result.formats)
                         )
                       }
                     />
-                    <Button
-                      variant="outline"
-                      onClick={setCurrentTime}
-                      leftIcon={<RefreshCw className="h-4 w-4" />}
-                    >
+                    <Button variant="outline" onClick={setCurrentTime}>
+                      <RefreshCw className="h-4 w-4 mr-2" />
                       Now
                     </Button>
                   </div>

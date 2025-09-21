@@ -23,10 +23,18 @@ export function FadeIn({
   once = true,
   threshold = 0.1,
 }: FadeInProps) {
+  const divRef = React.useRef<HTMLDivElement>(null)
   const { elementRef, isVisible } = useIntersectionObserver({
     threshold,
     freezeOnceVisible: once,
   })
+
+  React.useEffect(() => {
+    if (divRef.current) {
+      // @ts-ignore - We need to assign the ref for intersection observer
+      elementRef.current = divRef.current
+    }
+  }, [])
 
   const directionClasses = {
     up: 'translate-y-8',
@@ -38,7 +46,7 @@ export function FadeIn({
 
   return (
     <div
-      ref={elementRef}
+      ref={divRef}
       className={cn(
         'transition-all ease-out',
         !isVisible && 'opacity-0',

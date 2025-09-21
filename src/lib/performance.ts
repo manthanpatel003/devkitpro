@@ -34,18 +34,18 @@ export class PerformanceMonitor {
   private initializeMonitoring() {
     // Monitor Core Web Vitals
     this.observeWebVitals()
-    
+
     // Monitor memory usage
     this.observeMemoryUsage()
-    
+
     // Monitor resource loading
     this.observeResourceLoading()
   }
 
   private observeWebVitals() {
     // First Contentful Paint (FCP)
-    this.observeMetric('paint', (entries) => {
-      entries.forEach((entry) => {
+    this.observeMetric('paint', entries => {
+      entries.forEach(entry => {
         if (entry.name === 'first-contentful-paint') {
           this.updateWebVitals('FCP', entry.startTime)
         }
@@ -53,32 +53,32 @@ export class PerformanceMonitor {
     })
 
     // Largest Contentful Paint (LCP)
-    this.observeMetric('largest-contentful-paint', (entries) => {
+    this.observeMetric('largest-contentful-paint', entries => {
       const lastEntry = entries[entries.length - 1]
       this.updateWebVitals('LCP', lastEntry.startTime)
     })
 
     // First Input Delay (FID)
-    this.observeMetric('first-input', (entries) => {
-      entries.forEach((entry) => {
-        this.updateWebVitals('FID', entry.processingStart - entry.startTime)
+    this.observeMetric('first-input', entries => {
+      entries.forEach(entry => {
+        this.updateWebVitals('FID', (entry as any).processingStart - entry.startTime)
       })
     })
 
     // Cumulative Layout Shift (CLS)
-    this.observeMetric('layout-shift', (entries) => {
+    this.observeMetric('layout-shift', entries => {
       let clsValue = 0
-      entries.forEach((entry) => {
-        if (!entry.hadRecentInput) {
-          clsValue += entry.value
+      entries.forEach(entry => {
+        if (!(entry as any).hadRecentInput) {
+          clsValue += (entry as any).value
         }
       })
       this.updateWebVitals('CLS', clsValue)
     })
 
     // Time to First Byte (TTFB)
-    this.observeMetric('navigation', (entries) => {
-      entries.forEach((entry) => {
+    this.observeMetric('navigation', entries => {
+      entries.forEach(entry => {
         const navigationEntry = entry as PerformanceNavigationTiming
         this.updateWebVitals('TTFB', navigationEntry.responseStart - navigationEntry.requestStart)
       })
@@ -96,18 +96,23 @@ export class PerformanceMonitor {
   }
 
   private observeResourceLoading() {
-    this.observeMetric('resource', (entries) => {
-      entries.forEach((entry) => {
+    this.observeMetric('resource', entries => {
+      entries.forEach(entry => {
         const resourceEntry = entry as PerformanceResourceTiming
-        
+
         // Check for slow resources
         if (resourceEntry.duration > 1000) {
           console.warn('Slow resource detected:', resourceEntry.name, resourceEntry.duration + 'ms')
         }
-        
+
         // Check for large resources
-        if (resourceEntry.transferSize > 1024 * 1024) { // 1MB
-          console.warn('Large resource detected:', resourceEntry.name, resourceEntry.transferSize + ' bytes')
+        if (resourceEntry.transferSize > 1024 * 1024) {
+          // 1MB
+          console.warn(
+            'Large resource detected:',
+            resourceEntry.name,
+            resourceEntry.transferSize + ' bytes'
+          )
         }
       })
     })
@@ -115,10 +120,10 @@ export class PerformanceMonitor {
 
   private observeMetric(type: string, callback: (entries: PerformanceEntry[]) => void) {
     try {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         callback(list.getEntries())
       })
-      
+
       observer.observe({ type, buffered: true })
       this.observers.push(observer)
     } catch (error) {
@@ -130,7 +135,7 @@ export class PerformanceMonitor {
     if (!this.webVitals) {
       this.webVitals = {} as WebVitals
     }
-    
+
     this.webVitals[metric] = value
   }
 
@@ -146,30 +151,30 @@ export class PerformanceMonitor {
     if (!this.webVitals) return 0
 
     const { CLS, FID, FCP, LCP, TTFB } = this.webVitals
-    
+
     // Calculate score based on Core Web Vitals thresholds
     let score = 100
-    
+
     // CLS scoring (0-0.1 is good, 0.1-0.25 needs improvement, >0.25 is poor)
     if (CLS > 0.25) score -= 30
     else if (CLS > 0.1) score -= 15
-    
+
     // FID scoring (<100ms is good, 100-300ms needs improvement, >300ms is poor)
     if (FID > 300) score -= 30
     else if (FID > 100) score -= 15
-    
+
     // LCP scoring (<2.5s is good, 2.5-4s needs improvement, >4s is poor)
     if (LCP > 4000) score -= 30
     else if (LCP > 2500) score -= 15
-    
+
     // FCP scoring (<1.8s is good, 1.8-3s needs improvement, >3s is poor)
     if (FCP > 3000) score -= 20
     else if (FCP > 1800) score -= 10
-    
+
     // TTFB scoring (<800ms is good, 800-1800ms needs improvement, >1800ms is poor)
     if (TTFB > 1800) score -= 20
     else if (TTFB > 800) score -= 10
-    
+
     return Math.max(0, score)
   }
 
@@ -181,15 +186,20 @@ export class PerformanceMonitor {
 
 // Image optimization utilities
 export class ImageOptimizer {
-  static async compressImage(file: File, quality: number = 0.8, maxWidth?: number, maxHeight?: number): Promise<Blob> {
+  static async compressImage(
+    file: File,
+    quality: number = 0.8,
+    maxWidth?: number,
+    maxHeight?: number
+  ): Promise<Blob> {
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       const img = new Image()
-      
+
       img.onload = () => {
         let { width, height } = img
-        
+
         // Calculate new dimensions
         if (maxWidth && maxHeight) {
           const aspectRatio = width / height
@@ -202,14 +212,14 @@ export class ImageOptimizer {
             width = height * aspectRatio
           }
         }
-        
+
         canvas.width = width
         canvas.height = height
-        
+
         // Draw and compress
         ctx?.drawImage(img, 0, 0, width, height)
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               resolve(blob)
             } else {
@@ -220,25 +230,25 @@ export class ImageOptimizer {
           quality
         )
       }
-      
+
       img.onerror = () => reject(new Error('Failed to load image'))
       img.src = URL.createObjectURL(file)
     })
   }
-  
+
   static async convertToWebP(file: File, quality: number = 0.8): Promise<Blob> {
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       const img = new Image()
-      
+
       img.onload = () => {
         canvas.width = img.width
         canvas.height = img.height
-        
+
         ctx?.drawImage(img, 0, 0)
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               resolve(blob)
             } else {
@@ -249,7 +259,7 @@ export class ImageOptimizer {
           quality
         )
       }
-      
+
       img.onerror = () => reject(new Error('Failed to load image'))
       img.src = URL.createObjectURL(file)
     })
@@ -267,7 +277,7 @@ export class CodeSplitter {
       throw error
     }
   }
-  
+
   static preloadComponent(importFn: () => Promise<any>): void {
     // Preload the component for faster loading
     importFn().catch(console.error)
@@ -277,32 +287,33 @@ export class CodeSplitter {
 // Caching utilities
 export class CacheManager {
   private static cache = new Map<string, { data: any; timestamp: number; ttl: number }>()
-  
-  static set(key: string, data: any, ttl: number = 300000): void { // 5 minutes default
+
+  static set(key: string, data: any, ttl: number = 300000): void {
+    // 5 minutes default
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
-      ttl
+      ttl,
     })
   }
-  
+
   static get(key: string): any | null {
     const item = this.cache.get(key)
-    
+
     if (!item) return null
-    
+
     if (Date.now() - item.timestamp > item.ttl) {
       this.cache.delete(key)
       return null
     }
-    
+
     return item.data
   }
-  
+
   static clear(): void {
     this.cache.clear()
   }
-  
+
   static size(): number {
     return this.cache.size
   }
@@ -314,11 +325,11 @@ export class BundleAnalyzer {
     if (typeof window === 'undefined') {
       return { size: 0, chunks: 0, modules: 0 }
     }
-    
+
     const scripts = document.querySelectorAll('script[src]')
     let totalSize = 0
     let chunkCount = 0
-    
+
     scripts.forEach(script => {
       const src = script.getAttribute('src')
       if (src && src.includes('_next/static/chunks/')) {
@@ -327,11 +338,11 @@ export class BundleAnalyzer {
         totalSize += 50 * 1024 // 50KB per chunk estimate
       }
     })
-    
+
     return {
       size: totalSize,
       chunks: chunkCount,
-      modules: scripts.length
+      modules: scripts.length,
     }
   }
 }
@@ -340,47 +351,49 @@ export class BundleAnalyzer {
 export class PerformanceRecommendations {
   static getRecommendations(metrics: PerformanceMetrics, webVitals: WebVitals): string[] {
     const recommendations: string[] = []
-    
+
     // Memory usage recommendations
     if (metrics.memoryUsage > 100) {
       recommendations.push('Consider reducing memory usage - current usage is high')
     }
-    
+
     // Bundle size recommendations
     if (metrics.bundleSize > 500) {
       recommendations.push('Bundle size is large - consider code splitting and tree shaking')
     }
-    
+
     // Web Vitals recommendations
     if (webVitals.LCP > 2500) {
-      recommendations.push('Largest Contentful Paint is slow - optimize images and critical resources')
+      recommendations.push(
+        'Largest Contentful Paint is slow - optimize images and critical resources'
+      )
     }
-    
+
     if (webVitals.FID > 100) {
       recommendations.push('First Input Delay is high - reduce JavaScript execution time')
     }
-    
+
     if (webVitals.CLS > 0.1) {
       recommendations.push('Cumulative Layout Shift detected - ensure stable layout')
     }
-    
+
     if (webVitals.TTFB > 800) {
       recommendations.push('Time to First Byte is slow - optimize server response time')
     }
-    
+
     // General recommendations
     if (!metrics.imageOptimization) {
       recommendations.push('Enable image optimization for better performance')
     }
-    
+
     if (!metrics.codeSplitting) {
       recommendations.push('Implement code splitting to reduce initial bundle size')
     }
-    
+
     if (!metrics.caching) {
       recommendations.push('Enable caching for static assets')
     }
-    
+
     return recommendations
   }
 }
@@ -389,10 +402,4 @@ export class PerformanceRecommendations {
 export const performanceMonitor = new PerformanceMonitor()
 
 // Export utilities
-export {
-  ImageOptimizer,
-  CodeSplitter,
-  CacheManager,
-  BundleAnalyzer,
-  PerformanceRecommendations
-}
+// All classes are already exported individually above

@@ -71,7 +71,7 @@ export default function ToolsPage() {
           <FadeIn delay={600}>
             <div className="space-y-12">
               {TOOL_CATEGORIES.map(category => {
-                const categoryTools = TOOLS.filter(tool => tool.category.id === category.id)
+                const categoryTools = TOOLS.filter(tool => tool.category?.id === category.id)
 
                 if (categoryTools.length === 0) return null
 

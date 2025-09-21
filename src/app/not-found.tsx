@@ -21,11 +21,15 @@ export default function NotFound() {
         <FadeIn delay={200}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/">
-              <Button leftIcon={<Home className="h-4 w-4" />}>Go Home</Button>
+              <Button>
+                <Home className="h-4 w-4 mr-2" />
+                Go Home
+              </Button>
             </Link>
 
             <Link href="/tools">
-              <Button variant="outline" leftIcon={<Search className="h-4 w-4" />}>
+              <Button variant="outline">
+                <Search className="h-4 w-4 mr-2" />
                 Browse Tools
               </Button>
             </Link>

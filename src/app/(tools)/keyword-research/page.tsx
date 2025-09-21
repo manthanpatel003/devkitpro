@@ -1,30 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Search, 
-  Copy, 
-  Download, 
-  TrendingUp,
-  BarChart3,
-  Target
-} from 'lucide-react'
 import { copyToClipboard, downloadFile } from '@/lib/utils'
+import { BarChart3, Copy, Download, Search, Target, TrendingUp } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Keyword Research Tool - Free SEO Keyword Finder',
-  description: 'Find relevant keywords for your content. Free keyword research tool with search volume and competition analysis.',
-  keywords: ['keyword research', 'SEO keywords', 'keyword finder', 'keyword tool', 'SEO research'],
-  openGraph: {
-    title: 'Keyword Research Tool - Free SEO Keyword Finder',
-    description: 'Find relevant keywords for your content. Free keyword research tool with search volume analysis.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface KeywordData {
   keyword: string
@@ -58,48 +43,48 @@ export default function KeywordResearchPage() {
           searchVolume: 12000,
           competition: 'High',
           difficulty: 85,
-          cpc: 2.50,
-          trend: 'up'
+          cpc: 2.5,
+          trend: 'up',
         },
         {
           keyword: `${query} guide`,
           searchVolume: 8500,
           competition: 'Medium',
           difficulty: 65,
-          cpc: 1.80,
-          trend: 'stable'
+          cpc: 1.8,
+          trend: 'stable',
         },
         {
           keyword: `${query} tips`,
           searchVolume: 6200,
           competition: 'Medium',
           difficulty: 58,
-          cpc: 1.20,
-          trend: 'up'
+          cpc: 1.2,
+          trend: 'up',
         },
         {
           keyword: `best ${query}`,
           searchVolume: 4500,
           competition: 'High',
           difficulty: 78,
-          cpc: 2.10,
-          trend: 'stable'
+          cpc: 2.1,
+          trend: 'stable',
         },
         {
           keyword: `${query} tutorial`,
           searchVolume: 3800,
           competition: 'Low',
           difficulty: 45,
-          cpc: 0.90,
-          trend: 'up'
+          cpc: 0.9,
+          trend: 'up',
         },
         {
           keyword: `how to ${query}`,
           searchVolume: 2900,
           competition: 'Medium',
           difficulty: 52,
-          cpc: 1.50,
-          trend: 'stable'
+          cpc: 1.5,
+          trend: 'stable',
         },
         {
           keyword: `${query} for beginners`,
@@ -107,23 +92,22 @@ export default function KeywordResearchPage() {
           competition: 'Low',
           difficulty: 38,
           cpc: 0.75,
-          trend: 'up'
+          trend: 'up',
         },
         {
           keyword: `${query} examples`,
           searchVolume: 1800,
           competition: 'Low',
           difficulty: 42,
-          cpc: 0.60,
-          trend: 'stable'
-        }
+          cpc: 0.6,
+          trend: 'stable',
+        },
       ]
 
       setKeywords(mockKeywords)
       success(`Found ${mockKeywords.length} related keywords!`)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to research keywords'
-      setError(errorMessage)
       showError('Keyword Research Failed', errorMessage)
     } finally {
       setLoading(false)
@@ -131,8 +115,8 @@ export default function KeywordResearchPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -184,14 +168,16 @@ export default function KeywordResearchPage() {
               <Search className="w-5 h-5 mr-2 text-blue-600" />
               Keyword Research
             </CardTitle>
-            <CardDescription>Enter a keyword to find related terms and analyze their potential</CardDescription>
+            <CardDescription>
+              Enter a keyword to find related terms and analyze their potential
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex gap-4">
               <Input
                 placeholder="Enter a keyword to research..."
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={e => setQuery(e.target.value)}
                 className="flex-1"
                 icon={<Target className="w-5 h-5" />}
               />
@@ -239,7 +225,9 @@ export default function KeywordResearchPage() {
                   </div>
                   <div className="text-center p-4 bg-yellow-50 rounded-lg">
                     <div className="text-2xl font-bold text-yellow-600">
-                      {Math.round(keywords.reduce((sum, k) => sum + k.difficulty, 0) / keywords.length)}
+                      {Math.round(
+                        keywords.reduce((sum, k) => sum + k.difficulty, 0) / keywords.length
+                      )}
                     </div>
                     <div className="text-sm text-yellow-600">Avg Difficulty</div>
                   </div>
@@ -264,9 +252,15 @@ export default function KeywordResearchPage() {
                     <thead>
                       <tr className="border-b border-gray-200">
                         <th className="text-left py-3 px-4 font-medium text-gray-900">Keyword</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-900">Search Volume</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-900">Competition</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-900">Difficulty</th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-900">
+                          Search Volume
+                        </th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-900">
+                          Competition
+                        </th>
+                        <th className="text-left py-3 px-4 font-medium text-gray-900">
+                          Difficulty
+                        </th>
                         <th className="text-left py-3 px-4 font-medium text-gray-900">CPC</th>
                         <th className="text-left py-3 px-4 font-medium text-gray-900">Trend</th>
                         <th className="text-left py-3 px-4 font-medium text-gray-900">Actions</th>
@@ -276,14 +270,22 @@ export default function KeywordResearchPage() {
                       {keywords.map((keyword, index) => (
                         <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
                           <td className="py-3 px-4 font-medium text-gray-900">{keyword.keyword}</td>
-                          <td className="py-3 px-4 text-gray-600">{keyword.searchVolume.toLocaleString()}</td>
+                          <td className="py-3 px-4 text-gray-600">
+                            {keyword.searchVolume.toLocaleString()}
+                          </td>
                           <td className="py-3 px-4">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCompetitionColor(keyword.competition)}`}>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${getCompetitionColor(
+                                keyword.competition
+                              )}`}
+                            >
                               {keyword.competition}
                             </span>
                           </td>
                           <td className="py-3 px-4">
-                            <span className={`font-medium ${getDifficultyColor(keyword.difficulty)}`}>
+                            <span
+                              className={`font-medium ${getDifficultyColor(keyword.difficulty)}`}
+                            >
                               {keyword.difficulty}%
                             </span>
                           </td>
@@ -326,11 +328,18 @@ export default function KeywordResearchPage() {
                     Copy All Keywords
                   </Button>
                   <Button
-                    onClick={() => downloadFile(
-                      `Keyword Research Report for "${query}"\n\n${keywords.map(k => `${k.keyword} | Volume: ${k.searchVolume} | Competition: ${k.competition} | Difficulty: ${k.difficulty}% | CPC: $${k.cpc}`).join('\n')}`,
-                      `keywords-${Date.now()}.txt`,
-                      'text/plain'
-                    )}
+                    onClick={() =>
+                      downloadFile(
+                        `Keyword Research Report for "${query}"\n\n${keywords
+                          .map(
+                            k =>
+                              `${k.keyword} | Volume: ${k.searchVolume} | Competition: ${k.competition} | Difficulty: ${k.difficulty}% | CPC: $${k.cpc}`
+                          )
+                          .join('\n')}`,
+                        `keywords-${Date.now()}.txt`,
+                        'text/plain'
+                      )
+                    }
                     variant="outline"
                     size="sm"
                   >

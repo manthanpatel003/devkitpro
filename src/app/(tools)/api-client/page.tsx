@@ -1,43 +1,35 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Send, 
-  Copy, 
-  Download, 
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Globe,
-  Settings,
-  Plus,
-  Trash2
-} from 'lucide-react'
 import { copyToClipboard, downloadFile, formatDuration } from '@/lib/utils'
-import { APIEndpoint, APIResponse } from '@/types'
+import { APIResponse } from '@/types'
+import {
+  CheckCircle2,
+  Clock,
+  Copy,
+  Download,
+  Globe,
+  Plus,
+  Send,
+  Settings,
+  Trash2,
+  XCircle,
+} from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'REST API Client - Free API Testing Tool',
-  description: 'Test REST API endpoints with our free API client. Send GET, POST, PUT, DELETE requests and analyze responses.',
-  keywords: ['API client', 'REST API', 'API testing', 'HTTP client', 'API tool', 'endpoint testing'],
-  openGraph: {
-    title: 'REST API Client - Free API Testing Tool',
-    description: 'Test REST API endpoints with our free API client. Send HTTP requests and analyze responses.',
-  },
-}
+// Metadata moved to layout.tsx - client components cannot export metadata
 
 const httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS']
 const commonHeaders = {
   'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'Authorization': 'Bearer your-token-here',
-  'User-Agent': 'API-Client/1.0'
+  Accept: 'application/json',
+  Authorization: 'Bearer your-token-here',
+  'User-Agent': 'API-Client/1.0',
 }
 
 export default function APIClientPage() {
@@ -62,13 +54,13 @@ export default function APIClientPage() {
 
     try {
       const startTime = Date.now()
-      
+
       const requestOptions: RequestInit = {
         method,
         headers: {
           'Content-Type': 'application/json',
-          ...headers
-        }
+          ...headers,
+        },
       }
 
       if (['POST', 'PUT', 'PATCH'].includes(method) && body.trim()) {
@@ -90,7 +82,7 @@ export default function APIClientPage() {
 
       let responseData: any
       const contentType = res.headers.get('content-type')
-      
+
       if (contentType?.includes('application/json')) {
         responseData = await res.json()
       } else {
@@ -103,7 +95,7 @@ export default function APIClientPage() {
         headers: responseHeaders,
         data: responseData,
         duration,
-        size: JSON.stringify(responseData).length
+        size: JSON.stringify(responseData).length,
       }
 
       setResponse(apiResponse)
@@ -120,7 +112,7 @@ export default function APIClientPage() {
     if (newHeaderKey.trim() && newHeaderValue.trim()) {
       setHeaders(prev => ({
         ...prev,
-        [newHeaderKey.trim()]: newHeaderValue.trim()
+        [newHeaderKey.trim()]: newHeaderValue.trim(),
       }))
       setNewHeaderKey('')
       setNewHeaderValue('')
@@ -138,13 +130,13 @@ export default function APIClientPage() {
   const addCommonHeader = (key: string, value: string) => {
     setHeaders(prev => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }))
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -168,9 +160,7 @@ export default function APIClientPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            REST API Client
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">REST API Client</h1>
           <p className="text-xl text-gray-600">
             Test REST API endpoints with our free HTTP client tool
           </p>
@@ -192,17 +182,19 @@ export default function APIClientPage() {
                   <div className="flex gap-2">
                     <select
                       value={method}
-                      onChange={(e) => setMethod(e.target.value)}
+                      onChange={e => setMethod(e.target.value)}
                       className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     >
                       {httpMethods.map(m => (
-                        <option key={m} value={m}>{m}</option>
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
                       ))}
                     </select>
                     <Input
                       placeholder="https://api.example.com/endpoint"
                       value={url}
-                      onChange={(e) => setUrl(e.target.value)}
+                      onChange={e => setUrl(e.target.value)}
                       className="flex-1"
                       icon={<Globe className="w-5 h-5" />}
                     />
@@ -210,27 +202,13 @@ export default function APIClientPage() {
 
                   {/* Headers */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Headers
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Headers</label>
                     <div className="space-y-2">
                       {Object.entries(headers).map(([key, value]) => (
                         <div key={key} className="flex gap-2">
-                          <Input
-                            value={key}
-                            readOnly
-                            className="flex-1"
-                          />
-                          <Input
-                            value={value}
-                            readOnly
-                            className="flex-1"
-                          />
-                          <Button
-                            onClick={() => removeHeader(key)}
-                            variant="outline"
-                            size="sm"
-                          >
+                          <Input value={key} readOnly className="flex-1" />
+                          <Input value={value} readOnly className="flex-1" />
+                          <Button onClick={() => removeHeader(key)} variant="outline" size="sm">
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
@@ -239,13 +217,13 @@ export default function APIClientPage() {
                         <Input
                           placeholder="Header name"
                           value={newHeaderKey}
-                          onChange={(e) => setNewHeaderKey(e.target.value)}
+                          onChange={e => setNewHeaderKey(e.target.value)}
                           className="flex-1"
                         />
                         <Input
                           placeholder="Header value"
                           value={newHeaderValue}
-                          onChange={(e) => setNewHeaderValue(e.target.value)}
+                          onChange={e => setNewHeaderValue(e.target.value)}
                           className="flex-1"
                         />
                         <Button onClick={addHeader} size="sm">
@@ -253,7 +231,7 @@ export default function APIClientPage() {
                         </Button>
                       </div>
                     </div>
-                    
+
                     {/* Common Headers */}
                     <div className="mt-2">
                       <div className="text-xs text-gray-600 mb-1">Quick add:</div>
@@ -282,7 +260,7 @@ export default function APIClientPage() {
                       <Textarea
                         placeholder="Enter JSON or text body..."
                         value={body}
-                        onChange={(e) => setBody(e.target.value)}
+                        onChange={e => setBody(e.target.value)}
                         className="min-h-[200px] font-mono text-sm"
                         rows={8}
                       />
@@ -353,22 +331,23 @@ export default function APIClientPage() {
                     <div>
                       <h4 className="font-medium text-gray-900 mb-2">Response Body</h4>
                       <pre className="bg-gray-50 p-3 rounded text-sm overflow-auto max-h-64">
-                        {typeof response.data === 'string' 
-                          ? response.data 
-                          : JSON.stringify(response.data, null, 2)
-                        }
+                        {typeof response.data === 'string'
+                          ? response.data
+                          : JSON.stringify(response.data, null, 2)}
                       </pre>
                     </div>
 
                     {/* Actions */}
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => handleCopy(
-                          typeof response.data === 'string' 
-                            ? response.data 
-                            : JSON.stringify(response.data, null, 2),
-                          'Response Body'
-                        )}
+                        onClick={() =>
+                          handleCopy(
+                            typeof response.data === 'string'
+                              ? response.data
+                              : JSON.stringify(response.data, null, 2),
+                            'Response Body'
+                          )
+                        }
                         variant="outline"
                         size="sm"
                       >
@@ -376,13 +355,15 @@ export default function APIClientPage() {
                         Copy Response
                       </Button>
                       <Button
-                        onClick={() => downloadFile(
-                          typeof response.data === 'string' 
-                            ? response.data 
-                            : JSON.stringify(response.data, null, 2),
-                          `response-${Date.now()}.json`,
-                          'application/json'
-                        )}
+                        onClick={() =>
+                          downloadFile(
+                            typeof response.data === 'string'
+                              ? response.data
+                              : JSON.stringify(response.data, null, 2),
+                            `response-${Date.now()}.json`,
+                            'application/json'
+                          )
+                        }
                         variant="outline"
                         size="sm"
                       >

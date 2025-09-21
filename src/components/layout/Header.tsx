@@ -25,7 +25,9 @@ export function Header() {
       tool =>
         tool.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
         tool.description.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        tool.keywords.some(keyword => keyword.toLowerCase().includes(debouncedSearch.toLowerCase()))
+        tool.keywords.some((keyword: string) =>
+          keyword.toLowerCase().includes(debouncedSearch.toLowerCase())
+        )
     ).slice(0, 5)
   }, [debouncedSearch])
 
@@ -101,7 +103,7 @@ export function Header() {
 
             <Button
               variant="outline"
-              size="icon"
+              size="sm"
               className="md:hidden"
               onClick={() => setIsSearchOpen(true)}
             >
@@ -109,7 +111,7 @@ export function Header() {
             </Button>
 
             {/* Theme Toggle */}
-            <Button variant="outline" size="icon" onClick={toggleTheme} className="hover:scale-105">
+            <Button variant="outline" size="sm" onClick={toggleTheme} className="hover:scale-105">
               <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
@@ -117,7 +119,7 @@ export function Header() {
 
             {/* GitHub */}
             <Link href="https://github.com/devtools-hub" target="_blank">
-              <Button variant="outline" size="icon" className="hover:scale-105">
+              <Button variant="outline" size="sm" className="hover:scale-105">
                 <Github className="h-4 w-4" />
                 <span className="sr-only">GitHub</span>
               </Button>
@@ -126,7 +128,7 @@ export function Header() {
             {/* Mobile Menu */}
             <Button
               variant="outline"
-              size="icon"
+              size="sm"
               className="md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Metadata } from 'next'
+// Metadata removed - client components cannot export metadata
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
@@ -21,15 +21,7 @@ import {
 import { formatBytes, formatDuration } from '@/lib/utils'
 import { SpeedTestResult } from '@/types'
 
-export const metadata: Metadata = {
-  title: 'Internet Speed Test - Free Online Speed Checker',
-  description: 'Test your internet connection speed with our free speed test. Check download, upload, ping, and jitter speeds instantly.',
-  keywords: ['speed test', 'internet speed', 'bandwidth test', 'connection speed', 'download speed', 'upload speed'],
-  openGraph: {
-    title: 'Internet Speed Test - Free Online Speed Checker',
-    description: 'Test your internet connection speed with our free speed test. Check download, upload, ping, and jitter speeds.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function SpeedTestPage() {
   const [isRunning, setIsRunning] = useState(false)

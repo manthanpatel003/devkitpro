@@ -82,7 +82,7 @@ export function FeaturesSection() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"
         >
           {features.map((feature, index) => (
-            <Card key={index} variant="glass" className="hover-lift">
+            <Card key={index} variant="default" className="hover-lift">
               <CardHeader>
                 <div
                   className={`w-12 h-12 rounded-lg bg-background flex items-center justify-center mb-4 ${feature.color}`}
@@ -114,10 +114,10 @@ export function FeaturesSection() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20"
         >
           {TOOL_CATEGORIES.map((category, index) => {
-            const categoryTools = TOOLS.filter(tool => tool.category.id === category.id)
+            const categoryTools = TOOLS.filter(tool => tool.category?.id === category.id)
 
             return (
-              <Card key={category.id} variant="interactive" className="group">
+              <Card key={category.id} variant="default" className="group">
                 <CardHeader>
                   <div className="flex items-center space-x-3 mb-3">
                     <div
@@ -185,18 +185,18 @@ export function FeaturesSection() {
                   ))}
                 </div>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                  <Button variant="gradient" size="lg" asChild>
-                    <Link href="/tools">
+                  <Link href="/tools">
+                    <Button variant="primary" size="lg">
                       Start Using Tools
                       <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild>
-                    <Link href="https://github.com/devtools-hub" target="_blank">
+                    </Button>
+                  </Link>
+                  <Link href="https://github.com/devtools-hub" target="_blank">
+                    <Button variant="outline" size="lg">
                       <Star className="mr-2 h-4 w-4" />
                       Star on GitHub
-                    </Link>
-                  </Button>
+                    </Button>
+                  </Link>
                 </div>
               </div>
 
@@ -207,7 +207,7 @@ export function FeaturesSection() {
                     .map((tool, index) => (
                       <Card
                         key={tool.id}
-                        variant="glass"
+                        variant="default"
                         className={`hover-lift ${index % 2 === 0 ? 'mt-8' : ''}`}
                       >
                         <CardHeader className="pb-3">

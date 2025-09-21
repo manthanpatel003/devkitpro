@@ -1,3 +1,12 @@
+export interface ToolCategory {
+  id: string
+  name: string
+  description: string
+  icon: string
+  color: string
+  featured?: boolean
+}
+
 export interface ToolMetadata {
   title: string
   description: string
@@ -6,6 +15,32 @@ export interface ToolMetadata {
   icon: string
   color: string
   featured?: boolean
+}
+
+export interface Tool {
+  id: string
+  name: string
+  description: string
+  path: string
+  keywords: string[]
+  icon: string
+  category?: {
+    id: string
+    name: string
+    color: string
+  }
+  popular?: boolean
+  featured?: boolean
+  new?: boolean
+}
+
+export interface AnimationConfig {
+  duration?: number
+  delay?: number
+  easing?: string
+  direction?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse'
+  fillMode?: 'none' | 'forwards' | 'backwards' | 'both'
+  iterationCount?: number | 'infinite'
 }
 
 export interface ApiResponse<T = any> {

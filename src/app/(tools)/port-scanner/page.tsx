@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef } from 'react'
-import { Metadata } from 'next'
+// Metadata removed - client components cannot export metadata
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -23,15 +23,7 @@ import {
 import { copyToClipboard } from '@/lib/utils'
 import { PortScanResult } from '@/types'
 
-export const metadata: Metadata = {
-  title: 'Port Scanner - Free Online Port Scanner Tool',
-  description: 'Scan open ports on any host or IP address. Free port scanner tool with service detection and detailed results.',
-  keywords: ['port scanner', 'port check', 'network scanner', 'open ports', 'port scan', 'network security'],
-  openGraph: {
-    title: 'Port Scanner - Free Online Port Scanner Tool',
-    description: 'Scan open ports on any host or IP address. Free port scanner tool with service detection.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 const commonPorts = [
   { port: 21, service: 'FTP', description: 'File Transfer Protocol' },
@@ -181,8 +173,8 @@ export default function PortScannerPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')

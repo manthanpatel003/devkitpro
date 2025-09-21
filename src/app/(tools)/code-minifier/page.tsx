@@ -1,38 +1,22 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Minimize, 
-  Copy, 
-  Download, 
-  Upload,
-  FileText,
-  Code,
-  Settings
-} from 'lucide-react'
 import { copyToClipboard, downloadFile } from '@/lib/utils'
+import { Code, Copy, Download, FileText, Minimize, Settings, Upload } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Code Minifier - Free Code Minification Tool',
-  description: 'Minify CSS, JavaScript, HTML, and JSON code. Free code minifier with multiple language support.',
-  keywords: ['code minifier', 'minify code', 'CSS minifier', 'JS minifier', 'HTML minifier', 'code compression'],
-  openGraph: {
-    title: 'Code Minifier - Free Code Minification Tool',
-    description: 'Minify CSS, JavaScript, HTML, and JSON code. Free code minifier with multiple language support.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 const languages = [
   { value: 'javascript', label: 'JavaScript', extension: 'js' },
   { value: 'css', label: 'CSS', extension: 'css' },
   { value: 'html', label: 'HTML', extension: 'html' },
   { value: 'json', label: 'JSON', extension: 'json' },
-  { value: 'xml', label: 'XML', extension: 'xml' }
+  { value: 'xml', label: 'XML', extension: 'xml' },
 ]
 
 export default function CodeMinifierPage() {
@@ -115,21 +99,21 @@ export default function CodeMinifierPage() {
 
     const minified = minifyCode(input, language)
     setOutput(minified)
-    
+
     const original = new Blob([input]).size
     const minifiedSize = new Blob([minified]).size
     const ratio = Math.round(((original - minifiedSize) / original) * 100)
-    
+
     setOriginalSize(original)
     setMinifiedSize(minifiedSize)
     setCompressionRatio(Math.max(0, ratio))
-    
+
     success('Code minified successfully!')
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -146,7 +130,7 @@ export default function CodeMinifierPage() {
     const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = e => {
         const content = e.target?.result as string
         setInput(content)
         const minified = minifyCode(content, language)
@@ -194,9 +178,9 @@ export default function CodeMinifierPage() {
     <h1>Welcome to our website</h1>
     <p>This is an example HTML page.</p>
 </body>
-</html>`
+</html>`,
     }
-    
+
     const example = examples[language as keyof typeof examples] || examples.javascript
     setInput(example)
     const minified = minifyCode(example, language)
@@ -209,9 +193,7 @@ export default function CodeMinifierPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Code Minifier
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Code Minifier</h1>
           <p className="text-xl text-gray-600">
             Minify CSS, JavaScript, HTML, and JSON code to reduce file size
           </p>
@@ -228,12 +210,10 @@ export default function CodeMinifierPage() {
           <CardContent>
             <div className="flex items-center space-x-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Language
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
                 <select
                   value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
+                  onChange={e => setLanguage(e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   {languages.map(lang => (
@@ -267,12 +247,10 @@ export default function CodeMinifierPage() {
                     className="hidden"
                     id="file-upload"
                   />
-                  <label htmlFor="file-upload">
-                    <Button variant="outline" size="sm" asChild>
-                      <span>
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload
-                      </span>
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    <Button variant="outline" size="sm" type="button">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload
                     </Button>
                   </label>
                 </div>
@@ -282,7 +260,7 @@ export default function CodeMinifierPage() {
               <Textarea
                 placeholder="Paste your code here..."
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={e => setInput(e.target.value)}
                 className="min-h-[400px] font-mono text-sm"
                 rows={20}
               />
@@ -311,7 +289,7 @@ export default function CodeMinifierPage() {
                   className="min-h-[400px] font-mono text-sm"
                   rows={20}
                 />
-                
+
                 {output && (
                   <div className="space-y-4">
                     {/* Statistics */}
@@ -341,7 +319,14 @@ export default function CodeMinifierPage() {
                         Copy
                       </Button>
                       <Button
-                        onClick={() => handleDownload(output, `minified-${Date.now()}.${languages.find(l => l.value === language)?.extension}`)}
+                        onClick={() =>
+                          handleDownload(
+                            output,
+                            `minified-${Date.now()}.${
+                              languages.find(l => l.value === language)?.extension
+                            }`
+                          )
+                        }
                         variant="outline"
                         size="sm"
                       >

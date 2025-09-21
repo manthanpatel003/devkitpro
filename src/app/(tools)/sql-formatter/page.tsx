@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
+// Metadata removed - client components cannot export metadata
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Textarea } from '@/components/ui/Textarea'
@@ -16,15 +16,7 @@ import {
 } from 'lucide-react'
 import { copyToClipboard, downloadFile } from '@/lib/utils'
 
-export const metadata: Metadata = {
-  title: 'SQL Formatter - Free SQL Beautifier Tool',
-  description: 'Format and beautify SQL queries. Free SQL formatter with syntax highlighting and validation.',
-  keywords: ['SQL formatter', 'SQL beautifier', 'SQL prettifier', 'SQL tool', 'query formatter'],
-  openGraph: {
-    title: 'SQL Formatter - Free SQL Beautifier Tool',
-    description: 'Format and beautify SQL queries. Free SQL formatter with syntax highlighting.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function SQLFormatterPage() {
   const [input, setInput] = useState('')
@@ -67,8 +59,8 @@ export default function SQLFormatterPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')

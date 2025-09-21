@@ -92,7 +92,7 @@ export function StatsSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
             <FadeIn key={index} delay={index * 100}>
-              <Card variant="glass" className="text-center hover-lift">
+              <Card variant="default" className="text-center hover-lift">
                 <CardContent className="p-6">
                   <div
                     className={`inline-flex items-center justify-center w-12 h-12 rounded-lg bg-background/50 ${stat.color} mb-4`}

@@ -29,10 +29,18 @@ export function CountUp({
 }: CountUpProps) {
   const [count, setCount] = React.useState(start)
   const [hasStarted, setHasStarted] = React.useState(false)
+  const spanRef = React.useRef<HTMLSpanElement>(null)
   const { elementRef, isVisible } = useIntersectionObserver({
     threshold: 0.3,
     freezeOnceVisible: true,
   })
+
+  React.useEffect(() => {
+    if (spanRef.current) {
+      // @ts-ignore - We need to assign the ref for intersection observer
+      elementRef.current = spanRef.current
+    }
+  }, [])
 
   React.useEffect(() => {
     if (isVisible && !hasStarted) {
@@ -66,7 +74,7 @@ export function CountUp({
   }
 
   return (
-    <span ref={elementRef} className={cn('tabular-nums', className)}>
+    <span ref={spanRef} className={cn('tabular-nums', className)}>
       {prefix}
       {formatNumber(count)}
       {suffix}

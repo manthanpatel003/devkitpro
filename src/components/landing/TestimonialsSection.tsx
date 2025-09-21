@@ -91,7 +91,7 @@ export function TestimonialsSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
             <FadeIn key={index} delay={index * 100}>
-              <Card variant="glass" className="hover-lift h-full">
+              <Card variant="default" className="hover-lift h-full">
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-1 mb-4">
                     {Array.from({ length: testimonial.rating }).map((_, i) => (

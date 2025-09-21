@@ -51,31 +51,29 @@ export function CTASection() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
-                size="xl"
-                variant="gradient"
-                className="text-lg px-10 py-6 h-auto font-semibold animate-glow"
-                asChild
-              >
-                <Link href="/tools">
+              <Link href="/tools">
+                <Button
+                  size="lg"
+                  variant="primary"
+                  className="text-lg px-10 py-6 h-auto font-semibold animate-glow"
+                >
                   <Rocket className="mr-2 h-5 w-5" />
                   Start Using Tools Now
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
-              <Button
-                size="xl"
-                variant="outline"
-                className="text-lg px-10 py-6 h-auto font-semibold hover:bg-background"
-                asChild
-              >
-                <Link href="https://github.com/devtools-hub" target="_blank">
+              <Link href="https://github.com/devtools-hub" target="_blank">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-10 py-6 h-auto font-semibold hover:bg-background"
+                >
                   <Github className="mr-2 h-5 w-5" />
                   View Source Code
                   <Star className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
 
             {/* Features Highlight */}

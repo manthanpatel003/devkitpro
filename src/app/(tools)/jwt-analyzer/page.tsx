@@ -1,31 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Key, 
-  Copy, 
-  CheckCircle2, 
-  XCircle,
-  AlertTriangle,
-  Clock,
-  Info
-} from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
+import { CheckCircle2, Copy, Info, Key, XCircle } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'JWT Token Analyzer - Free JWT Decoder',
-  description: 'Decode and analyze JWT tokens. Free JWT analyzer with header, payload, and signature inspection.',
-  keywords: ['JWT analyzer', 'JWT decoder', 'JWT token', 'JSON Web Token', 'JWT tool', 'token decoder'],
-  openGraph: {
-    title: 'JWT Token Analyzer - Free JWT Decoder',
-    description: 'Decode and analyze JWT tokens. Free JWT analyzer with header, payload, and signature inspection.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface JWTResult {
   valid: boolean
@@ -59,7 +43,7 @@ export default function JWTAnalyzerPage() {
 
       // Decode header
       const header = JSON.parse(atob(headerPart.replace(/-/g, '+').replace(/_/g, '/')))
-      
+
       // Decode payload
       const payload = JSON.parse(atob(payloadPart.replace(/-/g, '+').replace(/_/g, '/')))
 
@@ -82,12 +66,12 @@ export default function JWTAnalyzerPage() {
         subject: payload.sub,
         audience: payload.aud,
         isExpired,
-        timeToExpiry
+        timeToExpiry: timeToExpiry ?? undefined,
       }
     } catch (error) {
       return {
         valid: false,
-        error: error instanceof Error ? error.message : 'Failed to decode JWT'
+        error: error instanceof Error ? error.message : 'Failed to decode JWT',
       }
     }
   }
@@ -100,7 +84,7 @@ export default function JWTAnalyzerPage() {
 
     const result = decodeJWT(token.trim())
     setResult(result)
-    
+
     if (result.valid) {
       success('JWT token analyzed successfully!')
     } else {
@@ -109,8 +93,8 @@ export default function JWTAnalyzerPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -118,7 +102,8 @@ export default function JWTAnalyzerPage() {
   }
 
   const loadExample = () => {
-    const exampleToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+    const exampleToken =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
     setToken(exampleToken)
     const result = decodeJWT(exampleToken)
     setResult(result)
@@ -133,7 +118,7 @@ export default function JWTAnalyzerPage() {
     const days = Math.floor(seconds / 86400)
     const hours = Math.floor((seconds % 86400) / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
-    
+
     if (days > 0) return `${days}d ${hours}h ${minutes}m`
     if (hours > 0) return `${hours}h ${minutes}m`
     return `${minutes}m ${seconds % 60}s`
@@ -144,9 +129,7 @@ export default function JWTAnalyzerPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            JWT Token Analyzer
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">JWT Token Analyzer</h1>
           <p className="text-xl text-gray-600">
             Decode and analyze JWT tokens with detailed inspection
           </p>
@@ -159,16 +142,14 @@ export default function JWTAnalyzerPage() {
               <Key className="w-5 h-5 mr-2 text-blue-600" />
               JWT Token
             </CardTitle>
-            <CardDescription>
-              Paste your JWT token to decode and analyze
-            </CardDescription>
+            <CardDescription>Paste your JWT token to decode and analyze</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <Textarea
                 placeholder="Paste your JWT token here..."
                 value={token}
-                onChange={(e) => setToken(e.target.value)}
+                onChange={e => setToken(e.target.value)}
                 className="min-h-[120px] font-mono text-sm"
                 rows={5}
               />
@@ -330,8 +311,9 @@ export default function JWTAnalyzerPage() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600">
-              JWT (JSON Web Token) is a compact, URL-safe means of representing claims to be transferred between two parties. 
-              It consists of three parts: Header, Payload, and Signature, separated by dots.
+              JWT (JSON Web Token) is a compact, URL-safe means of representing claims to be
+              transferred between two parties. It consists of three parts: Header, Payload, and
+              Signature, separated by dots.
             </p>
           </CardContent>
         </Card>

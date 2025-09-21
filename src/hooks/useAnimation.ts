@@ -13,12 +13,9 @@ export function useAnimation(config: AnimationConfig) {
     setIsAnimating(true)
     setHasAnimated(true)
 
-    setTimeout(
-      () => {
-        setIsAnimating(false)
-      },
-      config.duration + (config.delay || 0)
-    )
+    setTimeout(() => {
+      setIsAnimating(false)
+    }, (config.duration || 1000) + (config.delay || 0))
   }
 
   const resetAnimation = () => {

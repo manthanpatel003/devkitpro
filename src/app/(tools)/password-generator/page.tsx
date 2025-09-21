@@ -1,30 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Key, 
-  Copy, 
-  RefreshCw,
-  Shield,
-  Settings
-} from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
 import { GeneratorOptions } from '@/types'
+import { Copy, Key, RefreshCw, Settings, Shield } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Password Generator - Free Secure Password Creator',
-  description: 'Generate secure passwords with customizable options. Free password generator with strength analysis and multiple character sets.',
-  keywords: ['password generator', 'secure password', 'password creator', 'random password', 'password tool'],
-  openGraph: {
-    title: 'Password Generator - Free Secure Password Creator',
-    description: 'Generate secure passwords with customizable options. Free password generator with strength analysis.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function PasswordGeneratorPage() {
   const [password, setPassword] = useState('')
@@ -36,7 +21,7 @@ export default function PasswordGeneratorPage() {
     includeNumbers: true,
     includeSymbols: true,
     excludeSimilar: false,
-    excludeAmbiguous: false
+    excludeAmbiguous: false,
   })
   const [strength, setStrength] = useState(0)
   const { success, error: showError } = useToast()
@@ -46,49 +31,49 @@ export default function PasswordGeneratorPage() {
       lowercase: 'abcdefghijklmnopqrstuvwxyz',
       uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
       numbers: '0123456789',
-      symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+      symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?',
     }
-    
+
     let chars = ''
     if (options.includeLowercase) chars += charset.lowercase
     if (options.includeUppercase) chars += charset.uppercase
     if (options.includeNumbers) chars += charset.numbers
     if (options.includeSymbols) chars += charset.symbols
-    
+
     if (options.excludeSimilar) {
       chars = chars.replace(/[il1Lo0O]/g, '')
     }
-    
+
     if (options.excludeAmbiguous) {
       chars = chars.replace(/[{}[\]()\/\\~,;.<>]/g, '')
     }
-    
+
     if (chars.length === 0) return ''
-    
+
     let result = ''
     const array = new Uint8Array(length)
     crypto.getRandomValues(array)
-    
+
     for (let i = 0; i < length; i++) {
       result += chars[array[i] % chars.length]
     }
-    
+
     return result
   }
 
   const calculateStrength = (pwd: string): number => {
     let score = 0
-    
+
     if (pwd.length >= 8) score += 1
     if (pwd.length >= 12) score += 1
     if (pwd.length >= 16) score += 1
     if (pwd.length >= 20) score += 1
-    
+
     if (/[a-z]/.test(pwd)) score += 1
     if (/[A-Z]/.test(pwd)) score += 1
     if (/[0-9]/.test(pwd)) score += 1
     if (/[^a-zA-Z0-9]/.test(pwd)) score += 1
-    
+
     return Math.min(score, 8)
   }
 
@@ -100,8 +85,8 @@ export default function PasswordGeneratorPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -127,7 +112,9 @@ export default function PasswordGeneratorPage() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Password Generator</h1>
-          <p className="text-xl text-gray-600">Generate secure passwords with customizable options</p>
+          <p className="text-xl text-gray-600">
+            Generate secure passwords with customizable options
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -151,7 +138,7 @@ export default function PasswordGeneratorPage() {
                     min="4"
                     max="128"
                     value={length}
-                    onChange={(e) => {
+                    onChange={e => {
                       const newLength = parseInt(e.target.value)
                       setLength(newLength)
                       setOptions(prev => ({ ...prev, length: newLength }))
@@ -174,7 +161,9 @@ export default function PasswordGeneratorPage() {
                       <input
                         type="checkbox"
                         checked={options.includeUppercase}
-                        onChange={(e) => setOptions(prev => ({ ...prev, includeUppercase: e.target.checked }))}
+                        onChange={e =>
+                          setOptions(prev => ({ ...prev, includeUppercase: e.target.checked }))
+                        }
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                       <span className="ml-2 text-sm text-gray-700">Uppercase letters (A-Z)</span>
@@ -183,7 +172,9 @@ export default function PasswordGeneratorPage() {
                       <input
                         type="checkbox"
                         checked={options.includeLowercase}
-                        onChange={(e) => setOptions(prev => ({ ...prev, includeLowercase: e.target.checked }))}
+                        onChange={e =>
+                          setOptions(prev => ({ ...prev, includeLowercase: e.target.checked }))
+                        }
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                       <span className="ml-2 text-sm text-gray-700">Lowercase letters (a-z)</span>
@@ -192,7 +183,9 @@ export default function PasswordGeneratorPage() {
                       <input
                         type="checkbox"
                         checked={options.includeNumbers}
-                        onChange={(e) => setOptions(prev => ({ ...prev, includeNumbers: e.target.checked }))}
+                        onChange={e =>
+                          setOptions(prev => ({ ...prev, includeNumbers: e.target.checked }))
+                        }
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                       <span className="ml-2 text-sm text-gray-700">Numbers (0-9)</span>
@@ -201,7 +194,9 @@ export default function PasswordGeneratorPage() {
                       <input
                         type="checkbox"
                         checked={options.includeSymbols}
-                        onChange={(e) => setOptions(prev => ({ ...prev, includeSymbols: e.target.checked }))}
+                        onChange={e =>
+                          setOptions(prev => ({ ...prev, includeSymbols: e.target.checked }))
+                        }
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                       <span className="ml-2 text-sm text-gray-700">Symbols (!@#$%^&*)</span>
@@ -211,27 +206,33 @@ export default function PasswordGeneratorPage() {
 
                 {/* Exclusions */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Exclusions
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Exclusions</label>
                   <div className="space-y-3">
                     <label className="flex items-center">
                       <input
                         type="checkbox"
                         checked={options.excludeSimilar}
-                        onChange={(e) => setOptions(prev => ({ ...prev, excludeSimilar: e.target.checked }))}
+                        onChange={e =>
+                          setOptions(prev => ({ ...prev, excludeSimilar: e.target.checked }))
+                        }
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
-                      <span className="ml-2 text-sm text-gray-700">Exclude similar characters (il1Lo0O)</span>
+                      <span className="ml-2 text-sm text-gray-700">
+                        Exclude similar characters (il1Lo0O)
+                      </span>
                     </label>
                     <label className="flex items-center">
                       <input
                         type="checkbox"
                         checked={options.excludeAmbiguous}
-                        onChange={(e) => setOptions(prev => ({ ...prev, excludeAmbiguous: e.target.checked }))}
+                        onChange={e =>
+                          setOptions(prev => ({ ...prev, excludeAmbiguous: e.target.checked }))
+                        }
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
-                      <span className="ml-2 text-sm text-gray-700">Exclude ambiguous characters ({ } [ ] ( ) / \ ~ , ; . < >)</span>
+                      <span className="ml-2 text-sm text-gray-700">
+                        Exclude ambiguous characters ({`{ } [ ] ( ) / \\ ~ , ; . < >`})
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -258,25 +259,31 @@ export default function PasswordGeneratorPage() {
                   <>
                     {/* Password Display */}
                     <div className="p-4 bg-gray-50 rounded-lg">
-                      <div className="font-mono text-lg text-gray-900 break-all">
-                        {password}
-                      </div>
+                      <div className="font-mono text-lg text-gray-900 break-all">{password}</div>
                     </div>
 
                     {/* Strength Indicator */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium text-gray-700">Password Strength</span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStrengthColor(strength)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getStrengthColor(
+                            strength
+                          )}`}
+                        >
                           {getStrengthLabel(strength)}
                         </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
+                        <div
                           className={`h-2 rounded-full transition-all duration-300 ${
-                            strength < 3 ? 'bg-red-500' :
-                            strength < 5 ? 'bg-yellow-500' :
-                            strength < 7 ? 'bg-blue-500' : 'bg-green-500'
+                            strength < 3
+                              ? 'bg-red-500'
+                              : strength < 5
+                              ? 'bg-yellow-500'
+                              : strength < 7
+                              ? 'bg-blue-500'
+                              : 'bg-green-500'
                           }`}
                           style={{ width: `${(strength / 8) * 100}%` }}
                         />

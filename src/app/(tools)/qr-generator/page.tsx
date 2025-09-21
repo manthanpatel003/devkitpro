@@ -1,32 +1,17 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useEffect, useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  QrCode, 
-  Copy, 
-  Download, 
-  RefreshCw,
-  Settings,
-  Palette
-} from 'lucide-react'
-import { copyToClipboard, downloadFile } from '@/lib/utils'
+import { copyToClipboard } from '@/lib/utils'
 import { QRCodeOptions } from '@/types'
+import { Copy, Download, Palette, QrCode, RefreshCw, Settings } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'QR Code Generator - Free QR Code Creator',
-  description: 'Generate QR codes for URLs, text, and data. Free QR code generator with customizable colors and sizes.',
-  keywords: ['QR code generator', 'QR code creator', 'QR code maker', 'QR tool', 'barcode generator'],
-  openGraph: {
-    title: 'QR Code Generator - Free QR Code Creator',
-    description: 'Generate QR codes for URLs, text, and data. Free QR code generator with customizable options.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function QRGeneratorPage() {
   const [text, setText] = useState('')
@@ -37,9 +22,9 @@ export default function QRGeneratorPage() {
     margin: 2,
     color: {
       dark: '#000000',
-      light: '#FFFFFF'
+      light: '#FFFFFF',
     },
-    errorCorrectionLevel: 'M'
+    errorCorrectionLevel: 'M',
   })
   const { success, error: showError } = useToast()
 
@@ -50,16 +35,18 @@ export default function QRGeneratorPage() {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
     if (!ctx) return ''
-    
-    canvas.width = options.size
-    canvas.height = options.size
-    
+
+    canvas.width = options.size || 256
+    canvas.height = options.size || 256
+
     // Create a simple mock QR code pattern
-    const cellSize = options.size / 25
-    ctx.fillStyle = options.color.light
-    ctx.fillRect(0, 0, options.size, options.size)
-    
-    ctx.fillStyle = options.color.dark
+    const size = options.size || 256
+    const cellSize = size / 25
+    const color = options.color || { light: '#ffffff', dark: '#000000' }
+    ctx.fillStyle = color.light
+    ctx.fillRect(0, 0, size, size)
+
+    ctx.fillStyle = color.dark
     for (let i = 0; i < 25; i++) {
       for (let j = 0; j < 25; j++) {
         if ((i + j) % 3 === 0 || (i * j) % 7 === 0) {
@@ -67,19 +54,29 @@ export default function QRGeneratorPage() {
         }
       }
     }
-    
+
     // Add corner markers
     const markerSize = cellSize * 7
-    ctx.fillStyle = options.color.dark
+    ctx.fillStyle = color.dark
     ctx.fillRect(0, 0, markerSize, markerSize)
-    ctx.fillRect(options.size - markerSize, 0, markerSize, markerSize)
-    ctx.fillRect(0, options.size - markerSize, markerSize, markerSize)
-    
-    ctx.fillStyle = options.color.light
+    ctx.fillRect(size - markerSize, 0, markerSize, markerSize)
+    ctx.fillRect(0, size - markerSize, markerSize, markerSize)
+
+    ctx.fillStyle = color.light
     ctx.fillRect(cellSize, cellSize, markerSize - 2 * cellSize, markerSize - 2 * cellSize)
-    ctx.fillRect(options.size - markerSize + cellSize, cellSize, markerSize - 2 * cellSize, markerSize - 2 * cellSize)
-    ctx.fillRect(cellSize, options.size - markerSize + cellSize, markerSize - 2 * cellSize, markerSize - 2 * cellSize)
-    
+    ctx.fillRect(
+      size - markerSize + cellSize,
+      cellSize,
+      markerSize - 2 * cellSize,
+      markerSize - 2 * cellSize
+    )
+    ctx.fillRect(
+      cellSize,
+      size - markerSize + cellSize,
+      markerSize - 2 * cellSize,
+      markerSize - 2 * cellSize
+    )
+
     return canvas.toDataURL('image/png')
   }
 
@@ -96,8 +93,8 @@ export default function QRGeneratorPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -153,11 +150,11 @@ export default function QRGeneratorPage() {
                   <Textarea
                     placeholder="Enter text, URL, or data to encode..."
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={e => setText(e.target.value)}
                     className="min-h-[120px]"
                     rows={5}
                   />
-                  
+
                   <div className="flex gap-2">
                     <Button onClick={loadExample} variant="outline">
                       Load Example
@@ -191,7 +188,9 @@ export default function QRGeneratorPage() {
                       max="512"
                       step="32"
                       value={options.size}
-                      onChange={(e) => setOptions(prev => ({ ...prev, size: parseInt(e.target.value) }))}
+                      onChange={e =>
+                        setOptions(prev => ({ ...prev, size: parseInt(e.target.value) }))
+                      }
                       className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
@@ -202,7 +201,12 @@ export default function QRGeneratorPage() {
                     </label>
                     <select
                       value={options.errorCorrectionLevel}
-                      onChange={(e) => setOptions(prev => ({ ...prev, errorCorrectionLevel: e.target.value as any }))}
+                      onChange={e =>
+                        setOptions(prev => ({
+                          ...prev,
+                          errorCorrectionLevel: e.target.value as any,
+                        }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     >
                       <option value="L">L - Low (7%)</option>
@@ -220,19 +224,23 @@ export default function QRGeneratorPage() {
                       <div className="flex items-center space-x-2">
                         <input
                           type="color"
-                          value={options.color.dark}
-                          onChange={(e) => setOptions(prev => ({ 
-                            ...prev, 
-                            color: { ...prev.color, dark: e.target.value }
-                          }))}
+                          value={options.color?.dark || '#000000'}
+                          onChange={e =>
+                            setOptions(prev => ({
+                              ...prev,
+                              color: { ...prev.color!, dark: e.target.value },
+                            }))
+                          }
                           className="w-10 h-10 border border-gray-300 rounded cursor-pointer"
                         />
                         <Input
-                          value={options.color.dark}
-                          onChange={(e) => setOptions(prev => ({ 
-                            ...prev, 
-                            color: { ...prev.color, dark: e.target.value }
-                          }))}
+                          value={options.color?.dark || '#000000'}
+                          onChange={e =>
+                            setOptions(prev => ({
+                              ...prev,
+                              color: { ...prev.color!, dark: e.target.value },
+                            }))
+                          }
                           className="flex-1"
                         />
                       </div>
@@ -245,19 +253,23 @@ export default function QRGeneratorPage() {
                       <div className="flex items-center space-x-2">
                         <input
                           type="color"
-                          value={options.color.light}
-                          onChange={(e) => setOptions(prev => ({ 
-                            ...prev, 
-                            color: { ...prev.color, light: e.target.value }
-                          }))}
+                          value={options.color?.light || '#ffffff'}
+                          onChange={e =>
+                            setOptions(prev => ({
+                              ...prev,
+                              color: { ...prev.color!, light: e.target.value },
+                            }))
+                          }
                           className="w-10 h-10 border border-gray-300 rounded cursor-pointer"
                         />
                         <Input
-                          value={options.color.light}
-                          onChange={(e) => setOptions(prev => ({ 
-                            ...prev, 
-                            color: { ...prev.color, light: e.target.value }
-                          }))}
+                          value={options.color?.light || '#ffffff'}
+                          onChange={e =>
+                            setOptions(prev => ({
+                              ...prev,
+                              color: { ...prev.color!, light: e.target.value },
+                            }))
+                          }
                           className="flex-1"
                         />
                       </div>
@@ -303,11 +315,7 @@ export default function QRGeneratorPage() {
                           <Copy className="w-4 h-4 mr-2" />
                           Copy Text
                         </Button>
-                        <Button
-                          onClick={handleDownload}
-                          variant="outline"
-                          className="flex-1"
-                        >
+                        <Button onClick={handleDownload} variant="outline" className="flex-1">
                           <Download className="w-4 h-4 mr-2" />
                           Download PNG
                         </Button>
@@ -339,7 +347,9 @@ export default function QRGeneratorPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Size:</span>
-                      <span className="text-gray-900">{options.size}×{options.size}px</span>
+                      <span className="text-gray-900">
+                        {options.size}×{options.size}px
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Error Correction:</span>
@@ -348,21 +358,25 @@ export default function QRGeneratorPage() {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Dark Color:</span>
                       <div className="flex items-center space-x-2">
-                        <div 
+                        <div
                           className="w-4 h-4 border border-gray-300 rounded"
-                          style={{ backgroundColor: options.color.dark }}
+                          style={{ backgroundColor: options.color?.dark || '#000000' }}
                         />
-                        <span className="font-mono text-gray-900">{options.color.dark}</span>
+                        <span className="font-mono text-gray-900">
+                          {options.color?.dark || '#000000'}
+                        </span>
                       </div>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Light Color:</span>
                       <div className="flex items-center space-x-2">
-                        <div 
+                        <div
                           className="w-4 h-4 border border-gray-300 rounded"
-                          style={{ backgroundColor: options.color.light }}
+                          style={{ backgroundColor: options.color?.light || '#ffffff' }}
                         />
-                        <span className="font-mono text-gray-900">{options.color.light}</span>
+                        <span className="font-mono text-gray-900">
+                          {options.color?.light || '#ffffff'}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -385,8 +399,9 @@ export default function QRGeneratorPage() {
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">What are QR Codes?</h4>
                 <p className="text-gray-600">
-                  QR (Quick Response) codes are two-dimensional barcodes that can store various types of data. 
-                  They're widely used for URLs, contact information, and other data that can be quickly scanned.
+                  QR (Quick Response) codes are two-dimensional barcodes that can store various
+                  types of data. They're widely used for URLs, contact information, and other data
+                  that can be quickly scanned.
                 </p>
               </div>
               <div>

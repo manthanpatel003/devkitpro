@@ -1,32 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  FileText, 
-  Copy, 
-  Download, 
-  Upload,
-  Eye,
-  Code,
-  RefreshCw
-} from 'lucide-react'
 import { copyToClipboard, downloadFile } from '@/lib/utils'
 import { MarkdownData } from '@/types'
+import { Code, Copy, Download, Eye, FileText, Upload } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Markdown Editor - Free Live Markdown Editor',
-  description: 'Edit and preview Markdown in real-time. Free Markdown editor with live preview, syntax highlighting, and export options.',
-  keywords: ['markdown editor', 'markdown preview', 'markdown tool', 'live editor', 'markdown converter'],
-  openGraph: {
-    title: 'Markdown Editor - Free Live Markdown Editor',
-    description: 'Edit and preview Markdown in real-time. Free Markdown editor with live preview and export options.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 // Simple markdown parser (in production, use a proper markdown library)
 const parseMarkdown = (markdown: string): MarkdownData => {
@@ -34,7 +18,7 @@ const parseMarkdown = (markdown: string): MarkdownData => {
   const toc: Array<{ level: number; text: string; id: string }> = []
   const links: string[] = []
   const images: string[] = []
-  
+
   let html = markdown
     .replace(/^# (.*$)/gim, '<h1>$1</h1>')
     .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -57,10 +41,10 @@ const parseMarkdown = (markdown: string): MarkdownData => {
     .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
     .replace(/\n\n/gim, '</p><p>')
     .replace(/\n/gim, '<br>')
-  
+
   // Wrap in paragraphs
   html = `<p>${html}</p>`
-  
+
   // Extract TOC from headings
   lines.forEach(line => {
     const headingMatch = line.match(/^(#{1,6})\s+(.*)$/)
@@ -71,17 +55,17 @@ const parseMarkdown = (markdown: string): MarkdownData => {
       toc.push({ level, text, id })
     }
   })
-  
+
   const wordCount = markdown.split(/\s+/).filter(word => word.length > 0).length
   const readingTime = Math.ceil(wordCount / 200) // Assuming 200 words per minute
-  
+
   return {
     html,
     toc,
     wordCount,
     readingTime,
     links,
-    images
+    images,
   }
 }
 
@@ -98,8 +82,8 @@ export default function MarkdownEditorPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -110,7 +94,7 @@ export default function MarkdownEditorPage() {
     const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = e => {
         const content = e.target?.result as string
         setMarkdown(content)
         const parsed = parseMarkdown(content)
@@ -162,7 +146,7 @@ function hello() {
 ---
 
 **Bold text** and *italic text*`
-    
+
     setMarkdown(example)
     const parsed = parseMarkdown(example)
     setParsedData(parsed)
@@ -223,7 +207,7 @@ function hello() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <input
                   type="file"
@@ -232,12 +216,10 @@ function hello() {
                   className="hidden"
                   id="file-upload"
                 />
-                <label htmlFor="file-upload">
-                  <Button variant="outline" size="sm" asChild>
-                    <span>
-                      <Upload className="w-4 h-4 mr-2" />
-                      Upload
-                    </span>
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <Button variant="outline" size="sm" type="button">
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload
                   </Button>
                 </label>
                 <Button onClick={loadExample} variant="outline" size="sm">
@@ -261,14 +243,15 @@ function hello() {
                   Markdown Editor
                 </CardTitle>
                 <CardDescription>
-                  {parsedData && `${parsedData.wordCount} words • ${parsedData.readingTime} min read`}
+                  {parsedData &&
+                    `${parsedData.wordCount} words • ${parsedData.readingTime} min read`}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Textarea
                   placeholder="Start writing your Markdown here..."
                   value={markdown}
-                  onChange={(e) => handleMarkdownChange(e.target.value)}
+                  onChange={e => handleMarkdownChange(e.target.value)}
                   className="min-h-[500px] font-mono text-sm"
                   rows={20}
                 />
@@ -284,14 +267,12 @@ function hello() {
                   <Eye className="w-5 h-5 mr-2 text-green-600" />
                   Live Preview
                 </CardTitle>
-                <CardDescription>
-                  Real-time preview of your Markdown
-                </CardDescription>
+                <CardDescription>Real-time preview of your Markdown</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="min-h-[500px] max-h-[500px] overflow-y-auto">
                   {parsedData ? (
-                    <div 
+                    <div
                       className="prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{ __html: parsedData.html }}
                     />
@@ -316,19 +297,19 @@ function hello() {
             <CardContent>
               <div className="space-y-1">
                 {parsedData.toc.map((item, index) => (
-                  <div 
+                  <div
                     key={index}
                     className={`text-sm ${
-                      item.level === 1 ? 'font-semibold' :
-                      item.level === 2 ? 'ml-4' :
-                      item.level === 3 ? 'ml-8' :
-                      'ml-12'
+                      item.level === 1
+                        ? 'font-semibold'
+                        : item.level === 2
+                        ? 'ml-4'
+                        : item.level === 3
+                        ? 'ml-8'
+                        : 'ml-12'
                     }`}
                   >
-                    <a 
-                      href={`#${item.id}`}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
+                    <a href={`#${item.id}`} className="text-blue-600 hover:text-blue-800">
                       {item.text}
                     </a>
                   </div>
@@ -363,7 +344,9 @@ function hello() {
                   Copy HTML
                 </Button>
                 <Button
-                  onClick={() => downloadFile(markdown, `markdown-${Date.now()}.md`, 'text/markdown')}
+                  onClick={() =>
+                    downloadFile(markdown, `markdown-${Date.now()}.md`, 'text/markdown')
+                  }
                   variant="outline"
                   size="sm"
                 >
@@ -371,7 +354,9 @@ function hello() {
                   Download MD
                 </Button>
                 <Button
-                  onClick={() => downloadFile(parsedData.html, `html-${Date.now()}.html`, 'text/html')}
+                  onClick={() =>
+                    downloadFile(parsedData.html, `html-${Date.now()}.html`, 'text/html')
+                  }
                   variant="outline"
                   size="sm"
                 >

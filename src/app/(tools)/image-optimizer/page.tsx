@@ -1,29 +1,13 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import React, { useRef, useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Image, 
-  Download,
-  Upload,
-  RotateCcw,
-  Crop,
-  Zap,
-  FileImage
-} from 'lucide-react'
+import { Crop, Download, FileImage, Image, RotateCcw, Upload, Zap } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Image Optimizer - Free Image Compression Tool',
-  description: 'Compress and optimize images for web. Free image optimizer with format conversion and quality adjustment.',
-  keywords: ['image optimizer', 'image compressor', 'image resizer', 'webp converter', 'image optimization'],
-  openGraph: {
-    title: 'Image Optimizer - Free Image Compression Tool',
-    description: 'Compress and optimize images for web. Free image optimizer with format conversion.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface ImageOptimization {
   originalSize: number
@@ -48,14 +32,14 @@ export default function ImageOptimizerPage() {
 
   const optimizeImage = async (file: File): Promise<void> => {
     setIsProcessing(true)
-    
+
     try {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       if (!ctx) throw new Error('Canvas context not available')
 
       const img = new window.Image()
-      
+
       await new Promise((resolve, reject) => {
         img.onload = resolve
         img.onerror = reject
@@ -81,13 +65,13 @@ export default function ImageOptimizerPage() {
 
       // Draw and optimize
       ctx.drawImage(img, 0, 0, width, height)
-      
+
       const mimeType = `image/${format}`
       const optimizedDataUrl = canvas.toDataURL(mimeType, quality / 100)
-      
+
       // Calculate sizes
       const originalSize = file.size
-      const optimizedSize = Math.round((optimizedDataUrl.length - 22) * 3 / 4) // Approximate size
+      const optimizedSize = Math.round(((optimizedDataUrl.length - 22) * 3) / 4) // Approximate size
       const compressionRatio = Math.round((1 - optimizedSize / originalSize) * 100)
 
       setOptimizedImage(optimizedDataUrl)
@@ -97,12 +81,14 @@ export default function ImageOptimizerPage() {
         compressionRatio,
         format,
         dimensions: { width, height },
-        quality
+        quality,
       })
 
       success('Image optimized successfully!')
     } catch (err) {
-      showError('Image optimization failed: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      showError(
+        'Image optimization failed: ' + (err instanceof Error ? err.message : 'Unknown error')
+      )
     } finally {
       setIsProcessing(false)
     }
@@ -118,7 +104,7 @@ export default function ImageOptimizerPage() {
     }
 
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = e => {
       setOriginalImage(e.target?.result as string)
       optimizeImage(file)
     }
@@ -160,7 +146,9 @@ export default function ImageOptimizerPage() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Image Optimizer</h1>
-          <p className="text-xl text-gray-600">Compress and optimize images for web with format conversion</p>
+          <p className="text-xl text-gray-600">
+            Compress and optimize images for web with format conversion
+          </p>
         </div>
 
         {/* Settings */}
@@ -174,27 +162,23 @@ export default function ImageOptimizerPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Quality
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Quality</label>
                 <input
                   type="range"
                   min="10"
                   max="100"
                   value={quality}
-                  onChange={(e) => setQuality(Number(e.target.value))}
+                  onChange={e => setQuality(Number(e.target.value))}
                   className="w-full"
                 />
                 <div className="text-center text-sm text-gray-600 mt-1">{quality}%</div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Format
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Format</label>
                 <select
                   value={format}
-                  onChange={(e) => setFormat(e.target.value as any)}
+                  onChange={e => setFormat(e.target.value as any)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value="jpeg">JPEG</option>
@@ -202,27 +186,23 @@ export default function ImageOptimizerPage() {
                   <option value="webp">WebP</option>
                 </select>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Max Width
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Max Width</label>
                 <input
                   type="number"
                   value={maxWidth}
-                  onChange={(e) => setMaxWidth(Number(e.target.value))}
+                  onChange={e => setMaxWidth(Number(e.target.value))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Max Height
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Max Height</label>
                 <input
                   type="number"
                   value={maxHeight}
-                  onChange={(e) => setMaxHeight(Number(e.target.value))}
+                  onChange={e => setMaxHeight(Number(e.target.value))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
@@ -250,10 +230,7 @@ export default function ImageOptimizerPage() {
               />
               <FileImage className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 mb-4">Click to select an image or drag and drop</p>
-              <Button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isProcessing}
-              >
+              <Button onClick={() => fileInputRef.current?.click()} disabled={isProcessing}>
                 {isProcessing ? 'Processing...' : 'Select Image'}
               </Button>
             </div>
@@ -281,7 +258,10 @@ export default function ImageOptimizerPage() {
                   {optimization && (
                     <div className="text-sm text-gray-600">
                       <div>Size: {formatFileSize(optimization.originalSize)}</div>
-                      <div>Dimensions: {optimization.dimensions.width} × {optimization.dimensions.height}</div>
+                      <div>
+                        Dimensions: {optimization.dimensions.width} ×{' '}
+                        {optimization.dimensions.height}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -309,7 +289,7 @@ export default function ImageOptimizerPage() {
                       {isProcessing ? 'Processing...' : 'No optimized image'}
                     </div>
                   )}
-                  
+
                   {optimization && (
                     <div className="text-sm text-gray-600">
                       <div>Size: {formatFileSize(optimization.optimizedSize)}</div>
@@ -340,21 +320,21 @@ export default function ImageOptimizerPage() {
                   </div>
                   <div className="text-sm text-blue-600">Original Size</div>
                 </div>
-                
+
                 <div className="text-center p-4 bg-green-50 rounded-lg">
                   <div className="text-2xl font-bold text-green-600">
                     {formatFileSize(optimization.optimizedSize)}
                   </div>
                   <div className="text-sm text-green-600">Optimized Size</div>
                 </div>
-                
+
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
                   <div className="text-2xl font-bold text-purple-600">
                     {optimization.compressionRatio}%
                   </div>
                   <div className="text-sm text-purple-600">Size Reduction</div>
                 </div>
-                
+
                 <div className="text-center p-4 bg-yellow-50 rounded-lg">
                   <div className="text-2xl font-bold text-yellow-600">
                     {optimization.dimensions.width}×{optimization.dimensions.height}
@@ -362,7 +342,7 @@ export default function ImageOptimizerPage() {
                   <div className="text-sm text-yellow-600">Dimensions</div>
                 </div>
               </div>
-              
+
               <div className="mt-4 flex gap-2">
                 <Button
                   onClick={downloadOptimizedImage}
@@ -372,11 +352,7 @@ export default function ImageOptimizerPage() {
                   <Download className="w-4 h-4 mr-2" />
                   Download Optimized
                 </Button>
-                <Button
-                  onClick={resetImage}
-                  variant="outline"
-                  className="flex-1"
-                >
+                <Button onClick={resetImage} variant="outline" className="flex-1">
                   <RotateCcw className="w-4 h-4 mr-2" />
                   Reset
                 </Button>

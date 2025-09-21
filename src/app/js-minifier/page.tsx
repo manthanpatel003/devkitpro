@@ -76,14 +76,12 @@ export default function JSMinifierPage() {
       preserve_newlines: true,
       keep_array_indentation: false,
       break_chained_methods: false,
-      indent_scripts: 'normal',
       brace_style: 'collapse',
       space_before_conditional: true,
       unescape_strings: false,
       jslint_happy: false,
       end_with_newline: true,
       wrap_line_length: options.maxLineLength,
-      indent_inner_html: false,
       comma_first: false,
       e4x: false,
       indent_empty_lines: false,
@@ -130,7 +128,9 @@ export default function JSMinifierPage() {
       addToast({
         type: 'success',
         title: `JavaScript ${mode === 'minify' ? 'Minified' : 'Beautified'}!`,
-        description: `Your code has been successfully ${mode === 'minify' ? 'minified' : 'beautified'}`,
+        description: `Your code has been successfully ${
+          mode === 'minify' ? 'minified' : 'beautified'
+        }`,
       })
     } catch (err) {
       setError('Error processing JavaScript: ' + (err as Error).message)
@@ -264,7 +264,7 @@ console.log('Result:', result);`),
               <label className="text-sm font-medium">Mode:</label>
               <div className="flex items-center space-x-2">
                 <Button
-                  variant={mode === 'minify' ? 'default' : 'outline'}
+                  variant={mode === 'minify' ? 'primary' : 'outline'}
                   size="sm"
                   onClick={() => setMode('minify')}
                 >
@@ -272,7 +272,7 @@ console.log('Result:', result);`),
                   Minify
                 </Button>
                 <Button
-                  variant={mode === 'beautify' ? 'default' : 'outline'}
+                  variant={mode === 'beautify' ? 'primary' : 'outline'}
                   size="sm"
                   onClick={() => setMode('beautify')}
                 >
@@ -380,15 +380,18 @@ console.log('Result:', result);`),
                 onClick={processCode}
                 disabled={isLoading || !input.trim()}
                 loading={isLoading}
-                leftIcon={
-                  mode === 'minify' ? (
-                    <Minimize className="h-4 w-4" />
-                  ) : (
-                    <Code2 className="h-4 w-4" />
-                  )
-                }
               >
-                {mode === 'minify' ? 'Minify JavaScript' : 'Beautify JavaScript'}
+                {mode === 'minify' ? (
+                  <>
+                    <Minimize className="h-4 w-4 mr-2" />
+                    Minify JavaScript
+                  </>
+                ) : (
+                  <>
+                    <Code2 className="h-4 w-4 mr-2" />
+                    Beautify JavaScript
+                  </>
+                )}
               </Button>
 
               <Button
@@ -441,8 +444,8 @@ console.log('Result:', result);`),
                     {error
                       ? 'Error'
                       : mode === 'minify'
-                        ? 'Minified JavaScript'
-                        : 'Beautified JavaScript'}
+                      ? 'Minified JavaScript'
+                      : 'Beautified JavaScript'}
                   </label>
                   {output && (
                     <div className="flex items-center space-x-2">

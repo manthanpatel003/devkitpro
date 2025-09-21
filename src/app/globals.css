@@ -7,13 +7,13 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-gray-200;
   }
-  
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-gray-900;
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
@@ -23,35 +23,35 @@
   .container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-  
+
   .section {
     @apply py-12 sm:py-16 lg:py-20;
   }
-  
+
   .gradient-text {
     @apply bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent;
   }
-  
+
   .glass-effect {
     @apply bg-white/80 backdrop-blur-sm border border-white/20;
   }
-  
+
   .shadow-glow {
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
   }
-  
+
   .animate-fade-in {
     animation: fadeIn 0.5s ease-in-out;
   }
-  
+
   .animate-slide-up {
     animation: slideUp 0.3s ease-out;
   }
-  
+
   .animate-bounce-subtle {
     animation: bounceSubtle 0.6s ease-in-out;
   }
-  
+
   .animate-pulse-slow {
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
@@ -61,34 +61,34 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: rgb(156 163 175) transparent;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: rgb(156 163 175);
     border-radius: 3px;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background-color: rgb(107 114 128);
   }
@@ -115,7 +115,8 @@
 }
 
 @keyframes bounceSubtle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -239,18 +240,18 @@
     background: #1e293b !important;
     color: #e2e8f0;
   }
-  
+
   .hljs-comment,
   .hljs-quote {
     color: #94a3b8;
   }
-  
+
   .hljs-keyword,
   .hljs-selector-tag,
   .hljs-subst {
     color: #a78bfa;
   }
-  
+
   .hljs-number,
   .hljs-literal,
   .hljs-variable,
@@ -258,53 +259,53 @@
   .hljs-tag .hljs-attr {
     color: #f87171;
   }
-  
+
   .hljs-string,
   .hljs-doctag {
     color: #34d399;
   }
-  
+
   .hljs-title,
   .hljs-section,
   .hljs-selector-id {
     color: #60a5fa;
   }
-  
+
   .hljs-type,
   .hljs-class .hljs-title {
     color: #a78bfa;
   }
-  
+
   .hljs-tag,
   .hljs-name,
   .hljs-attribute {
     color: #f87171;
   }
-  
+
   .hljs-regexp,
   .hljs-link {
     color: #34d399;
   }
-  
+
   .hljs-symbol,
   .hljs-bullet {
     color: #f87171;
   }
-  
+
   .hljs-built_in,
   .hljs-builtin-name {
     color: #60a5fa;
   }
-  
+
   .hljs-meta {
     color: #94a3b8;
   }
-  
+
   .hljs-deletion {
     background: #7f1d1d;
     color: #fca5a5;
   }
-  
+
   .hljs-addition {
     background: #14532d;
     color: #86efac;
@@ -316,11 +317,11 @@
   .no-print {
     display: none !important;
   }
-  
+
   .print-break {
     page-break-before: always;
   }
-  
+
   .print-break-inside {
     page-break-inside: avoid;
   }

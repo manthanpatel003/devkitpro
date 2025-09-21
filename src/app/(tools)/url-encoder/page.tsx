@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
+// Metadata removed - client components cannot export metadata
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Textarea } from '@/components/ui/Textarea'
@@ -16,15 +16,7 @@ import {
 } from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
 
-export const metadata: Metadata = {
-  title: 'URL Encoder/Decoder - Free URL Encoding Tool',
-  description: 'Encode and decode URLs safely. Free URL encoder/decoder with support for all URL components and special characters.',
-  keywords: ['url encoder', 'url decoder', 'url encoding', 'percent encoding', 'uri encoding'],
-  openGraph: {
-    title: 'URL Encoder/Decoder - Free URL Encoding Tool',
-    description: 'Encode and decode URLs safely. Free URL encoder/decoder with support for all URL components.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function URLEncoderPage() {
   const [input, setInput] = useState('')
@@ -92,8 +84,8 @@ export default function URLEncoderPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')

@@ -1,36 +1,28 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useEffect, useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Globe, 
-  CheckCircle2, 
-  XCircle, 
-  Clock, 
-  RefreshCw, 
+import { copyToClipboard, formatDuration } from '@/lib/utils'
+import { WebsiteMonitor } from '@/types'
+import {
+  Activity,
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
   Copy,
   ExternalLink,
-  AlertTriangle,
-  Activity,
-  Server
+  Globe,
+  RefreshCw,
+  Server,
+  XCircle,
 } from 'lucide-react'
-import { copyToClipboard, formatBytes, formatDuration } from '@/lib/utils'
-import { WebsiteMonitor } from '@/types'
 
-export const metadata: Metadata = {
-  title: 'Website Uptime Monitor - Free Website Status Checker',
-  description: 'Monitor website availability, response times, and status. Free uptime monitoring tool with detailed analysis.',
-  keywords: ['uptime monitor', 'website status', 'website checker', 'uptime checker', 'website monitoring', 'response time'],
-  openGraph: {
-    title: 'Website Uptime Monitor - Free Website Status Checker',
-    description: 'Monitor website availability, response times, and status. Free uptime monitoring tool.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function WebsiteMonitorPage() {
   const [url, setUrl] = useState('')
@@ -66,7 +58,7 @@ export default function WebsiteMonitorPage() {
 
       const data = await response.json()
       setMonitorData(data)
-      
+
       if (data.success) {
         success('Website is up and running!')
       } else {
@@ -99,8 +91,8 @@ export default function WebsiteMonitorPage() {
   }, [autoRefresh, refreshInterval, url])
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -152,9 +144,7 @@ export default function WebsiteMonitorPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Website Uptime Monitor
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Website Uptime Monitor</h1>
           <p className="text-xl text-gray-600">
             Monitor website availability, response times, and status in real-time
           </p>
@@ -174,16 +164,12 @@ export default function WebsiteMonitorPage() {
                 <Input
                   placeholder="https://example.com or example.com"
                   value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && checkWebsite()}
+                  onChange={e => setUrl(e.target.value)}
+                  onKeyPress={e => e.key === 'Enter' && checkWebsite()}
                   className="flex-1"
                   icon={<Globe className="w-5 h-5" />}
                 />
-                <Button
-                  onClick={checkWebsite}
-                  disabled={loading || !url.trim()}
-                  className="px-8"
-                >
+                <Button onClick={checkWebsite} disabled={loading || !url.trim()} className="px-8">
                   {loading ? (
                     <LoadingSpinner size="sm" />
                   ) : (
@@ -194,14 +180,14 @@ export default function WebsiteMonitorPage() {
                   )}
                 </Button>
               </div>
-              
+
               {/* Auto-refresh controls */}
               <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                 <label className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     checked={autoRefresh}
-                    onChange={(e) => setAutoRefresh(e.target.checked)}
+                    onChange={e => setAutoRefresh(e.target.checked)}
                     className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                   />
                   <span className="text-sm font-medium text-gray-700">Auto-refresh</span>
@@ -211,7 +197,7 @@ export default function WebsiteMonitorPage() {
                     <span className="text-sm text-gray-600">Every</span>
                     <select
                       value={refreshInterval}
-                      onChange={(e) => setRefreshInterval(Number(e.target.value))}
+                      onChange={e => setRefreshInterval(Number(e.target.value))}
                       className="px-2 py-1 border border-gray-300 rounded text-sm"
                     >
                       <option value={10}>10 seconds</option>
@@ -244,9 +230,7 @@ export default function WebsiteMonitorPage() {
                 <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Website Check Failed</h3>
                 <p className="text-gray-600 mb-4">{error}</p>
-                <Button onClick={checkWebsite}>
-                  Try Again
-                </Button>
+                <Button onClick={checkWebsite}>Try Again</Button>
               </div>
             </CardContent>
           </Card>
@@ -273,12 +257,14 @@ export default function WebsiteMonitorPage() {
                       <div className="text-lg font-semibold">
                         {monitorData.status === 'up' ? 'Website is Online' : 'Website is Offline'}
                       </div>
-                      <div className="text-sm text-gray-600">
-                        {monitorData.url}
-                      </div>
+                      <div className="text-sm text-gray-600">{monitorData.url}</div>
                     </div>
                   </div>
-                  <div className={`px-3 py-1 rounded-full border text-sm font-medium ${getStatusColor(monitorData.status)}`}>
+                  <div
+                    className={`px-3 py-1 rounded-full border text-sm font-medium ${getStatusColor(
+                      monitorData.status
+                    )}`}
+                  >
                     {monitorData.status.toUpperCase()}
                   </div>
                 </div>
@@ -298,26 +284,42 @@ export default function WebsiteMonitorPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Status Code</span>
-                      <span className={`font-medium ${monitorData.statusCode >= 200 && monitorData.statusCode < 300 ? 'text-green-600' : 'text-red-600'}`}>
-                        {monitorData.statusCode}
+                      <span
+                        className={`font-medium ${
+                          monitorData.statusCode &&
+                          monitorData.statusCode >= 200 &&
+                          monitorData.statusCode < 300
+                            ? 'text-green-600'
+                            : 'text-red-600'
+                        }`}
+                      >
+                        {monitorData.statusCode || 'N/A'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Response Time</span>
-                      <span className={`font-medium ${getResponseTimeColor(monitorData.responseTime || 0)}`}>
+                      <span
+                        className={`font-medium ${getResponseTimeColor(
+                          monitorData.responseTime || 0
+                        )}`}
+                      >
                         {formatDuration(monitorData.responseTime || 0)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Performance</span>
-                      <span className={`font-medium ${getResponseTimeColor(monitorData.responseTime || 0)}`}>
+                      <span
+                        className={`font-medium ${getResponseTimeColor(
+                          monitorData.responseTime || 0
+                        )}`}
+                      >
                         {getResponseTimeLabel(monitorData.responseTime || 0)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                      <span className="text-gray-600">Content Size</span>
-                      <span className="font-medium">
-                        {monitorData.size ? formatBytes(monitorData.size) : 'Unknown'}
+                      <span className="text-gray-600">Uptime</span>
+                      <span className="font-medium text-green-600">
+                        {monitorData.uptime.toFixed(2)}%
                       </span>
                     </div>
                   </div>
@@ -335,27 +337,19 @@ export default function WebsiteMonitorPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Server</span>
-                      <span className="font-medium text-right max-w-xs truncate" title={monitorData.headers?.server || 'Unknown'}>
-                        {monitorData.headers?.server || 'Unknown'}
-                      </span>
+                      <span className="font-medium text-right max-w-xs truncate">Unknown</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Content Type</span>
-                      <span className="font-medium text-right max-w-xs truncate" title={monitorData.headers?.['content-type'] || 'Unknown'}>
-                        {monitorData.headers?.['content-type'] || 'Unknown'}
-                      </span>
+                      <span className="font-medium text-right max-w-xs truncate">Unknown</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Powered By</span>
-                      <span className="font-medium text-right max-w-xs truncate" title={monitorData.headers?.['x-powered-by'] || 'Unknown'}>
-                        {monitorData.headers?.['x-powered-by'] || 'Unknown'}
-                      </span>
+                      <span className="font-medium text-right max-w-xs truncate">Unknown</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Cache Control</span>
-                      <span className="font-medium text-right max-w-xs truncate" title={monitorData.headers?.['cache-control'] || 'Unknown'}>
-                        {monitorData.headers?.['cache-control'] || 'Unknown'}
-                      </span>
+                      <span className="font-medium text-right max-w-xs truncate">Unknown</span>
                     </div>
                   </div>
                 </CardContent>
@@ -378,7 +372,9 @@ export default function WebsiteMonitorPage() {
                     Copy URL
                   </Button>
                   <Button
-                    onClick={() => handleCopy(monitorData.statusCode?.toString() || '', 'Status Code')}
+                    onClick={() =>
+                      handleCopy(monitorData.statusCode?.toString() || '', 'Status Code')
+                    }
                     variant="outline"
                     size="sm"
                   >
@@ -393,11 +389,7 @@ export default function WebsiteMonitorPage() {
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Visit Website
                   </Button>
-                  <Button
-                    onClick={checkWebsite}
-                    variant="outline"
-                    size="sm"
-                  >
+                  <Button onClick={checkWebsite} variant="outline" size="sm">
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Refresh
                   </Button>
@@ -418,9 +410,9 @@ export default function WebsiteMonitorPage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                Uptime monitoring checks if your website is accessible and responding properly. 
-                It measures response times, status codes, and availability to ensure your 
-                website is performing optimally for users.
+                Uptime monitoring checks if your website is accessible and responding properly. It
+                measures response times, status codes, and availability to ensure your website is
+                performing optimally for users.
               </p>
             </CardContent>
           </Card>
@@ -434,10 +426,18 @@ export default function WebsiteMonitorPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2 text-sm">
-                <div><strong>Excellent:</strong> &lt; 500ms</div>
-                <div><strong>Good:</strong> 500ms - 1s</div>
-                <div><strong>Fair:</strong> 1s - 2s</div>
-                <div><strong>Poor:</strong> &gt; 2s</div>
+                <div>
+                  <strong>Excellent:</strong> &lt; 500ms
+                </div>
+                <div>
+                  <strong>Good:</strong> 500ms - 1s
+                </div>
+                <div>
+                  <strong>Fair:</strong> 1s - 2s
+                </div>
+                <div>
+                  <strong>Poor:</strong> &gt; 2s
+                </div>
               </div>
             </CardContent>
           </Card>

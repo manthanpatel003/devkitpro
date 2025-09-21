@@ -17,12 +17,14 @@ export function ToolsGrid({ tools, showCategory = false }: ToolsGridProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {tools.map((tool, index) => (
         <FadeIn key={tool.id} delay={index * 50}>
-          <Card variant="interactive" className="h-full group">
+          <Card variant="default" className="h-full group">
             <CardHeader>
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-3">
                   <div
-                    className={`w-10 h-10 rounded-lg ${tool.category.color} flex items-center justify-center`}
+                    className={`w-10 h-10 rounded-lg ${
+                      tool.category?.color || 'bg-blue-500'
+                    } flex items-center justify-center`}
                   >
                     <span className="text-white font-semibold text-sm">{tool.name.charAt(0)}</span>
                   </div>
@@ -32,8 +34,12 @@ export function ToolsGrid({ tools, showCategory = false }: ToolsGridProps) {
                     </CardTitle>
                     {showCategory && (
                       <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                        <div className={`w-2 h-2 rounded-full ${tool.category.color}`} />
-                        <span>{tool.category.name}</span>
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            tool.category?.color || 'bg-blue-500'
+                          }`}
+                        />
+                        <span>{tool.category?.name || 'Tool'}</span>
                       </div>
                     )}
                   </div>
@@ -78,11 +84,9 @@ export function ToolsGrid({ tools, showCategory = false }: ToolsGridProps) {
                   <Button
                     variant="outline"
                     className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-                    rightIcon={
-                      <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
-                    }
                   >
                     Use Tool
+                    <ArrowRight className="ml-2 h-3 w-3 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
               </div>

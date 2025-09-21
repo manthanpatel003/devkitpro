@@ -1,34 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Search, 
-  Copy, 
-  Download, 
-  CheckCircle2,
-  XCircle,
-  AlertTriangle,
-  Globe,
-  BarChart3,
-  Zap
-} from 'lucide-react'
 import { copyToClipboard, downloadFile } from '@/lib/utils'
 import { SEOData } from '@/types'
+import { AlertTriangle, BarChart3, Copy, Download, Globe, Search, Zap } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'SEO Analyzer - Free Website SEO Analysis Tool',
-  description: 'Analyze website SEO with AI-powered recommendations. Free SEO analyzer with comprehensive analysis and optimization suggestions.',
-  keywords: ['SEO analyzer', 'SEO analysis', 'website SEO', 'SEO tool', 'SEO checker', 'SEO optimization'],
-  openGraph: {
-    title: 'SEO Analyzer - Free Website SEO Analysis Tool',
-    description: 'Analyze website SEO with AI-powered recommendations. Free SEO analyzer with comprehensive analysis.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function SEOAnalyzerPage() {
   const [url, setUrl] = useState('')
@@ -51,8 +33,14 @@ export default function SEOAnalyzerPage() {
       // Mock SEO analysis - in production, you would fetch the actual webpage
       const mockSeoData: SEOData = {
         title: 'Example Website - Your Trusted Partner',
-        description: 'We provide comprehensive solutions for your business needs with expert guidance and support.',
-        keywords: ['business solutions', 'expert guidance', 'comprehensive support', 'trusted partner'],
+        description:
+          'We provide comprehensive solutions for your business needs with expert guidance and support.',
+        keywords: [
+          'business solutions',
+          'expert guidance',
+          'comprehensive support',
+          'trusted partner',
+        ],
         h1: ['Welcome to Our Website', 'About Our Services'],
         h2: ['Our Solutions', 'Why Choose Us', 'Contact Information'],
         h3: ['Service Details', 'Client Testimonials', 'FAQ'],
@@ -65,8 +53,8 @@ export default function SEOAnalyzerPage() {
           'Add more internal links to improve site structure',
           'Optimize images with alt text and proper sizing',
           'Include more long-tail keywords in content',
-          'Add schema markup for better search visibility'
-        ]
+          'Add schema markup for better search visibility',
+        ],
       }
 
       setSeoData(mockSeoData)
@@ -77,8 +65,8 @@ export default function SEOAnalyzerPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type: 'content-optimize',
-          input: url
-        })
+          input: url,
+        }),
       })
 
       if (aiResponse.ok) {
@@ -89,7 +77,6 @@ export default function SEOAnalyzerPage() {
       success('SEO analysis completed!')
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to analyze SEO'
-      setError(errorMessage)
       showError('SEO Analysis Failed', errorMessage)
     } finally {
       setLoading(false)
@@ -97,8 +84,8 @@ export default function SEOAnalyzerPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -123,7 +110,9 @@ export default function SEOAnalyzerPage() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">SEO Analyzer</h1>
-          <p className="text-xl text-gray-600">Analyze website SEO with AI-powered recommendations</p>
+          <p className="text-xl text-gray-600">
+            Analyze website SEO with AI-powered recommendations
+          </p>
         </div>
 
         {/* Input */}
@@ -140,15 +129,11 @@ export default function SEOAnalyzerPage() {
               <Input
                 placeholder="https://example.com"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                onChange={e => setUrl(e.target.value)}
                 className="flex-1"
                 icon={<Globe className="w-5 h-5" />}
               />
-              <Button
-                onClick={analyzeSEO}
-                disabled={loading || !url.trim()}
-                className="px-8"
-              >
+              <Button onClick={analyzeSEO} disabled={loading || !url.trim()} className="px-8">
                 {loading ? 'Analyzing...' : 'Analyze SEO'}
               </Button>
             </div>
@@ -180,19 +165,19 @@ export default function SEOAnalyzerPage() {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="text-4xl font-bold text-gray-900">
-                      {seoData.score}%
-                    </div>
+                    <div className="text-4xl font-bold text-gray-900">{seoData.score}%</div>
                     <div>
                       <div className="text-lg font-semibold">
                         {getScoreLabel(seoData.score || 0)}
                       </div>
-                      <div className="text-sm text-gray-600">
-                        Overall SEO Performance
-                      </div>
+                      <div className="text-sm text-gray-600">Overall SEO Performance</div>
                     </div>
                   </div>
-                  <div className={`px-4 py-2 rounded-full border text-sm font-medium ${getScoreColor(seoData.score || 0)}`}>
+                  <div
+                    className={`px-4 py-2 rounded-full border text-sm font-medium ${getScoreColor(
+                      seoData.score || 0
+                    )}`}
+                  >
                     {getScoreLabel(seoData.score || 0).toUpperCase()}
                   </div>
                 </div>
@@ -209,7 +194,9 @@ export default function SEOAnalyzerPage() {
                   <div className="space-y-4">
                     <div>
                       <div className="text-sm text-gray-600 mb-1">Title Tag</div>
-                      <div className="font-medium text-gray-900">{seoData.title || 'Not found'}</div>
+                      <div className="font-medium text-gray-900">
+                        {seoData.title || 'Not found'}
+                      </div>
                     </div>
                     <div>
                       <div className="text-sm text-gray-600 mb-1">Meta Description</div>
@@ -217,11 +204,15 @@ export default function SEOAnalyzerPage() {
                     </div>
                     <div>
                       <div className="text-sm text-gray-600 mb-1">Word Count</div>
-                      <div className="font-medium text-gray-900">{seoData.wordCount || 0} words</div>
+                      <div className="font-medium text-gray-900">
+                        {seoData.wordCount || 0} words
+                      </div>
                     </div>
                     <div>
                       <div className="text-sm text-gray-600 mb-1">Reading Time</div>
-                      <div className="font-medium text-gray-900">{seoData.readingTime || 0} minutes</div>
+                      <div className="font-medium text-gray-900">
+                        {seoData.readingTime || 0} minutes
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -237,20 +228,27 @@ export default function SEOAnalyzerPage() {
                       <div className="text-sm text-gray-600 mb-2">Keywords Found</div>
                       <div className="flex flex-wrap gap-1">
                         {seoData.keywords?.map((keyword, index) => (
-                          <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                          <span
+                            key={index}
+                            className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                          >
                             {keyword}
                           </span>
                         ))}
                       </div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600 mb-1">H1 Tags ({seoData.h1?.length || 0})</div>
+                      <div className="text-sm text-gray-600 mb-1">
+                        H1 Tags ({seoData.h1?.length || 0})
+                      </div>
                       <div className="text-sm text-gray-900">
                         {seoData.h1?.join(', ') || 'None found'}
                       </div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600 mb-1">H2 Tags ({seoData.h2?.length || 0})</div>
+                      <div className="text-sm text-gray-600 mb-1">
+                        H2 Tags ({seoData.h2?.length || 0})
+                      </div>
                       <div className="text-sm text-gray-900">
                         {seoData.h2?.join(', ') || 'None found'}
                       </div>
@@ -272,7 +270,10 @@ export default function SEOAnalyzerPage() {
                 <CardContent>
                   <div className="space-y-3">
                     {aiRecommendations.map((recommendation, index) => (
-                      <div key={index} className="flex items-start space-x-3 p-3 bg-purple-50 rounded-lg">
+                      <div
+                        key={index}
+                        className="flex items-start space-x-3 p-3 bg-purple-50 rounded-lg"
+                      >
                         <Zap className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
                         <p className="text-sm text-gray-700">{recommendation}</p>
                       </div>
@@ -294,7 +295,10 @@ export default function SEOAnalyzerPage() {
                 <CardContent>
                   <div className="space-y-3">
                     {seoData.recommendations.map((recommendation, index) => (
-                      <div key={index} className="flex items-start space-x-3 p-3 bg-yellow-50 rounded-lg">
+                      <div
+                        key={index}
+                        className="flex items-start space-x-3 p-3 bg-yellow-50 rounded-lg"
+                      >
                         <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                         <p className="text-sm text-gray-700">{recommendation}</p>
                       </div>
@@ -320,11 +324,19 @@ export default function SEOAnalyzerPage() {
                     Copy URL
                   </Button>
                   <Button
-                    onClick={() => downloadFile(
-                      `SEO Analysis Report for ${url}\n\nScore: ${seoData.score}%\nTitle: ${seoData.title}\nDescription: ${seoData.description}\nWord Count: ${seoData.wordCount}\nKeywords: ${seoData.keywords?.join(', ')}\n\nRecommendations:\n${seoData.recommendations?.join('\n')}`,
-                      `seo-analysis-${Date.now()}.txt`,
-                      'text/plain'
-                    )}
+                    onClick={() =>
+                      downloadFile(
+                        `SEO Analysis Report for ${url}\n\nScore: ${seoData.score}%\nTitle: ${
+                          seoData.title
+                        }\nDescription: ${seoData.description}\nWord Count: ${
+                          seoData.wordCount
+                        }\nKeywords: ${seoData.keywords?.join(
+                          ', '
+                        )}\n\nRecommendations:\n${seoData.recommendations?.join('\n')}`,
+                        `seo-analysis-${Date.now()}.txt`,
+                        'text/plain'
+                      )
+                    }
                     variant="outline"
                     size="sm"
                   >

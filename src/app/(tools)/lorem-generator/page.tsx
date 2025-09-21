@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
+// Metadata removed - client components cannot export metadata
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -16,15 +16,7 @@ import {
 } from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
 
-export const metadata: Metadata = {
-  title: 'Lorem Ipsum Generator - Free Lorem Text Generator',
-  description: 'Generate Lorem Ipsum placeholder text. Free Lorem Ipsum generator with customizable paragraphs and words.',
-  keywords: ['lorem ipsum', 'placeholder text', 'dummy text', 'lorem generator', 'text generator'],
-  openGraph: {
-    title: 'Lorem Ipsum Generator - Free Lorem Text Generator',
-    description: 'Generate Lorem Ipsum placeholder text. Free Lorem Ipsum generator with customization.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface LoremConfig {
   type: 'paragraphs' | 'words' | 'sentences' | 'lists'
@@ -174,8 +166,8 @@ export default function LoremGeneratorPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')

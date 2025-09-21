@@ -1,29 +1,14 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import React, { useRef, useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Star, 
-  Download,
-  Upload,
-  RotateCcw,
-  Palette,
-  Image as ImageIcon
-} from 'lucide-react'
+import { Download, Image as ImageIcon, Palette, RotateCcw, Star } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Favicon Generator - Free Favicon Creator',
-  description: 'Generate favicons from text or images. Free favicon generator with multiple sizes and formats.',
-  keywords: ['favicon generator', 'favicon creator', 'icon generator', 'website icon', 'favicon maker'],
-  openGraph: {
-    title: 'Favicon Generator - Free Favicon Creator',
-    description: 'Generate favicons from text or images. Free favicon generator with multiple sizes.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface FaviconConfig {
   text: string
@@ -41,7 +26,7 @@ export default function FaviconGeneratorPage() {
     textColor: '#FFFFFF',
     fontSize: 32,
     fontFamily: 'Arial',
-    size: 32
+    size: 32,
   })
   const [generatedFavicon, setGeneratedFavicon] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -50,7 +35,7 @@ export default function FaviconGeneratorPage() {
 
   const generateFavicon = async (): Promise<void> => {
     setIsGenerating(true)
-    
+
     try {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
@@ -75,7 +60,9 @@ export default function FaviconGeneratorPage() {
       setGeneratedFavicon(dataUrl)
       success('Favicon generated successfully!')
     } catch (err) {
-      showError('Favicon generation failed: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      showError(
+        'Favicon generation failed: ' + (err instanceof Error ? err.message : 'Unknown error')
+      )
     } finally {
       setIsGenerating(false)
     }
@@ -83,7 +70,7 @@ export default function FaviconGeneratorPage() {
 
   const generateFromImage = async (file: File): Promise<void> => {
     setIsGenerating(true)
-    
+
     try {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
@@ -93,7 +80,7 @@ export default function FaviconGeneratorPage() {
       canvas.height = config.size
 
       const img = new window.Image()
-      
+
       await new Promise((resolve, reject) => {
         img.onload = resolve
         img.onerror = reject
@@ -114,7 +101,9 @@ export default function FaviconGeneratorPage() {
       setGeneratedFavicon(dataUrl)
       success('Favicon generated from image!')
     } catch (err) {
-      showError('Image processing failed: ' + (err instanceof Error ? err.message : 'Unknown error'))
+      showError(
+        'Image processing failed: ' + (err instanceof Error ? err.message : 'Unknown error')
+      )
     } finally {
       setIsGenerating(false)
     }
@@ -146,7 +135,7 @@ export default function FaviconGeneratorPage() {
     img.onload = () => {
       ctx.drawImage(img, 0, 0, size, size)
       const dataUrl = canvas.toDataURL('image/png')
-      
+
       const link = document.createElement('a')
       link.href = dataUrl
       link.download = `favicon-${size}x${size}.png`
@@ -173,7 +162,7 @@ export default function FaviconGeneratorPage() {
       textColor: '#FFFFFF',
       fontSize: 32,
       fontFamily: 'Arial',
-      size: 32
+      size: 32,
     })
     setGeneratedFavicon(null)
     success('Configuration reset')
@@ -191,7 +180,9 @@ export default function FaviconGeneratorPage() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Favicon Generator</h1>
-          <p className="text-xl text-gray-600">Generate favicons from text or images with multiple sizes</p>
+          <p className="text-xl text-gray-600">
+            Generate favicons from text or images with multiple sizes
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -212,12 +203,12 @@ export default function FaviconGeneratorPage() {
                   </label>
                   <Input
                     value={config.text}
-                    onChange={(e) => setConfig({...config, text: e.target.value})}
+                    onChange={e => setConfig({ ...config, text: e.target.value })}
                     placeholder="Enter text or initial"
                     maxLength={2}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -227,18 +218,18 @@ export default function FaviconGeneratorPage() {
                       <input
                         type="color"
                         value={config.backgroundColor}
-                        onChange={(e) => setConfig({...config, backgroundColor: e.target.value})}
+                        onChange={e => setConfig({ ...config, backgroundColor: e.target.value })}
                         className="w-12 h-10 border border-gray-300 rounded"
                       />
                       <Input
                         value={config.backgroundColor}
-                        onChange={(e) => setConfig({...config, backgroundColor: e.target.value})}
+                        onChange={e => setConfig({ ...config, backgroundColor: e.target.value })}
                         placeholder="#3B82F6"
                         className="flex-1"
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Text Color
@@ -247,19 +238,19 @@ export default function FaviconGeneratorPage() {
                       <input
                         type="color"
                         value={config.textColor}
-                        onChange={(e) => setConfig({...config, textColor: e.target.value})}
+                        onChange={e => setConfig({ ...config, textColor: e.target.value })}
                         className="w-12 h-10 border border-gray-300 rounded"
                       />
                       <Input
                         value={config.textColor}
-                        onChange={(e) => setConfig({...config, textColor: e.target.value})}
+                        onChange={e => setConfig({ ...config, textColor: e.target.value })}
                         placeholder="#FFFFFF"
                         className="flex-1"
                       />
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -270,19 +261,21 @@ export default function FaviconGeneratorPage() {
                       min="12"
                       max="48"
                       value={config.fontSize}
-                      onChange={(e) => setConfig({...config, fontSize: Number(e.target.value)})}
+                      onChange={e => setConfig({ ...config, fontSize: Number(e.target.value) })}
                       className="w-full"
                     />
-                    <div className="text-center text-sm text-gray-600 mt-1">{config.fontSize}px</div>
+                    <div className="text-center text-sm text-gray-600 mt-1">
+                      {config.fontSize}px
+                    </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Favicon Size
                     </label>
                     <select
                       value={config.size}
-                      onChange={(e) => setConfig({...config, size: Number(e.target.value)})}
+                      onChange={e => setConfig({ ...config, size: Number(e.target.value) })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     >
                       <option value={16}>16×16</option>
@@ -294,14 +287,14 @@ export default function FaviconGeneratorPage() {
                     </select>
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Font Family
                   </label>
                   <select
                     value={config.fontFamily}
-                    onChange={(e) => setConfig({...config, fontFamily: e.target.value})}
+                    onChange={e => setConfig({ ...config, fontFamily: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   >
                     <option value="Arial">Arial</option>
@@ -312,7 +305,7 @@ export default function FaviconGeneratorPage() {
                     <option value="Georgia">Georgia</option>
                   </select>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <Button onClick={resetConfig} variant="outline" className="flex-1">
                     <RotateCcw className="w-4 h-4 mr-2" />
@@ -327,7 +320,7 @@ export default function FaviconGeneratorPage() {
                     Upload Image
                   </Button>
                 </div>
-                
+
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -369,7 +362,7 @@ export default function FaviconGeneratorPage() {
                     <p className="text-gray-500">Favicon preview will appear here</p>
                   </div>
                 )}
-                
+
                 {generatedFavicon && (
                   <div className="space-y-2">
                     <Button
@@ -408,7 +401,7 @@ export default function FaviconGeneratorPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                {[16, 32, 48, 64, 128, 256].map((size) => (
+                {[16, 32, 48, 64, 128, 256].map(size => (
                   <div key={size} className="text-center">
                     <div className="p-2 bg-gray-100 rounded-lg mb-2">
                       <img
@@ -418,7 +411,9 @@ export default function FaviconGeneratorPage() {
                         style={{ width: Math.min(size, 32), height: Math.min(size, 32) }}
                       />
                     </div>
-                    <div className="text-xs text-gray-600">{size}×{size}</div>
+                    <div className="text-xs text-gray-600">
+                      {size}×{size}
+                    </div>
                     <Button
                       onClick={() => downloadFavicon(size)}
                       size="sm"
@@ -448,13 +443,29 @@ export default function FaviconGeneratorPage() {
               <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
                 <div className="space-y-1">
                   <div>&lt;!-- Favicon for different devices --&gt;</div>
-                  <div>&lt;link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"&gt;</div>
-                  <div>&lt;link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"&gt;</div>
-                  <div>&lt;link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png"&gt;</div>
-                  <div>&lt;link rel="icon" type="image/png" sizes="64x64" href="favicon-64x64.png"&gt;</div>
-                  <div>&lt;link rel="icon" type="image/png" sizes="128x128" href="favicon-128x128.png"&gt;</div>
-                  <div>&lt;link rel="icon" type="image/png" sizes="256x256" href="favicon-256x256.png"&gt;</div>
-                  <div>&lt;link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"&gt;</div>
+                  <div>
+                    &lt;link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"&gt;
+                  </div>
+                  <div>
+                    &lt;link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"&gt;
+                  </div>
+                  <div>
+                    &lt;link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png"&gt;
+                  </div>
+                  <div>
+                    &lt;link rel="icon" type="image/png" sizes="64x64" href="favicon-64x64.png"&gt;
+                  </div>
+                  <div>
+                    &lt;link rel="icon" type="image/png" sizes="128x128"
+                    href="favicon-128x128.png"&gt;
+                  </div>
+                  <div>
+                    &lt;link rel="icon" type="image/png" sizes="256x256"
+                    href="favicon-256x256.png"&gt;
+                  </div>
+                  <div>
+                    &lt;link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"&gt;
+                  </div>
                   <div>&lt;link rel="manifest" href="site.webmanifest"&gt;</div>
                 </div>
               </div>

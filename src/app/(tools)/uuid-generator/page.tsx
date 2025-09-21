@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
+// Metadata removed - client components cannot export metadata
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -16,15 +16,7 @@ import {
 } from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
 
-export const metadata: Metadata = {
-  title: 'UUID Generator - Free UUID Generator Tool',
-  description: 'Generate UUIDs in different versions. Free UUID generator with bulk generation and format options.',
-  keywords: ['uuid generator', 'guid generator', 'unique identifier', 'uuid v4', 'uuid v1'],
-  openGraph: {
-    title: 'UUID Generator - Free UUID Generator Tool',
-    description: 'Generate UUIDs in different versions. Free UUID generator with bulk generation.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface UUIDConfig {
   version: 'v1' | 'v4' | 'v5'
@@ -133,8 +125,8 @@ export default function UUIDGeneratorPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -143,8 +135,8 @@ export default function UUIDGeneratorPage() {
 
   const copyAllUUIDs = async () => {
     const allUUIDs = generatedUUIDs.join('\n')
-    const success = await copyToClipboard(allUUIDs)
-    if (success) {
+    const copySuccess = await copyToClipboard(allUUIDs)
+    if (copySuccess) {
       success('All UUIDs copied to clipboard!')
     } else {
       showError('Failed to copy UUIDs to clipboard')

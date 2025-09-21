@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Metadata } from 'next'
+// Metadata removed - client components cannot export metadata
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
@@ -21,15 +21,7 @@ import {
 import { copyToClipboard, formatBytes } from '@/lib/utils'
 import { IPData } from '@/types'
 
-export const metadata: Metadata = {
-  title: 'What\'s My IP Address - Free IP Checker Tool',
-  description: 'Check your public IP address, location, ISP, and network information instantly. Free IP geolocation tool with detailed network analysis.',
-  keywords: ['IP address', 'IP checker', 'geolocation', 'network tools', 'public IP', 'ISP lookup'],
-  openGraph: {
-    title: 'What\'s My IP Address - Free IP Checker Tool',
-    description: 'Check your public IP address, location, ISP, and network information instantly.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function WhatsMyIPPage() {
   const [ipData, setIpData] = useState<IPData | null>(null)
@@ -157,8 +149,8 @@ export default function WhatsMyIPPage() {
   }, [])
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')

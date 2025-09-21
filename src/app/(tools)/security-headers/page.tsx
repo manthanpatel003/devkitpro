@@ -1,37 +1,29 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Shield, 
-  CheckCircle2, 
-  XCircle, 
-  AlertTriangle, 
-  Copy,
-  ExternalLink,
-  RefreshCw,
-  Info,
-  Lock,
-  Eye,
-  Zap
-} from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
 import { SecurityHeaders } from '@/types'
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Copy,
+  ExternalLink,
+  Eye,
+  Info,
+  Lock,
+  RefreshCw,
+  Shield,
+  XCircle,
+  Zap,
+} from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Security Headers Analyzer - Free Website Security Checker',
-  description: 'Analyze website security headers and get recommendations. Check HSTS, CSP, X-Frame-Options, and other security headers.',
-  keywords: ['security headers', 'website security', 'HSTS', 'CSP', 'X-Frame-Options', 'security analysis'],
-  openGraph: {
-    title: 'Security Headers Analyzer - Free Website Security Checker',
-    description: 'Analyze website security headers and get recommendations. Check HSTS, CSP, X-Frame-Options, and other security headers.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface SecurityAnalysis {
   url: string
@@ -51,44 +43,44 @@ const headerInfo = {
     name: 'Strict Transport Security (HSTS)',
     description: 'Forces HTTPS connections and prevents protocol downgrade attacks',
     importance: 'Critical',
-    icon: Lock
+    icon: Lock,
   },
   'X-Frame-Options': {
     name: 'X-Frame-Options',
     description: 'Prevents clickjacking attacks by controlling iframe embedding',
     importance: 'High',
-    icon: Eye
+    icon: Eye,
   },
   'X-Content-Type-Options': {
     name: 'X-Content-Type-Options',
     description: 'Prevents MIME type sniffing attacks',
     importance: 'High',
-    icon: Shield
+    icon: Shield,
   },
   'Referrer-Policy': {
     name: 'Referrer Policy',
     description: 'Controls how much referrer information is sent with requests',
     importance: 'Medium',
-    icon: Info
+    icon: Info,
   },
   'Permissions-Policy': {
     name: 'Permissions Policy',
     description: 'Controls which browser features can be used',
     importance: 'Medium',
-    icon: Zap
+    icon: Zap,
   },
   'Content-Security-Policy': {
     name: 'Content Security Policy (CSP)',
     description: 'Prevents XSS attacks by controlling resource loading',
     importance: 'Critical',
-    icon: Shield
+    icon: Shield,
   },
   'X-XSS-Protection': {
     name: 'X-XSS-Protection',
     description: 'Enables XSS filtering in browsers (deprecated, use CSP instead)',
     importance: 'Low',
-    icon: AlertTriangle
-  }
+    icon: AlertTriangle,
+  },
 }
 
 export default function SecurityHeadersPage() {
@@ -124,7 +116,7 @@ export default function SecurityHeadersPage() {
 
       const data = await response.json()
       setAnalysis(data)
-      
+
       if (data.success) {
         success(`Security analysis completed! Score: ${data.securityScore}%`)
       } else {
@@ -140,8 +132,8 @@ export default function SecurityHeadersPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -187,9 +179,7 @@ export default function SecurityHeadersPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Security Headers Analyzer
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Security Headers Analyzer</h1>
           <p className="text-xl text-gray-600">
             Analyze website security headers and get detailed recommendations
           </p>
@@ -199,25 +189,19 @@ export default function SecurityHeadersPage() {
         <Card className="mb-8">
           <CardHeader>
             <CardTitle>Security Headers Analysis</CardTitle>
-            <CardDescription>
-              Enter a website URL to analyze its security headers
-            </CardDescription>
+            <CardDescription>Enter a website URL to analyze its security headers</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex gap-4">
               <Input
                 placeholder="https://example.com or example.com"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && analyzeHeaders()}
+                onChange={e => setUrl(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && analyzeHeaders()}
                 className="flex-1"
                 icon={<Shield className="w-5 h-5" />}
               />
-              <Button
-                onClick={analyzeHeaders}
-                disabled={loading || !url.trim()}
-                className="px-8"
-              >
+              <Button onClick={analyzeHeaders} disabled={loading || !url.trim()} className="px-8">
                 {loading ? (
                   <LoadingSpinner size="sm" />
                 ) : (
@@ -249,9 +233,7 @@ export default function SecurityHeadersPage() {
                 <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Analysis Failed</h3>
                 <p className="text-gray-600 mb-4">{error}</p>
-                <Button onClick={analyzeHeaders}>
-                  Try Again
-                </Button>
+                <Button onClick={analyzeHeaders}>Try Again</Button>
               </div>
             </CardContent>
           </Card>
@@ -285,18 +267,26 @@ export default function SecurityHeadersPage() {
                       </div>
                     </div>
                   </div>
-                  <div className={`px-4 py-2 rounded-full border text-sm font-medium ${getScoreColor(analysis.securityScore)}`}>
+                  <div
+                    className={`px-4 py-2 rounded-full border text-sm font-medium ${getScoreColor(
+                      analysis.securityScore
+                    )}`}
+                  >
                     {getScoreLabel(analysis.securityScore).toUpperCase()}
                   </div>
                 </div>
-                
+
                 {/* Progress Bar */}
                 <div className="mt-4 w-full bg-gray-200 rounded-full h-3">
-                  <div 
+                  <div
                     className={`h-3 rounded-full transition-all duration-500 ${
-                      analysis.securityScore >= 80 ? 'bg-green-500' :
-                      analysis.securityScore >= 60 ? 'bg-yellow-500' :
-                      analysis.securityScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
+                      analysis.securityScore >= 80
+                        ? 'bg-green-500'
+                        : analysis.securityScore >= 60
+                        ? 'bg-yellow-500'
+                        : analysis.securityScore >= 40
+                        ? 'bg-orange-500'
+                        : 'bg-red-500'
                     }`}
                     style={{ width: `${analysis.securityScore}%` }}
                   />
@@ -308,17 +298,15 @@ export default function SecurityHeadersPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Security Headers Analysis</CardTitle>
-                <CardDescription>
-                  Detailed analysis of each security header
-                </CardDescription>
+                <CardDescription>Detailed analysis of each security header</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {Object.entries(headerInfo).map(([key, info]) => {
                     const value = analysis.headers[key as keyof SecurityHeaders]
-                    const headerStatus = getHeaderStatus(key, value)
+                    const headerStatus = getHeaderStatus(key, value ?? null)
                     const Icon = info.icon
-                    
+
                     return (
                       <div key={key} className="flex items-start space-x-4 p-4 border rounded-lg">
                         <div className="flex-shrink-0">
@@ -326,22 +314,24 @@ export default function SecurityHeadersPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900">
-                              {info.name}
-                            </h3>
+                            <h3 className="text-lg font-semibold text-gray-900">{info.name}</h3>
                             <div className="flex items-center space-x-2">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getImportanceColor(info.importance)}`}>
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${getImportanceColor(
+                                  info.importance
+                                )}`}
+                              >
                                 {info.importance}
                               </span>
                               <headerStatus.icon className={`w-4 h-4 ${headerStatus.color}`} />
                             </div>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">
-                            {info.description}
-                          </p>
+                          <p className="text-sm text-gray-600 mb-2">{info.description}</p>
                           {value ? (
                             <div className="mt-2">
-                              <div className="text-sm font-medium text-gray-700 mb-1">Current Value:</div>
+                              <div className="text-sm font-medium text-gray-700 mb-1">
+                                Current Value:
+                              </div>
                               <div className="bg-gray-50 p-2 rounded text-sm font-mono break-all">
                                 {value}
                               </div>
@@ -374,7 +364,10 @@ export default function SecurityHeadersPage() {
                 <CardContent>
                   <div className="space-y-3">
                     {analysis.recommendations.map((recommendation, index) => (
-                      <div key={index} className="flex items-start space-x-3 p-3 bg-yellow-50 rounded-lg">
+                      <div
+                        key={index}
+                        className="flex items-start space-x-3 p-3 bg-yellow-50 rounded-lg"
+                      >
                         <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                         <p className="text-sm text-gray-700">{recommendation}</p>
                       </div>
@@ -415,11 +408,7 @@ export default function SecurityHeadersPage() {
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Visit Website
                   </Button>
-                  <Button
-                    onClick={analyzeHeaders}
-                    variant="outline"
-                    size="sm"
-                  >
+                  <Button onClick={analyzeHeaders} variant="outline" size="sm">
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Re-analyze
                   </Button>
@@ -440,9 +429,9 @@ export default function SecurityHeadersPage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                Security headers provide an additional layer of protection against common 
-                web vulnerabilities like XSS, clickjacking, and man-in-the-middle attacks. 
-                They help secure your website and protect your users' data.
+                Security headers provide an additional layer of protection against common web
+                vulnerabilities like XSS, clickjacking, and man-in-the-middle attacks. They help
+                secure your website and protect your users' data.
               </p>
             </CardContent>
           </Card>

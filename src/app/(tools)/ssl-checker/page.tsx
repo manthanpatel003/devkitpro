@@ -1,37 +1,28 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Shield, 
-  CheckCircle2, 
-  AlertTriangle, 
-  XCircle, 
-  Clock, 
-  Key, 
-  Building, 
-  Copy,
-  ExternalLink,
-  RefreshCw,
-  Info
-} from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
 import { SSLData } from '@/types'
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  Copy,
+  ExternalLink,
+  Info,
+  Key,
+  RefreshCw,
+  Shield,
+  XCircle,
+} from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'SSL Certificate Checker - Free SSL Analysis Tool',
-  description: 'Check SSL certificate validity, expiration date, issuer details, and security information for any website. Free SSL certificate analyzer.',
-  keywords: ['SSL checker', 'SSL certificate', 'HTTPS', 'security', 'SSL analysis', 'certificate validation'],
-  openGraph: {
-    title: 'SSL Certificate Checker - Free SSL Analysis Tool',
-    description: 'Check SSL certificate validity, expiration date, issuer details, and security information for any website.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function SSLCheckerPage() {
   const [domain, setDomain] = useState('')
@@ -77,8 +68,8 @@ export default function SSLCheckerPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -129,9 +120,7 @@ export default function SSLCheckerPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            SSL Certificate Checker
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">SSL Certificate Checker</h1>
           <p className="text-xl text-gray-600">
             Check SSL certificate validity, expiration date, and security information
           </p>
@@ -150,16 +139,12 @@ export default function SSLCheckerPage() {
               <Input
                 placeholder="example.com or https://example.com"
                 value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && checkSSL()}
+                onChange={e => setDomain(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && checkSSL()}
                 className="flex-1"
                 icon={<Shield className="w-5 h-5" />}
               />
-              <Button
-                onClick={checkSSL}
-                disabled={loading || !domain.trim()}
-                className="px-8"
-              >
+              <Button onClick={checkSSL} disabled={loading || !domain.trim()} className="px-8">
                 {loading ? (
                   <LoadingSpinner size="sm" />
                 ) : (
@@ -191,9 +176,7 @@ export default function SSLCheckerPage() {
                 <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">SSL Check Failed</h3>
                 <p className="text-gray-600 mb-4">{error}</p>
-                <Button onClick={checkSSL}>
-                  Try Again
-                </Button>
+                <Button onClick={checkSSL}>Try Again</Button>
               </div>
             </CardContent>
           </Card>
@@ -212,18 +195,22 @@ export default function SSLCheckerPage() {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    {getStatusIcon(sslData.status || 'unknown')}
+                    {getStatusIcon(sslData.valid ? 'valid' : 'invalid')}
                     <div>
                       <div className="text-lg font-semibold">
                         {sslData.valid ? 'Valid Certificate' : 'Invalid Certificate'}
                       </div>
                       <div className="text-sm text-gray-600">
-                        {getStatusText(sslData.status || 'unknown')}
+                        {getStatusText(sslData.valid ? 'valid' : 'invalid')}
                       </div>
                     </div>
                   </div>
-                  <div className={`px-3 py-1 rounded-full border text-sm font-medium ${getStatusColor(sslData.status || 'unknown')}`}>
-                    {sslData.status?.toUpperCase() || 'UNKNOWN'}
+                  <div
+                    className={`px-3 py-1 rounded-full border text-sm font-medium ${getStatusColor(
+                      sslData.valid ? 'valid' : 'invalid'
+                    )}`}
+                  >
+                    {sslData.valid ? 'VALID' : 'INVALID'}
                   </div>
                 </div>
               </CardContent>
@@ -242,13 +229,19 @@ export default function SSLCheckerPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Issuer</span>
-                      <span className="font-medium text-right max-w-xs truncate" title={sslData.issuer}>
+                      <span
+                        className="font-medium text-right max-w-xs truncate"
+                        title={sslData.issuer}
+                      >
                         {sslData.issuer || 'Unknown'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Subject</span>
-                      <span className="font-medium text-right max-w-xs truncate" title={sslData.subject}>
+                      <span
+                        className="font-medium text-right max-w-xs truncate"
+                        title={sslData.subject}
+                      >
                         {sslData.subject || 'Unknown'}
                       </span>
                     </div>
@@ -258,7 +251,9 @@ export default function SSLCheckerPage() {
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Key Size</span>
-                      <span className="font-medium">{sslData.keySize ? `${sslData.keySize} bits` : 'Unknown'}</span>
+                      <span className="font-medium">
+                        {sslData.keySize ? `${sslData.keySize} bits` : 'Unknown'}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Serial Number</span>
@@ -287,8 +282,18 @@ export default function SSLCheckerPage() {
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
                       <span className="text-gray-600">Days Until Expiry</span>
-                      <span className={`font-medium ${sslData.daysUntilExpiry && sslData.daysUntilExpiry < 30 ? 'text-yellow-600' : sslData.daysUntilExpiry && sslData.daysUntilExpiry < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                        {sslData.daysUntilExpiry !== undefined ? sslData.daysUntilExpiry : 'Unknown'}
+                      <span
+                        className={`font-medium ${
+                          sslData.daysUntilExpiry && sslData.daysUntilExpiry < 30
+                            ? 'text-yellow-600'
+                            : sslData.daysUntilExpiry && sslData.daysUntilExpiry < 0
+                            ? 'text-red-600'
+                            : 'text-green-600'
+                        }`}
+                      >
+                        {sslData.daysUntilExpiry !== undefined
+                          ? sslData.daysUntilExpiry
+                          : 'Unknown'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100">
@@ -356,9 +361,9 @@ export default function SSLCheckerPage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                SSL (Secure Sockets Layer) is a security protocol that encrypts data 
-                transmitted between a web browser and server. It ensures that sensitive 
-                information like passwords and credit card details are protected.
+                SSL (Secure Sockets Layer) is a security protocol that encrypts data transmitted
+                between a web browser and server. It ensures that sensitive information like
+                passwords and credit card details are protected.
               </p>
             </CardContent>
           </Card>
@@ -372,9 +377,9 @@ export default function SSLCheckerPage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                If a certificate is expired or invalid, browsers will show security warnings. 
-                Always ensure your SSL certificates are valid and up-to-date to maintain 
-                user trust and security.
+                If a certificate is expired or invalid, browsers will show security warnings. Always
+                ensure your SSL certificates are valid and up-to-date to maintain user trust and
+                security.
               </p>
             </CardContent>
           </Card>

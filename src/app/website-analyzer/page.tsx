@@ -293,14 +293,14 @@ export default function WebsiteAnalyzerPage() {
                   onChange={e => setUrl(e.target.value)}
                   className="flex-1"
                   error={error}
-                  leftIcon={<Globe className="h-4 w-4" />}
+                  icon={<Globe className="h-4 w-4" />}
                 />
                 <Button
                   onClick={analyzeWebsite}
                   disabled={isLoading || !url.trim()}
                   loading={isLoading}
-                  leftIcon={<Search className="h-4 w-4" />}
                 >
+                  <Search className="h-4 w-4 mr-2" />
                   Analyze
                 </Button>
               </div>
@@ -334,7 +334,10 @@ export default function WebsiteAnalyzerPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="text-center">
                         <div
-                          className={`text-2xl font-bold ${getScoreColor(result.performance.loadTime, true)}`}
+                          className={`text-2xl font-bold ${getScoreColor(
+                            result.performance.loadTime,
+                            true
+                          )}`}
                         >
                           {(result.performance.loadTime / 1000).toFixed(1)}s
                         </div>
@@ -342,7 +345,9 @@ export default function WebsiteAnalyzerPage() {
                       </div>
                       <div className="text-center">
                         <div
-                          className={`text-2xl font-bold ${getScoreColor(result.accessibility.score)}`}
+                          className={`text-2xl font-bold ${getScoreColor(
+                            result.accessibility.score
+                          )}`}
                         >
                           {result.accessibility.score}
                         </div>
@@ -380,7 +385,10 @@ export default function WebsiteAnalyzerPage() {
                           <div className="flex items-center space-x-2">
                             {getScoreIcon(result.performance.loadTime, true)}
                             <span
-                              className={`font-medium ${getScoreColor(result.performance.loadTime, true)}`}
+                              className={`font-medium ${getScoreColor(
+                                result.performance.loadTime,
+                                true
+                              )}`}
                             >
                               {(result.performance.loadTime / 1000).toFixed(1)}s
                             </span>
@@ -430,7 +438,9 @@ export default function WebsiteAnalyzerPage() {
                           <div className="flex items-center space-x-2">
                             {getScoreIcon(result.seo.titleLength > 60 ? 30 : 90)}
                             <span
-                              className={`font-medium ${getScoreColor(result.seo.titleLength > 60 ? 30 : 90)}`}
+                              className={`font-medium ${getScoreColor(
+                                result.seo.titleLength > 60 ? 30 : 90
+                              )}`}
                             >
                               {result.seo.titleLength} chars
                             </span>

@@ -1,30 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Code, 
-  Copy, 
-  Download, 
-  Upload,
-  FileText,
-  RefreshCw
-} from 'lucide-react'
 import { copyToClipboard, downloadFile } from '@/lib/utils'
+import { Code, Copy, Download, FileText, Upload } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Base64 Encoder/Decoder - Free Base64 Converter',
-  description: 'Encode and decode Base64 strings. Free Base64 converter with file upload support and batch processing.',
-  keywords: ['base64 encoder', 'base64 decoder', 'base64 converter', 'base64 tool', 'encode decode'],
-  openGraph: {
-    title: 'Base64 Encoder/Decoder - Free Base64 Converter',
-    description: 'Encode and decode Base64 strings. Free Base64 converter with file upload support.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function Base64ConverterPage() {
   const [input, setInput] = useState('')
@@ -42,27 +27,26 @@ export default function Base64ConverterPage() {
 
     try {
       let result: string
-      
+
       if (mode === 'encode') {
         result = btoa(input)
       } else {
         result = atob(input)
       }
-      
+
       setOutput(result)
       setInputSize(new Blob([input]).size)
       setOutputSize(new Blob([result]).size)
       success(`Base64 ${mode} completed successfully!`)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Invalid Base64 string'
-      setError(errorMessage)
       showError('Conversion Failed', errorMessage)
     }
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -73,7 +57,7 @@ export default function Base64ConverterPage() {
     const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = e => {
         const content = e.target?.result as string
         if (mode === 'encode') {
           setInput(content)
@@ -87,10 +71,11 @@ export default function Base64ConverterPage() {
   }
 
   const loadExample = () => {
-    const example = mode === 'encode' 
-      ? 'Hello, World! This is a test message for Base64 encoding.'
-      : 'SGVsbG8sIFdvcmxkISBUaGlzIGlzIGEgdGVzdCBtZXNzYWdlIGZvciBCYXNlNjQgZW5jb2Rpbmcu'
-    
+    const example =
+      mode === 'encode'
+        ? 'Hello, World! This is a test message for Base64 encoding.'
+        : 'SGVsbG8sIFdvcmxkISBUaGlzIGlzIGEgdGVzdCBtZXNzYWdlIGZvciBCYXNlNjQgZW5jb2Rpbmcu'
+
     setInput(example)
     success('Example loaded!')
   }
@@ -119,7 +104,9 @@ export default function Base64ConverterPage() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Base64 Encoder/Decoder</h1>
-          <p className="text-xl text-gray-600">Encode and decode Base64 strings with file support</p>
+          <p className="text-xl text-gray-600">
+            Encode and decode Base64 strings with file support
+          </p>
         </div>
 
         {/* Mode Selection */}
@@ -134,14 +121,14 @@ export default function Base64ConverterPage() {
             <div className="flex gap-4">
               <Button
                 onClick={() => setMode('encode')}
-                variant={mode === 'encode' ? 'default' : 'outline'}
+                variant={mode === 'encode' ? 'primary' : 'outline'}
                 className="flex-1"
               >
                 Encode to Base64
               </Button>
               <Button
                 onClick={() => setMode('decode')}
-                variant={mode === 'decode' ? 'default' : 'outline'}
+                variant={mode === 'decode' ? 'primary' : 'outline'}
                 className="flex-1"
               >
                 Decode from Base64
@@ -167,12 +154,10 @@ export default function Base64ConverterPage() {
                     className="hidden"
                     id="file-upload"
                   />
-                  <label htmlFor="file-upload">
-                    <Button variant="outline" size="sm" asChild>
-                      <span>
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload
-                      </span>
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    <Button variant="outline" size="sm" type="button">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload
                     </Button>
                   </label>
                 </div>
@@ -181,21 +166,22 @@ export default function Base64ConverterPage() {
             <CardContent>
               <div className="space-y-4">
                 <Textarea
-                  placeholder={mode === 'encode' 
-                    ? 'Enter text to encode to Base64...' 
-                    : 'Enter Base64 string to decode...'
+                  placeholder={
+                    mode === 'encode'
+                      ? 'Enter text to encode to Base64...'
+                      : 'Enter Base64 string to decode...'
                   }
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={e => setInput(e.target.value)}
                   className="min-h-[300px] font-mono text-sm"
                   rows={12}
                 />
-                
+
                 <div className="flex justify-between items-center text-sm text-gray-500">
                   <span>{input.length} characters</span>
                   <span>{inputSize} bytes</span>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <Button onClick={loadExample} variant="outline" size="sm">
                     Load Example
@@ -219,21 +205,22 @@ export default function Base64ConverterPage() {
             <CardContent>
               <div className="space-y-4">
                 <Textarea
-                  placeholder={mode === 'encode' 
-                    ? 'Base64 encoded text will appear here...' 
-                    : 'Decoded text will appear here...'
+                  placeholder={
+                    mode === 'encode'
+                      ? 'Base64 encoded text will appear here...'
+                      : 'Decoded text will appear here...'
                   }
                   value={output}
                   readOnly
                   className="min-h-[300px] font-mono text-sm"
                   rows={12}
                 />
-                
+
                 <div className="flex justify-between items-center text-sm text-gray-500">
                   <span>{output.length} characters</span>
                   <span>{outputSize} bytes</span>
                 </div>
-                
+
                 {output && (
                   <div className="flex gap-2">
                     <Button
@@ -245,11 +232,9 @@ export default function Base64ConverterPage() {
                       Copy
                     </Button>
                     <Button
-                      onClick={() => downloadFile(
-                        output, 
-                        `base64-${mode}-${Date.now()}.txt`, 
-                        'text/plain'
-                      )}
+                      onClick={() =>
+                        downloadFile(output, `base64-${mode}-${Date.now()}.txt`, 'text/plain')
+                      }
                       variant="outline"
                       size="sm"
                     >
@@ -276,8 +261,9 @@ export default function Base64ConverterPage() {
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">What is Base64?</h4>
                 <p className="text-gray-600">
-                  Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. 
-                  It's commonly used for encoding data in URLs, email attachments, and data storage.
+                  Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII
+                  string format. It's commonly used for encoding data in URLs, email attachments,
+                  and data storage.
                 </p>
               </div>
               <div>

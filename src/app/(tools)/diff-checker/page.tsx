@@ -1,31 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { useState } from 'react'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  GitCompare, 
-  Copy, 
-  Download,
-  FileText,
-  Plus,
-  Minus
-} from 'lucide-react'
 import { copyToClipboard, downloadFile } from '@/lib/utils'
 import { DiffResult } from '@/types'
+import { Copy, Download, FileText, GitCompare, Minus, Plus } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Diff Checker - Free Text Comparison Tool',
-  description: 'Compare text and code differences. Free diff checker with side-by-side comparison and highlighting.',
-  keywords: ['diff checker', 'text comparison', 'code diff', 'file comparison', 'text diff'],
-  openGraph: {
-    title: 'Diff Checker - Free Text Comparison Tool',
-    description: 'Compare text and code differences. Free diff checker with side-by-side comparison.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 export default function DiffCheckerPage() {
   const [text1, setText1] = useState('')
@@ -36,7 +21,7 @@ export default function DiffCheckerPage() {
   const calculateDiff = (text1: string, text2: string): DiffResult => {
     const lines1 = text1.split('\n')
     const lines2 = text2.split('\n')
-    
+
     const changes: DiffResult['changes'] = []
     let added = 0
     let removed = 0
@@ -44,18 +29,18 @@ export default function DiffCheckerPage() {
     let unchanged = 0
 
     const maxLines = Math.max(lines1.length, lines2.length)
-    
+
     for (let i = 0; i < maxLines; i++) {
       const line1 = lines1[i] || ''
       const line2 = lines2[i] || ''
-      
+
       if (i >= lines1.length) {
         // Added lines
         changes.push({
           type: 'added',
           line: i + 1,
           content: line2,
-          oldContent: ''
+          oldContent: '',
         })
         added++
       } else if (i >= lines2.length) {
@@ -64,7 +49,7 @@ export default function DiffCheckerPage() {
           type: 'removed',
           line: i + 1,
           content: line1,
-          oldContent: ''
+          oldContent: '',
         })
         removed++
       } else if (line1 === line2) {
@@ -73,7 +58,7 @@ export default function DiffCheckerPage() {
           type: 'unchanged',
           line: i + 1,
           content: line1,
-          oldContent: ''
+          oldContent: '',
         })
         unchanged++
       } else {
@@ -82,7 +67,7 @@ export default function DiffCheckerPage() {
           type: 'modified',
           line: i + 1,
           content: line2,
-          oldContent: line1
+          oldContent: line1,
         })
         modified++
       }
@@ -93,7 +78,7 @@ export default function DiffCheckerPage() {
       removed,
       modified,
       unchanged,
-      changes
+      changes,
     }
   }
 
@@ -109,8 +94,8 @@ export default function DiffCheckerPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -125,13 +110,13 @@ export default function DiffCheckerPage() {
   }
   return total;
 }`)
-    
+
     setText2(`function calculateTotal(items) {
   return items.reduce((total, item) => {
     return total + (item.price * item.quantity);
   }, 0);
 }`)
-    
+
     const result = calculateDiff(text1, text2)
     setResult(result)
     success('Example loaded!')
@@ -183,7 +168,7 @@ export default function DiffCheckerPage() {
               <Textarea
                 placeholder="Enter first text here..."
                 value={text1}
-                onChange={(e) => setText1(e.target.value)}
+                onChange={e => setText1(e.target.value)}
                 className="min-h-[300px] font-mono text-sm"
                 rows={12}
               />
@@ -201,7 +186,7 @@ export default function DiffCheckerPage() {
               <Textarea
                 placeholder="Enter second text here..."
                 value={text2}
-                onChange={(e) => setText2(e.target.value)}
+                onChange={e => setText2(e.target.value)}
                 className="min-h-[300px] font-mono text-sm"
                 rows={12}
               />
@@ -267,18 +252,14 @@ export default function DiffCheckerPage() {
                             <span className="text-sm font-medium text-gray-900">
                               Line {change.line}
                             </span>
-                            <span className="text-xs text-gray-500 uppercase">
-                              {change.type}
-                            </span>
+                            <span className="text-xs text-gray-500 uppercase">{change.type}</span>
                           </div>
                           {change.type === 'modified' && change.oldContent && (
                             <div className="text-sm text-gray-600 mb-1">
                               <span className="font-medium">Old:</span> {change.oldContent}
                             </div>
                           )}
-                          <div className="text-sm text-gray-900 font-mono">
-                            {change.content}
-                          </div>
+                          <div className="text-sm text-gray-900 font-mono">{change.content}</div>
                         </div>
                       </div>
                     </div>
@@ -294,28 +275,22 @@ export default function DiffCheckerPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-3">
-                  <Button
-                    onClick={() => handleCopy(text1, 'Text 1')}
-                    variant="outline"
-                    size="sm"
-                  >
+                  <Button onClick={() => handleCopy(text1, 'Text 1')} variant="outline" size="sm">
                     <Copy className="w-4 h-4 mr-2" />
                     Copy Text 1
                   </Button>
-                  <Button
-                    onClick={() => handleCopy(text2, 'Text 2')}
-                    variant="outline"
-                    size="sm"
-                  >
+                  <Button onClick={() => handleCopy(text2, 'Text 2')} variant="outline" size="sm">
                     <Copy className="w-4 h-4 mr-2" />
                     Copy Text 2
                   </Button>
                   <Button
-                    onClick={() => downloadFile(
-                      `Text 1:\n${text1}\n\nText 2:\n${text2}\n\nDiff Summary:\nAdded: ${result.added}\nRemoved: ${result.removed}\nModified: ${result.modified}\nUnchanged: ${result.unchanged}`,
-                      `diff-${Date.now()}.txt`,
-                      'text/plain'
-                    )}
+                    onClick={() =>
+                      downloadFile(
+                        `Text 1:\n${text1}\n\nText 2:\n${text2}\n\nDiff Summary:\nAdded: ${result.added}\nRemoved: ${result.removed}\nModified: ${result.modified}\nUnchanged: ${result.unchanged}`,
+                        `diff-${Date.now()}.txt`,
+                        'text/plain'
+                      )
+                    }
                     variant="outline"
                     size="sm"
                   >

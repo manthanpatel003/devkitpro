@@ -1,30 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  FileCode, 
-  Copy, 
-  Download,
-  Upload,
-  CheckCircle,
-  AlertCircle
-} from 'lucide-react'
 import { copyToClipboard } from '@/lib/utils'
+import { AlertCircle, CheckCircle, Copy, Download, FileCode } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'XML Formatter - Free XML Formatting Tool',
-  description: 'Format, validate, and beautify XML documents. Free XML formatter with syntax highlighting and validation.',
-  keywords: ['xml formatter', 'xml validator', 'xml beautifier', 'xml minifier', 'xml prettifier'],
-  openGraph: {
-    title: 'XML Formatter - Free XML Formatting Tool',
-    description: 'Format, validate, and beautify XML documents. Free XML formatter with validation.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 interface XMLValidation {
   isValid: boolean
@@ -43,7 +28,7 @@ export default function XMLFormatterPage() {
     try {
       // Remove extra whitespace and normalize
       const trimmed = xml.trim()
-      
+
       // Basic XML formatting
       let formatted = trimmed
         .replace(/>\s+</g, '><') // Remove whitespace between tags
@@ -57,10 +42,11 @@ export default function XMLFormatterPage() {
         .map((line, index) => {
           const trimmedLine = line.trim()
           if (!trimmedLine) return ''
-          
-          const depth = (formatted.substring(0, formatted.indexOf(trimmedLine)).match(/</g) || []).length - 
-                       (formatted.substring(0, formatted.indexOf(trimmedLine)).match(/<\//g) || []).length
-          
+
+          const depth =
+            (formatted.substring(0, formatted.indexOf(trimmedLine)).match(/</g) || []).length -
+            (formatted.substring(0, formatted.indexOf(trimmedLine)).match(/<\//g) || []).length
+
           const indent = ' '.repeat(depth * indentSize)
           return indent + trimmedLine
         })
@@ -82,11 +68,11 @@ export default function XMLFormatterPage() {
   const validateXML = (xml: string): XMLValidation => {
     const errors: string[] = []
     const warnings: string[] = []
-    
+
     try {
       // Basic XML structure validation
       const trimmed = xml.trim()
-      
+
       if (!trimmed) {
         errors.push('XML is empty')
         return { isValid: false, errors, warnings }
@@ -105,7 +91,7 @@ export default function XMLFormatterPage() {
       }
 
       const rootTag = rootMatch[1]
-      
+
       // Check for matching closing tag
       const closingTag = `</${rootTag}>`
       if (!trimmed.includes(closingTag)) {
@@ -115,9 +101,11 @@ export default function XMLFormatterPage() {
       // Check for unclosed tags
       const openTags = trimmed.match(/<[^/][^>]*>/g) || []
       const closeTags = trimmed.match(/<\/[^>]+>/g) || []
-      
+
       if (openTags.length !== closeTags.length) {
-        errors.push(`Mismatched tags: ${openTags.length} opening tags, ${closeTags.length} closing tags`)
+        errors.push(
+          `Mismatched tags: ${openTags.length} opening tags, ${closeTags.length} closing tags`
+        )
       }
 
       // Check for malformed tags
@@ -135,13 +123,15 @@ export default function XMLFormatterPage() {
       return {
         isValid: errors.length === 0,
         errors,
-        warnings
+        warnings,
       }
     } catch (err) {
       return {
         isValid: false,
-        errors: ['XML validation failed: ' + (err instanceof Error ? err.message : 'Unknown error')],
-        warnings
+        errors: [
+          'XML validation failed: ' + (err instanceof Error ? err.message : 'Unknown error'),
+        ],
+        warnings,
       }
     }
   }
@@ -155,7 +145,7 @@ export default function XMLFormatterPage() {
     try {
       const validation = validateXML(input)
       setValidation(validation)
-      
+
       if (!validation.isValid) {
         showError(`XML validation failed with ${validation.errors.length} errors`)
         return
@@ -169,7 +159,7 @@ export default function XMLFormatterPage() {
     }
   }
 
-  const minifyXML = () => {
+  const handleMinifyXML = () => {
     if (!input.trim()) {
       showError('Please enter XML to minify')
       return
@@ -185,8 +175,8 @@ export default function XMLFormatterPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -195,7 +185,7 @@ export default function XMLFormatterPage() {
 
   const downloadXML = () => {
     if (!output) return
-    
+
     const blob = new Blob([output], { type: 'application/xml' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -269,12 +259,10 @@ export default function XMLFormatterPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Indent Size
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Indent Size</label>
                 <select
                   value={indentSize}
-                  onChange={(e) => setIndentSize(Number(e.target.value))}
+                  onChange={e => setIndentSize(Number(e.target.value))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value={2}>2 Spaces</option>
@@ -282,16 +270,16 @@ export default function XMLFormatterPage() {
                   <option value={8}>8 Spaces</option>
                 </select>
               </div>
-              
+
               <div className="flex items-end gap-2">
                 <Button onClick={processXML} className="flex-1">
                   Format XML
                 </Button>
-                <Button onClick={minifyXML} variant="outline" className="flex-1">
+                <Button onClick={handleMinifyXML} variant="outline" className="flex-1">
                   Minify XML
                 </Button>
               </div>
-              
+
               <div className="flex items-end">
                 <Button onClick={loadExample} variant="outline" className="w-full">
                   Load Example
@@ -313,11 +301,11 @@ export default function XMLFormatterPage() {
                 <Textarea
                   placeholder="<root><item>value</item></root>"
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={e => setInput(e.target.value)}
                   rows={15}
                   className="font-mono text-sm"
                 />
-                
+
                 <Button onClick={clearAll} variant="outline" className="w-full">
                   Clear Input
                 </Button>
@@ -340,7 +328,7 @@ export default function XMLFormatterPage() {
                   rows={15}
                   className="font-mono text-sm bg-gray-50"
                 />
-                
+
                 <div className="flex gap-2">
                   <Button
                     onClick={() => handleCopy(output, 'XML')}
@@ -384,7 +372,9 @@ export default function XMLFormatterPage() {
                 {/* Errors */}
                 {validation.errors.length > 0 && (
                   <div>
-                    <h4 className="font-medium text-red-900 mb-2">Errors ({validation.errors.length})</h4>
+                    <h4 className="font-medium text-red-900 mb-2">
+                      Errors ({validation.errors.length})
+                    </h4>
                     <div className="space-y-2">
                       {validation.errors.map((error, index) => (
                         <div key={index} className="text-sm text-red-600 bg-red-50 p-2 rounded">
@@ -398,10 +388,15 @@ export default function XMLFormatterPage() {
                 {/* Warnings */}
                 {validation.warnings.length > 0 && (
                   <div>
-                    <h4 className="font-medium text-yellow-900 mb-2">Warnings ({validation.warnings.length})</h4>
+                    <h4 className="font-medium text-yellow-900 mb-2">
+                      Warnings ({validation.warnings.length})
+                    </h4>
                     <div className="space-y-2">
                       {validation.warnings.map((warning, index) => (
-                        <div key={index} className="text-sm text-yellow-600 bg-yellow-50 p-2 rounded">
+                        <div
+                          key={index}
+                          className="text-sm text-yellow-600 bg-yellow-50 p-2 rounded"
+                        >
                           {warning}
                         </div>
                       ))}
@@ -414,10 +409,9 @@ export default function XMLFormatterPage() {
                   <div className="col-span-2 text-center p-4 bg-green-50 rounded-lg">
                     <div className="text-green-600 font-medium">✓ XML is valid and well-formed</div>
                     <div className="text-sm text-green-600 mt-1">
-                      {validation.warnings.length > 0 
+                      {validation.warnings.length > 0
                         ? `with ${validation.warnings.length} warning(s)`
-                        : 'No issues found'
-                      }
+                        : 'No issues found'}
                     </div>
                   </div>
                 )}

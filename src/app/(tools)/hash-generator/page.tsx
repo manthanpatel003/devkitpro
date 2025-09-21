@@ -1,33 +1,26 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Metadata } from 'next'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+// Metadata removed - client components cannot export metadata
 import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
-import { 
-  Hash, 
-  Copy, 
-  Download, 
-  Upload,
-  FileText,
-  RefreshCw
-} from 'lucide-react'
 import { copyToClipboard, downloadFile } from '@/lib/utils'
 import { HashResult } from '@/types'
+import { Copy, Download, FileText, Hash, Upload } from 'lucide-react'
 
 // Simple hash functions (in production, use crypto-js or similar)
 const simpleHash = (str: string, algorithm: string): string => {
   let hash = 0
   if (str.length === 0) return hash.toString()
-  
+
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
+    hash = (hash << 5) - hash + char
     hash = hash & hash // Convert to 32-bit integer
   }
-  
+
   switch (algorithm) {
     case 'md5':
       return Math.abs(hash).toString(16).padStart(8, '0').repeat(4)
@@ -40,20 +33,12 @@ const simpleHash = (str: string, algorithm: string): string => {
   }
 }
 
-export const metadata: Metadata = {
-  title: 'Hash Generator - Free Hash Calculator',
-  description: 'Generate MD5, SHA1, SHA256 hashes for text and files. Free hash generator with multiple algorithms.',
-  keywords: ['hash generator', 'hash calculator', 'MD5', 'SHA1', 'SHA256', 'hash tool'],
-  openGraph: {
-    title: 'Hash Generator - Free Hash Calculator',
-    description: 'Generate MD5, SHA1, SHA256 hashes for text and files. Free hash generator with multiple algorithms.',
-  },
-}
+// Metadata removed - client components cannot export metadata
 
 const algorithms = [
   { value: 'md5', label: 'MD5', description: '128-bit hash' },
   { value: 'sha1', label: 'SHA1', description: '160-bit hash' },
-  { value: 'sha256', label: 'SHA256', description: '256-bit hash' }
+  { value: 'sha256', label: 'SHA256', description: '256-bit hash' },
 ]
 
 export default function HashGeneratorPage() {
@@ -72,7 +57,7 @@ export default function HashGeneratorPage() {
       algorithm: algorithm.toUpperCase(),
       hash: simpleHash(input, algorithm),
       input: input,
-      length: simpleHash(input, algorithm).length
+      length: simpleHash(input, algorithm).length,
     }))
 
     setResults(newResults)
@@ -80,8 +65,8 @@ export default function HashGeneratorPage() {
   }
 
   const handleCopy = async (text: string, label: string) => {
-    const success = await copyToClipboard(text)
-    if (success) {
+    const copySuccess = await copyToClipboard(text)
+    if (copySuccess) {
       success(`${label} copied to clipboard!`)
     } else {
       showError('Failed to copy to clipboard')
@@ -92,7 +77,7 @@ export default function HashGeneratorPage() {
     const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = e => {
         const content = e.target?.result as string
         setInput(content)
         success('File loaded successfully!')
@@ -114,10 +99,8 @@ export default function HashGeneratorPage() {
   }
 
   const toggleAlgorithm = (algorithm: string) => {
-    setSelectedAlgorithms(prev => 
-      prev.includes(algorithm) 
-        ? prev.filter(a => a !== algorithm)
-        : [...prev, algorithm]
+    setSelectedAlgorithms(prev =>
+      prev.includes(algorithm) ? prev.filter(a => a !== algorithm) : [...prev, algorithm]
     )
   }
 
@@ -135,7 +118,9 @@ export default function HashGeneratorPage() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Hash Generator</h1>
-          <p className="text-xl text-gray-600">Generate MD5, SHA1, SHA256 hashes for text and files</p>
+          <p className="text-xl text-gray-600">
+            Generate MD5, SHA1, SHA256 hashes for text and files
+          </p>
         </div>
 
         {/* Algorithm Selection */}
@@ -184,12 +169,10 @@ export default function HashGeneratorPage() {
                     className="hidden"
                     id="file-upload"
                   />
-                  <label htmlFor="file-upload">
-                    <Button variant="outline" size="sm" asChild>
-                      <span>
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload
-                      </span>
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    <Button variant="outline" size="sm" type="button">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload
                     </Button>
                   </label>
                 </div>
@@ -200,16 +183,16 @@ export default function HashGeneratorPage() {
                 <Textarea
                   placeholder="Enter text to generate hashes..."
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={e => setInput(e.target.value)}
                   className="min-h-[300px] font-mono text-sm"
                   rows={12}
                 />
-                
+
                 <div className="flex justify-between items-center text-sm text-gray-500">
                   <span>{input.length} characters</span>
                   <span>{new Blob([input]).size} bytes</span>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <Button onClick={loadExample} variant="outline" size="sm">
                     Load Example
@@ -236,12 +219,8 @@ export default function HashGeneratorPage() {
                   results.map((result, index) => (
                     <div key={index} className="p-4 border rounded-lg">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="font-medium text-gray-900">
-                          {result.algorithm}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {result.length} characters
-                        </div>
+                        <div className="font-medium text-gray-900">{result.algorithm}</div>
+                        <div className="text-sm text-gray-500">{result.length} characters</div>
                       </div>
                       <div className="font-mono text-sm text-gray-700 bg-gray-50 p-2 rounded break-all">
                         {result.hash}
@@ -256,11 +235,13 @@ export default function HashGeneratorPage() {
                           Copy
                         </Button>
                         <Button
-                          onClick={() => downloadFile(
-                            result.hash, 
-                            `${result.algorithm.toLowerCase()}-${Date.now()}.txt`, 
-                            'text/plain'
-                          )}
+                          onClick={() =>
+                            downloadFile(
+                              result.hash,
+                              `${result.algorithm.toLowerCase()}-${Date.now()}.txt`,
+                              'text/plain'
+                            )
+                          }
                           variant="outline"
                           size="sm"
                         >
@@ -294,22 +275,22 @@ export default function HashGeneratorPage() {
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">MD5</h4>
                 <p className="text-gray-600">
-                  MD5 produces a 128-bit hash value. Fast but not cryptographically secure. 
-                  Used for checksums and data integrity verification.
+                  MD5 produces a 128-bit hash value. Fast but not cryptographically secure. Used for
+                  checksums and data integrity verification.
                 </p>
               </div>
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">SHA1</h4>
                 <p className="text-gray-600">
-                  SHA1 produces a 160-bit hash value. More secure than MD5 but considered 
-                  deprecated for cryptographic purposes.
+                  SHA1 produces a 160-bit hash value. More secure than MD5 but considered deprecated
+                  for cryptographic purposes.
                 </p>
               </div>
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">SHA256</h4>
                 <p className="text-gray-600">
-                  SHA256 produces a 256-bit hash value. Currently secure and widely used 
-                  for cryptographic applications and blockchain.
+                  SHA256 produces a 256-bit hash value. Currently secure and widely used for
+                  cryptographic applications and blockchain.
                 </p>
               </div>
             </div>
