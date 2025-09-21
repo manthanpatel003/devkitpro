@@ -1,23 +1,107 @@
 import { FadeIn } from '@/components/animations/FadeIn'
 import { Footer } from '@/components/layout/Footer'
-import { Header } from '@/components/layout/Header'
 import { ToolsGrid } from '@/components/tools/ToolsGrid'
 import { TOOLS, TOOL_CATEGORIES } from '@/lib/constants'
-import { generateToolSEO } from '@/lib/seo-config'
+import {
+  generateOrganizationStructuredData,
+  generatePageMetadata,
+  generateWebsiteStructuredData,
+} from '@/lib/seo-utils'
+import type { Metadata } from 'next'
 
-export const metadata = generateToolSEO(
-  'All Developer Tools',
-  'Browse our complete collection of 20+ free developer tools and utilities. JSON formatter, IP checker, QR generator, and more.',
-  ['developer tools', 'free tools', 'utilities', 'online tools', 'web development']
+export const metadata: Metadata = generatePageMetadata(
+  'All Developer Tools - 35+ Free Online Tools',
+  'Browse our complete collection of 35+ free developer tools and utilities. JSON formatter, IP checker, SSL analyzer, QR generator, code formatter, and much more. No registration required.',
+  [
+    'developer tools',
+    'free tools',
+    'utilities',
+    'online tools',
+    'web development',
+    'code formatter',
+    'json formatter',
+    'ip checker',
+    'ssl checker',
+    'qr generator',
+    'password generator',
+    'base64 converter',
+    'hash generator',
+    'url encoder',
+    'image optimizer',
+    'markdown editor',
+    'unit converter',
+    'timestamp converter',
+    'regex tester',
+    'api client',
+    'jwt analyzer',
+    'sql formatter',
+    'diff checker',
+    'keyword research',
+    'social preview',
+    'sitemap generator',
+    'csv processor',
+    'xml formatter',
+    'yaml converter',
+    'favicon generator',
+    'uuid generator',
+    'lorem ipsum',
+    'color palette',
+    'text analyzer',
+    'cron generator',
+    'port scanner',
+    'dns lookup',
+    'website monitor',
+    'security headers',
+    'speed test',
+    'html encoder',
+  ],
+  '/tools',
+  '/og-tools.png'
 )
 
 export default function ToolsPage() {
   const featuredTools = TOOLS.filter(tool => tool.featured)
   const popularTools = TOOLS.filter(tool => tool.popular)
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Developer Tools Collection',
+    description: 'Complete collection of 35+ free developer tools and utilities',
+    numberOfItems: TOOLS.length,
+    itemListElement: TOOLS.map((tool, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'WebApplication',
+        name: tool.name,
+        description: tool.description,
+        url: `https://ultimate-tools-suite.vercel.app${tool.path}`,
+        applicationCategory: 'DeveloperApplication',
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+        isAccessibleForFree: true,
+      },
+    })),
+  }
+
   return (
     <>
-      <Header />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateWebsiteStructuredData()) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationStructuredData()) }}
+      />
       <main className="flex-1">
         {/* Hero Section */}
         <div className="border-b bg-muted/30">
